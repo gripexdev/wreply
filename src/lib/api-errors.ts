@@ -10,6 +10,7 @@ import {
   WhatsAppConnectionServiceError,
   WhatsAppWebhookServiceError,
 } from "@/services/whatsapp/whatsapp-errors";
+import { WorkspaceSettingsServiceError } from "@/services/workspace/workspace-settings.service";
 
 export function createApiErrorResponse(error: unknown) {
   if (error instanceof WorkspaceAuthorizationError) {
@@ -50,6 +51,13 @@ export function createApiErrorResponse(error: unknown) {
     error instanceof WhatsAppConnectionServiceError ||
     error instanceof WhatsAppWebhookServiceError
   ) {
+    return NextResponse.json(
+      { message: error.message },
+      { status: error.statusCode },
+    );
+  }
+
+  if (error instanceof WorkspaceSettingsServiceError) {
     return NextResponse.json(
       { message: error.message },
       { status: error.statusCode },

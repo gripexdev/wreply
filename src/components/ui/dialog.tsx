@@ -8,10 +8,12 @@ import { cn } from "@/lib/utils";
 export function Dialog({
   open,
   onClose,
+  panelClassName,
   children,
 }: Readonly<{
   open: boolean;
   onClose: () => void;
+  panelClassName?: string;
   children: React.ReactNode;
 }>) {
   useEffect(() => {
@@ -49,7 +51,10 @@ export function Dialog({
       <div
         role="dialog"
         aria-modal="true"
-        className="relative z-10 w-full max-w-2xl rounded-[32px] border border-white/10 bg-[#09111d]/96 shadow-[0_45px_140px_-60px_rgba(0,0,0,1)]"
+        className={cn(
+          "relative z-10 w-full max-w-2xl rounded-[32px] border border-white/10 bg-[#09111d]/96 shadow-[0_45px_140px_-60px_rgba(0,0,0,1)]",
+          panelClassName,
+        )}
       >
         {children}
       </div>

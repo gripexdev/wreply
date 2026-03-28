@@ -4,6 +4,7 @@ import {
   AutoReplyRuleLanguage,
   AutoReplyRuleMatchType,
   IncomingMessageProcessingStatus,
+  OutgoingReplySource,
   OutgoingMessageStatus,
   PrismaClient,
   SubscriptionStatus,
@@ -73,11 +74,31 @@ async function main() {
     update: {
       name: "Atlas Motors",
       ownerId: owner.id,
+      replyDisplayName: "Atlas Motors team",
+      businessPhoneNumber: "+212600000000",
+      address: "201 Boulevard Ghandi, Casablanca",
+      googleMapsLink:
+        "https://maps.google.com/?q=201+Boulevard+Ghandi+Casablanca",
+      workingHours: "Monday to Saturday, 9:00 to 19:00",
+      languagePreference: AutoReplyRuleLanguage.ANY,
+      fallbackReplyEnabled: true,
+      fallbackReplyMessage:
+        "Salam 👋 thanks for your message. We received it and our team will reply as soon as possible.",
     },
     create: {
       name: "Atlas Motors",
       slug: "atlas-motors",
       ownerId: owner.id,
+      replyDisplayName: "Atlas Motors team",
+      businessPhoneNumber: "+212600000000",
+      address: "201 Boulevard Ghandi, Casablanca",
+      googleMapsLink:
+        "https://maps.google.com/?q=201+Boulevard+Ghandi+Casablanca",
+      workingHours: "Monday to Saturday, 9:00 to 19:00",
+      languagePreference: AutoReplyRuleLanguage.ANY,
+      fallbackReplyEnabled: true,
+      fallbackReplyMessage:
+        "Salam 👋 thanks for your message. We received it and our team will reply as soon as possible.",
     },
   });
 
@@ -227,11 +248,12 @@ async function main() {
     seededRuleIds.set(rule.keyword, createdRule.id);
   }
 
-  await prisma.incomingMessageLog.upsert({
+  const matchedIncomingLog = await prisma.incomingMessageLog.upsert({
     where: { externalMessageId: "seed-incoming-001" },
     update: {
       workspaceId: workspace.id,
       whatsAppConnectionId: connection.id,
+      contactName: "Yassine",
       senderPhone: "+212611111111",
       recipientPhone: "+212600000000",
       content: "What are your opening hours?",
@@ -239,12 +261,15 @@ async function main() {
       matchedRuleId: seededRuleIds.get("horaires"),
       processingStatus: IncomingMessageProcessingStatus.MATCHED,
       processingReason: "Seeded sample matched the horaires rule.",
+      fallbackEligible: false,
+      fallbackUsed: false,
       processedAt: new Date(),
     },
     create: {
       workspaceId: workspace.id,
       whatsAppConnectionId: connection.id,
       externalMessageId: "seed-incoming-001",
+      contactName: "Yassine",
       senderPhone: "+212611111111",
       recipientPhone: "+212600000000",
       content: "What are your opening hours?",
@@ -252,7 +277,12 @@ async function main() {
       matchedRuleId: seededRuleIds.get("horaires"),
       processingStatus: IncomingMessageProcessingStatus.MATCHED,
       processingReason: "Seeded sample matched the horaires rule.",
+      fallbackEligible: false,
+      fallbackUsed: false,
       processedAt: new Date(),
+    },
+    select: {
+      id: true,
     },
   });
 
@@ -262,9 +292,11 @@ async function main() {
       workspaceId: workspace.id,
       whatsAppConnectionId: connection.id,
       matchedRuleId: seededRuleIds.get("horaires"),
+      relatedIncomingMessageId: matchedIncomingLog.id,
       recipientPhone: "+212611111111",
       content: "We are open Monday to Saturday from 9:00 to 19:00.",
       status: OutgoingMessageStatus.DELIVERED,
+      replySource: OutgoingReplySource.RULE_MATCH,
       sentAt: new Date(),
     },
     create: {
@@ -272,12 +304,105 @@ async function main() {
       whatsAppConnectionId: connection.id,
       externalMessageId: "seed-outgoing-001",
       matchedRuleId: seededRuleIds.get("horaires"),
+      relatedIncomingMessageId: matchedIncomingLog.id,
       recipientPhone: "+212611111111",
       content: "We are open Monday to Saturday from 9:00 to 19:00.",
       status: OutgoingMessageStatus.DELIVERED,
+      replySource: OutgoingReplySource.RULE_MATCH,
       sentAt: new Date(),
     },
   });
+
+  const fallbackIncomingLog = await prisma.incomingMessageLog.upsert({
+    where: { externalMessageId: "seed-incoming-002" },
+    update: {
+      workspaceId: workspace.id,
+      whatsAppConnectionId: connection.id,
+      contactName: "Imane",
+      senderPhone: "+212633333333",
+      recipientPhone: "+212600000000",
+      content: "Salam, bghit n3ref kifach n9der ndir rendez-vous",
+      normalizedContent: "salam bghit n3ref kifach n9der ndir rendez vous",
+      matchedRuleId: null,
+      processingStatus: IncomingMessageProcessingStatus.NO_MATCH,
+      processingReason:
+        "No active workspace rule matched the normalized message. A workspace fallback reply was prepared.",
+      fallbackEligible: true,
+      fallbackUsed: true,
+      processedAt: new Date(),
+    },
+    create: {
+      workspaceId: workspace.id,
+      whatsAppConnectionId: connection.id,
+      externalMessageId: "seed-incoming-002",
+      contactName: "Imane",
+      senderPhone: "+212633333333",
+      recipientPhone: "+212600000000",
+      content: "Salam, bghit n3ref kifach n9der ndir rendez-vous",
+      normalizedContent: "salam bghit n3ref kifach n9der ndir rendez vous",
+      matchedRuleId: null,
+      processingStatus: IncomingMessageProcessingStatus.NO_MATCH,
+      processingReason:
+        "No active workspace rule matched the normalized message. A workspace fallback reply was prepared.",
+      fallbackEligible: true,
+      fallbackUsed: true,
+      processedAt: new Date(),
+    },
+    select: {
+      id: true,
+    },
+  });
+
+  const existingFallbackOutgoingLog = await prisma.outgoingMessageLog.findFirst({
+    where: {
+      workspaceId: workspace.id,
+      relatedIncomingMessageId: fallbackIncomingLog.id,
+      replySource: OutgoingReplySource.FALLBACK,
+    },
+    select: {
+      id: true,
+    },
+  });
+
+  if (existingFallbackOutgoingLog) {
+    await prisma.outgoingMessageLog.update({
+      where: {
+        id: existingFallbackOutgoingLog.id,
+      },
+      data: {
+        workspaceId: workspace.id,
+        whatsAppConnectionId: connection.id,
+        matchedRuleId: null,
+        relatedIncomingMessageId: fallbackIncomingLog.id,
+        externalMessageId: null,
+        recipientPhone: "+212633333333",
+        content:
+          "Salam 👋 thanks for your message. We received it and our team will reply as soon as possible.",
+        status: OutgoingMessageStatus.PREPARED,
+        replySource: OutgoingReplySource.FALLBACK,
+        failureReason:
+          "Live WhatsApp sending is disabled for this workspace connection.",
+        sentAt: null,
+      },
+    });
+  } else {
+    await prisma.outgoingMessageLog.create({
+      data: {
+        workspaceId: workspace.id,
+        whatsAppConnectionId: connection.id,
+        matchedRuleId: null,
+        relatedIncomingMessageId: fallbackIncomingLog.id,
+        recipientPhone: "+212633333333",
+        content:
+          "Salam 👋 thanks for your message. We received it and our team will reply as soon as possible.",
+        status: OutgoingMessageStatus.PREPARED,
+        replySource: OutgoingReplySource.FALLBACK,
+        failureReason:
+          "Live WhatsApp sending is disabled for this workspace connection.",
+        sentAt: null,
+      },
+    });
+  }
 
   console.log(`Seed complete for workspace ${workspace.slug}`);
   console.log(`Starter plan: ${starterPlan.name}`);

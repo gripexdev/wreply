@@ -40,3 +40,15 @@ export async function getRequiredWorkspaceOwnerContext() {
 
   return context;
 }
+
+export async function getRequiredWorkspaceManagerContext() {
+  const context = await getRequiredWorkspaceContext();
+
+  if (context.role !== "OWNER" && context.role !== "ADMIN") {
+    throw new WorkspacePermissionError(
+      "Only workspace owners and admins can manage these settings.",
+    );
+  }
+
+  return context;
+}

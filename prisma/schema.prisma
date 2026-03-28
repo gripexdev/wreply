@@ -70,6 +70,11 @@ enum OutgoingMessageStatus {
   FAILED
 }
 
+enum OutgoingReplySource {
+  RULE_MATCH
+  FALLBACK
+}
+
 model User {
   id             String      @id @default(cuid())
   email          String      @unique
@@ -88,6 +93,14 @@ model Workspace {
   name                String
   slug                String               @unique
   ownerId             String               @unique
+  replyDisplayName    String?
+  businessPhoneNumber String?
+  address             String?
+  googleMapsLink      String?
+  workingHours        String?
+  languagePreference  AutoReplyRuleLanguage @default(ANY)
+  fallbackReplyEnabled Boolean             @default(false)
+  fallbackReplyMessage String?             @db.Text
   owner               User                 @relation("WorkspaceOwner", fields: [ownerId], references: [id], onDelete: Cascade)
   members             User[]
   subscriptions       Subscription[]
@@ -192,6 +205,7 @@ model IncomingMessageLog {
   whatsAppConnectionId String?
   matchedRuleId        String?
   externalMessageId    String?                       @unique
+  contactName          String?
   senderPhone          String
   recipientPhone       String
   messageType          MessageType                   @default(TEXT)
@@ -199,16 +213,20 @@ model IncomingMessageLog {
   normalizedContent    String?
   processingStatus     IncomingMessageProcessingStatus @default(RECEIVED)
   processingReason     String?
+  fallbackEligible     Boolean                       @default(false)
+  fallbackUsed         Boolean                       @default(false)
   payload              Json?
   receivedAt           DateTime                      @default(now())
   processedAt          DateTime?
   workspace            Workspace                     @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
   whatsAppConnection   WhatsAppConnection?           @relation(fields: [whatsAppConnectionId], references: [id], onDelete: SetNull)
   matchedRule          AutoReplyRule?                @relation("IncomingMatchedRule", fields: [matchedRuleId], references: [id], onDelete: SetNull)
+  outgoingReplies      OutgoingMessageLog[]          @relation("IncomingToOutgoing")
   createdAt            DateTime                      @default(now())
 
   @@index([workspaceId, receivedAt(sort: Desc)])
   @@index([workspaceId, processingStatus, receivedAt(sort: Desc)])
+  @@index([workspaceId, fallbackUsed, receivedAt(sort: Desc)])
   @@index([matchedRuleId])
 }
 
@@ -217,20 +235,25 @@ model OutgoingMessageLog {
   workspaceId          String
   whatsAppConnectionId String?
   matchedRuleId        String?
+  relatedIncomingMessageId String?
   externalMessageId    String?               @unique
   recipientPhone       String
   messageType          MessageType           @default(TEXT)
   content              String?
   status               OutgoingMessageStatus @default(PREPARED)
+  replySource          OutgoingReplySource?
   failureReason        String?
   payload              Json?
   sentAt               DateTime?
   workspace            Workspace             @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
   whatsAppConnection   WhatsAppConnection?   @relation(fields: [whatsAppConnectionId], references: [id], onDelete: SetNull)
   matchedRule          AutoReplyRule?        @relation("OutgoingMatchedRule", fields: [matchedRuleId], references: [id], onDelete: SetNull)
+  relatedIncomingMessage IncomingMessageLog? @relation("IncomingToOutgoing", fields: [relatedIncomingMessageId], references: [id], onDelete: SetNull)
   createdAt            DateTime              @default(now())
   updatedAt            DateTime              @updatedAt
 
   @@index([workspaceId, status, createdAt(sort: Desc)])
+  @@index([workspaceId, replySource, createdAt(sort: Desc)])
   @@index([matchedRuleId])
+  @@index([relatedIncomingMessageId])
 }

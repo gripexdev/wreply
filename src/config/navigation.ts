@@ -1,7 +1,9 @@
 import {
   Blocks,
   LayoutDashboard,
+  MessagesSquare,
   MessageSquareQuote,
+  Settings2,
   Smartphone,
 } from "lucide-react";
 
@@ -21,10 +23,22 @@ export const dashboardNavigation: NavigationItem[] = [
     icon: MessageSquareQuote,
   },
   {
+    title: "Messages",
+    href: "/dashboard/messages",
+    description: "Inspect inbound questions and outbound reply outcomes.",
+    icon: MessagesSquare,
+  },
+  {
     title: "WhatsApp",
     href: "/dashboard/whatsapp",
     description: "Configure webhook delivery and inbound auto-replies.",
     icon: Smartphone,
+  },
+  {
+    title: "Settings",
+    href: "/dashboard/settings",
+    description: "Manage business details and fallback reply behavior.",
+    icon: Settings2,
   },
 ];
 

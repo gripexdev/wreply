@@ -1,0 +1,28 @@
+import type { Metadata } from "next";
+import { redirect } from "next/navigation";
+
+import { BusinessSettingsClient } from "@/components/settings/business-settings-client";
+import { getRequiredSession } from "@/lib/auth";
+import { getWorkspaceBusinessSettings } from "@/services/workspace/workspace-settings.service";
+
+export const metadata: Metadata = {
+  title: "Settings",
+  description:
+    "Manage business profile details and fallback reply behavior for the current workspace.",
+};
+
+export default async function DashboardSettingsPage() {
+  const session = await getRequiredSession();
+
+  if (session.user.role !== "OWNER" && session.user.role !== "ADMIN") {
+    redirect("/dashboard");
+  }
+
+  if (!session.user.workspaceId) {
+    redirect("/dashboard");
+  }
+
+  const settings = await getWorkspaceBusinessSettings(session.user.workspaceId);
+
+  return <BusinessSettingsClient initialSettings={settings} />;
+}
