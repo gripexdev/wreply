@@ -41,7 +41,10 @@ export function AppSidebar({
       </div>
       <nav className="mt-8 space-y-2">
         {dashboardNavigation.map((item) => {
-          const isActive = pathname === item.href;
+          const isActive =
+            pathname === item.href ||
+            (item.href !== "/dashboard" &&
+              pathname.startsWith(`${item.href}/`));
           const Icon = item.icon;
 
           return (

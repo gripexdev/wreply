@@ -125,7 +125,7 @@ async function main() {
     {
       keyword: "price",
       replyMessage:
-        "Salam 👋 For pricing, send the product name or a photo and our team will reply quickly with the right offer.",
+        "Salam. For pricing, send the product name or a photo and our team will reply quickly with the right offer.",
       matchType: AutoReplyRuleMatchType.CONTAINS,
       language: AutoReplyRuleLanguage.ANY,
       category: "Sales",
@@ -135,7 +135,7 @@ async function main() {
     {
       keyword: "prix",
       replyMessage:
-        "Bonjour 👋 Pour le prix, merci d'envoyer le nom du produit ou une photo et nous vous répondrons rapidement.",
+        "Bonjour. Pour le prix, merci d envoyer le nom du produit ou une photo et nous vous repondrons rapidement.",
       matchType: AutoReplyRuleMatchType.CONTAINS,
       language: AutoReplyRuleLanguage.FRENCH,
       category: "Sales",
@@ -155,7 +155,7 @@ async function main() {
     {
       keyword: "stock",
       replyMessage:
-        "Merci 🙌 Send the product name and we will confirm stock availability before you place the order.",
+        "Merci. Send the product name and we will confirm stock availability before you place the order.",
       matchType: AutoReplyRuleMatchType.CONTAINS,
       language: AutoReplyRuleLanguage.ANY,
       category: "Inventory",
@@ -165,7 +165,7 @@ async function main() {
     {
       keyword: "livraison",
       replyMessage:
-        "La livraison est disponible dans Casablanca et les grandes villes. Envoyez votre quartier pour confirmer le délai.",
+        "La livraison est disponible dans Casablanca et les grandes villes. Envoyez votre quartier pour confirmer le delai.",
       matchType: AutoReplyRuleMatchType.CONTAINS,
       language: AutoReplyRuleLanguage.FRENCH,
       category: "Delivery",

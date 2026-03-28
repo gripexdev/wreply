@@ -1,8 +1,9 @@
 "use client";
 
+import Link from "next/link";
 import { Plus, Search } from "lucide-react";
 
-import { Button } from "@/components/ui/button";
+import { Button, buttonStyles } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select } from "@/components/ui/select";
 import {
@@ -20,6 +21,7 @@ export function RulesToolbar({
   onFilterChange,
   onCreateRule,
   isSyncing,
+  testHref,
 }: Readonly<{
   filters: RulesQueryState;
   searchInput: string;
@@ -31,6 +33,7 @@ export function RulesToolbar({
   ) => void;
   onCreateRule: () => void;
   isSyncing: boolean;
+  testHref?: string;
 }>) {
   return (
     <div className="sticky top-[5.6rem] z-20 rounded-[28px] border border-white/10 bg-[#0a1220]/92 p-4 shadow-[0_25px_100px_-70px_rgba(0,0,0,0.9)] backdrop-blur-xl">
@@ -99,10 +102,20 @@ export function RulesToolbar({
           <div className="text-muted-foreground text-sm">
             {isSyncing ? "Updating filters..." : "Filters synced with URL"}
           </div>
-          <Button onClick={onCreateRule}>
-            <Plus className="mr-2 h-4 w-4" />
-            New Rule
-          </Button>
+          <div className="flex flex-wrap items-center gap-3">
+            {testHref ? (
+              <Link
+                href={testHref}
+                className={buttonStyles({ variant: "secondary" })}
+              >
+                Test Messages
+              </Link>
+            ) : null}
+            <Button onClick={onCreateRule}>
+              <Plus className="mr-2 h-4 w-4" />
+              New Rule
+            </Button>
+          </div>
         </div>
       </div>
     </div>

@@ -12,7 +12,7 @@ export const dashboardNavigation: NavigationItem[] = [
   {
     title: "Rules",
     href: "/dashboard/rules",
-    description: "Create, filter, and reorder auto-reply rules.",
+    description: "Create, test, and reorder auto-reply rules.",
     icon: MessageSquareQuote,
   },
 ];

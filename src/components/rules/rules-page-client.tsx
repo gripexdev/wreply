@@ -524,6 +524,7 @@ export function RulesPageClient({
         onFilterChange={handleFilterChange}
         onCreateRule={() => setEditorState({ mode: "create", rule: null })}
         isSyncing={isRefreshing}
+        testHref="/dashboard/rules/test"
       />
 
       {isReorderLocked ? (
