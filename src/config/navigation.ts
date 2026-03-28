@@ -1,4 +1,5 @@
 import {
+  BarChart3,
   Blocks,
   LayoutDashboard,
   MessagesSquare,
@@ -21,6 +22,13 @@ export const dashboardNavigation: NavigationItem[] = [
     href: "/dashboard/rules",
     description: "Create, test, and reorder auto-reply rules.",
     icon: MessageSquareQuote,
+  },
+  {
+    title: "Analytics",
+    href: "/dashboard/analytics",
+    description:
+      "Track volume, match rate, fallback usage, and delivery health.",
+    icon: BarChart3,
   },
   {
     title: "Messages",

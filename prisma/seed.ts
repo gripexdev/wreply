@@ -18,7 +18,18 @@ import { encryptSecretValue } from "../src/lib/whatsapp/secrets";
 
 const prisma = new PrismaClient();
 
+function daysAgo(days: number, hour = 10, minute = 0) {
+  const date = new Date();
+  date.setDate(date.getDate() - days);
+  date.setHours(hour, minute, 0, 0);
+
+  return date;
+}
+
 async function main() {
+  const fallbackReplyMessage =
+    "Salam, thanks for your message. We received it and our team will reply as soon as possible.";
+
   const [starterPlan, growthPlan] = await Promise.all([
     prisma.plan.upsert({
       where: { slug: "starter" },
@@ -82,8 +93,7 @@ async function main() {
       workingHours: "Monday to Saturday, 9:00 to 19:00",
       languagePreference: AutoReplyRuleLanguage.ANY,
       fallbackReplyEnabled: true,
-      fallbackReplyMessage:
-        "Salam 👋 thanks for your message. We received it and our team will reply as soon as possible.",
+      fallbackReplyMessage,
     },
     create: {
       name: "Atlas Motors",
@@ -97,8 +107,7 @@ async function main() {
       workingHours: "Monday to Saturday, 9:00 to 19:00",
       languagePreference: AutoReplyRuleLanguage.ANY,
       fallbackReplyEnabled: true,
-      fallbackReplyMessage:
-        "Salam 👋 thanks for your message. We received it and our team will reply as soon as possible.",
+      fallbackReplyMessage,
     },
   });
 
@@ -113,6 +122,8 @@ async function main() {
       workspaceId: workspace.id,
       planId: starterPlan.id,
       status: SubscriptionStatus.TRIALING,
+      currentPeriodStart: new Date(),
+      currentPeriodEnd: new Date(Date.now() + 1000 * 60 * 60 * 24 * 14),
     },
     create: {
       workspaceId: workspace.id,
@@ -139,6 +150,7 @@ async function main() {
       webhookSubscribed: true,
       sendRepliesEnabled: false,
       lastVerifiedAt: new Date(),
+      lastHeartbeatAt: new Date(),
     },
     create: {
       workspaceId: workspace.id,
@@ -159,7 +171,6 @@ async function main() {
   });
 
   const seededRuleIds = new Map<string, string>();
-
   const seededRules = [
     {
       keyword: "price",
@@ -248,158 +259,333 @@ async function main() {
     seededRuleIds.set(rule.keyword, createdRule.id);
   }
 
-  const matchedIncomingLog = await prisma.incomingMessageLog.upsert({
-    where: { externalMessageId: "seed-incoming-001" },
-    update: {
-      workspaceId: workspace.id,
-      whatsAppConnectionId: connection.id,
-      contactName: "Yassine",
-      senderPhone: "+212611111111",
-      recipientPhone: "+212600000000",
-      content: "What are your opening hours?",
-      normalizedContent: "what are your opening hours",
-      matchedRuleId: seededRuleIds.get("horaires"),
-      processingStatus: IncomingMessageProcessingStatus.MATCHED,
-      processingReason: "Seeded sample matched the horaires rule.",
-      fallbackEligible: false,
-      fallbackUsed: false,
-      processedAt: new Date(),
-    },
-    create: {
-      workspaceId: workspace.id,
-      whatsAppConnectionId: connection.id,
-      externalMessageId: "seed-incoming-001",
-      contactName: "Yassine",
-      senderPhone: "+212611111111",
-      recipientPhone: "+212600000000",
-      content: "What are your opening hours?",
-      normalizedContent: "what are your opening hours",
-      matchedRuleId: seededRuleIds.get("horaires"),
-      processingStatus: IncomingMessageProcessingStatus.MATCHED,
-      processingReason: "Seeded sample matched the horaires rule.",
-      fallbackEligible: false,
-      fallbackUsed: false,
-      processedAt: new Date(),
-    },
-    select: {
-      id: true,
-    },
-  });
+  function getRuleId(keyword: string) {
+    const ruleId = seededRuleIds.get(keyword);
 
-  await prisma.outgoingMessageLog.upsert({
-    where: { externalMessageId: "seed-outgoing-001" },
-    update: {
-      workspaceId: workspace.id,
-      whatsAppConnectionId: connection.id,
-      matchedRuleId: seededRuleIds.get("horaires"),
-      relatedIncomingMessageId: matchedIncomingLog.id,
-      recipientPhone: "+212611111111",
-      content: "We are open Monday to Saturday from 9:00 to 19:00.",
-      status: OutgoingMessageStatus.DELIVERED,
-      replySource: OutgoingReplySource.RULE_MATCH,
-      sentAt: new Date(),
-    },
-    create: {
-      workspaceId: workspace.id,
-      whatsAppConnectionId: connection.id,
-      externalMessageId: "seed-outgoing-001",
-      matchedRuleId: seededRuleIds.get("horaires"),
-      relatedIncomingMessageId: matchedIncomingLog.id,
-      recipientPhone: "+212611111111",
-      content: "We are open Monday to Saturday from 9:00 to 19:00.",
-      status: OutgoingMessageStatus.DELIVERED,
-      replySource: OutgoingReplySource.RULE_MATCH,
-      sentAt: new Date(),
-    },
-  });
+    if (!ruleId) {
+      throw new Error(`Missing seeded rule for keyword "${keyword}".`);
+    }
 
-  const fallbackIncomingLog = await prisma.incomingMessageLog.upsert({
-    where: { externalMessageId: "seed-incoming-002" },
-    update: {
-      workspaceId: workspace.id,
-      whatsAppConnectionId: connection.id,
-      contactName: "Imane",
-      senderPhone: "+212633333333",
-      recipientPhone: "+212600000000",
-      content: "Salam, bghit n3ref kifach n9der ndir rendez-vous",
-      normalizedContent: "salam bghit n3ref kifach n9der ndir rendez vous",
-      matchedRuleId: null,
-      processingStatus: IncomingMessageProcessingStatus.NO_MATCH,
-      processingReason:
-        "No active workspace rule matched the normalized message. A workspace fallback reply was prepared.",
-      fallbackEligible: true,
-      fallbackUsed: true,
-      processedAt: new Date(),
-    },
-    create: {
-      workspaceId: workspace.id,
-      whatsAppConnectionId: connection.id,
-      externalMessageId: "seed-incoming-002",
-      contactName: "Imane",
-      senderPhone: "+212633333333",
-      recipientPhone: "+212600000000",
-      content: "Salam, bghit n3ref kifach n9der ndir rendez-vous",
-      normalizedContent: "salam bghit n3ref kifach n9der ndir rendez vous",
-      matchedRuleId: null,
-      processingStatus: IncomingMessageProcessingStatus.NO_MATCH,
-      processingReason:
-        "No active workspace rule matched the normalized message. A workspace fallback reply was prepared.",
-      fallbackEligible: true,
-      fallbackUsed: true,
-      processedAt: new Date(),
-    },
-    select: {
-      id: true,
-    },
-  });
+    return ruleId;
+  }
 
-  const existingFallbackOutgoingLog = await prisma.outgoingMessageLog.findFirst({
-    where: {
-      workspaceId: workspace.id,
-      relatedIncomingMessageId: fallbackIncomingLog.id,
-      replySource: OutgoingReplySource.FALLBACK,
-    },
-    select: {
-      id: true,
-    },
-  });
-
-  if (existingFallbackOutgoingLog) {
-    await prisma.outgoingMessageLog.update({
-      where: {
-        id: existingFallbackOutgoingLog.id,
+  const analyticsSamples = [
+    {
+      incoming: {
+        externalMessageId: "seed-incoming-001",
+        contactName: "Yassine",
+        senderPhone: "+212611111111",
+        recipientPhone: "+212600000000",
+        content: "horaire svp",
+        normalizedContent: "horaire svp",
+        matchedRuleId: getRuleId("horaires"),
+        processingStatus: IncomingMessageProcessingStatus.MATCHED,
+        processingReason:
+          "Matched the horaires rule from an opening-hours request.",
+        fallbackEligible: false,
+        fallbackUsed: false,
+        receivedAt: daysAgo(42, 10, 15),
+        processedAt: daysAgo(42, 10, 16),
       },
-      data: {
-        workspaceId: workspace.id,
-        whatsAppConnectionId: connection.id,
-        matchedRuleId: null,
-        relatedIncomingMessageId: fallbackIncomingLog.id,
-        externalMessageId: null,
-        recipientPhone: "+212633333333",
+      outgoing: {
+        externalMessageId: "seed-outgoing-001",
+        matchedRuleId: getRuleId("horaires"),
+        recipientPhone: "+212611111111",
         content:
-          "Salam 👋 thanks for your message. We received it and our team will reply as soon as possible.",
+          "Ma3akoum mn ltnin l s-sbt, men 9:00 l 19:00. Ila bghiti rendez-vous, sift lina l-wa9t li kaynseb lik.",
+        status: OutgoingMessageStatus.DELIVERED,
+        replySource: OutgoingReplySource.RULE_MATCH,
+        failureReason: null,
+        createdAt: daysAgo(42, 10, 18),
+        sentAt: daysAgo(42, 10, 22),
+      },
+    },
+    {
+      incoming: {
+        externalMessageId: "seed-incoming-002",
+        contactName: "Imane",
+        senderPhone: "+212633333333",
+        recipientPhone: "+212600000000",
+        content: "Salam, bghit n3ref kifach n9der ndir rendez-vous",
+        normalizedContent: "salam bghit n3ref kifach n9der ndir rendez vous",
+        matchedRuleId: null,
+        processingStatus: IncomingMessageProcessingStatus.NO_MATCH,
+        processingReason:
+          "No active workspace rule matched the normalized message. A workspace fallback reply was prepared.",
+        fallbackEligible: true,
+        fallbackUsed: true,
+        receivedAt: daysAgo(18, 14, 10),
+        processedAt: daysAgo(18, 14, 11),
+      },
+      outgoing: {
+        externalMessageId: "seed-outgoing-002",
+        matchedRuleId: null,
+        recipientPhone: "+212633333333",
+        content: fallbackReplyMessage,
         status: OutgoingMessageStatus.PREPARED,
         replySource: OutgoingReplySource.FALLBACK,
         failureReason:
           "Live WhatsApp sending is disabled for this workspace connection.",
+        createdAt: daysAgo(18, 14, 12),
         sentAt: null,
+      },
+    },
+    {
+      incoming: {
+        externalMessageId: "seed-incoming-003",
+        contactName: "Mehdi",
+        senderPhone: "+212644444444",
+        recipientPhone: "+212600000000",
+        content: "prix clio",
+        normalizedContent: "prix clio",
+        matchedRuleId: getRuleId("price"),
+        processingStatus: IncomingMessageProcessingStatus.MATCHED,
+        processingReason: "Matched the price rule from a pricing request.",
+        fallbackEligible: false,
+        fallbackUsed: false,
+        receivedAt: daysAgo(12, 11, 25),
+        processedAt: daysAgo(12, 11, 26),
+      },
+      outgoing: {
+        externalMessageId: "seed-outgoing-003",
+        matchedRuleId: getRuleId("price"),
+        recipientPhone: "+212644444444",
+        content:
+          "Salam. For pricing, send the product name or a photo and our team will reply quickly with the right offer.",
+        status: OutgoingMessageStatus.SENT,
+        replySource: OutgoingReplySource.RULE_MATCH,
+        failureReason: null,
+        createdAt: daysAgo(12, 11, 29),
+        sentAt: daysAgo(12, 11, 31),
+      },
+    },
+    {
+      incoming: {
+        externalMessageId: "seed-incoming-004",
+        contactName: "Salma",
+        senderPhone: "+212655555555",
+        recipientPhone: "+212600000000",
+        content: "wach kayn stock dacia logan",
+        normalizedContent: "wach kayn stock dacia logan",
+        matchedRuleId: getRuleId("stock"),
+        processingStatus: IncomingMessageProcessingStatus.MATCHED,
+        processingReason:
+          "Matched the stock rule from an availability request.",
+        fallbackEligible: false,
+        fallbackUsed: false,
+        receivedAt: daysAgo(6, 16, 5),
+        processedAt: daysAgo(6, 16, 6),
+      },
+      outgoing: {
+        externalMessageId: "seed-outgoing-004",
+        matchedRuleId: getRuleId("stock"),
+        recipientPhone: "+212655555555",
+        content:
+          "Merci. Send the product name and we will confirm stock availability before you place the order.",
+        status: OutgoingMessageStatus.FAILED,
+        replySource: OutgoingReplySource.RULE_MATCH,
+        failureReason:
+          "Meta rejected the send attempt for the current access token.",
+        createdAt: daysAgo(6, 16, 9),
+        sentAt: null,
+      },
+    },
+    {
+      incoming: {
+        externalMessageId: "seed-incoming-005",
+        contactName: "Karim",
+        senderPhone: "+212666666666",
+        recipientPhone: "+212600000000",
+        content: "fin kayn lmagazin",
+        normalizedContent: "fin kayn lmagazin",
+        matchedRuleId: getRuleId("fin"),
+        processingStatus: IncomingMessageProcessingStatus.MATCHED,
+        processingReason:
+          "Matched the location rule from a store-location request.",
+        fallbackEligible: false,
+        fallbackUsed: false,
+        receivedAt: daysAgo(4, 9, 40),
+        processedAt: daysAgo(4, 9, 41),
+      },
+      outgoing: {
+        externalMessageId: "seed-outgoing-005",
+        matchedRuleId: getRuleId("fin"),
+        recipientPhone: "+212666666666",
+        content:
+          "Rahna f 201 Boulevard Ghandi, Casablanca. Hna Google Maps: https://maps.google.com/?q=201+Boulevard+Ghandi+Casablanca",
+        status: OutgoingMessageStatus.DELIVERED,
+        replySource: OutgoingReplySource.RULE_MATCH,
+        failureReason: null,
+        createdAt: daysAgo(4, 9, 43),
+        sentAt: daysAgo(4, 9, 47),
+      },
+    },
+    {
+      incoming: {
+        externalMessageId: "seed-incoming-006",
+        contactName: "Nadia",
+        senderPhone: "+212677777777",
+        recipientPhone: "+212600000000",
+        content: "livraison casa?",
+        normalizedContent: "livraison casa",
+        matchedRuleId: getRuleId("livraison"),
+        processingStatus: IncomingMessageProcessingStatus.MATCHED,
+        processingReason:
+          "Matched the livraison rule from a delivery coverage question.",
+        fallbackEligible: false,
+        fallbackUsed: false,
+        receivedAt: daysAgo(2, 13, 20),
+        processedAt: daysAgo(2, 13, 21),
+      },
+      outgoing: {
+        externalMessageId: "seed-outgoing-006",
+        matchedRuleId: getRuleId("livraison"),
+        recipientPhone: "+212677777777",
+        content:
+          "La livraison est disponible dans Casablanca et les grandes villes. Envoyez votre quartier pour confirmer le delai.",
+        status: OutgoingMessageStatus.PREPARED,
+        replySource: OutgoingReplySource.RULE_MATCH,
+        failureReason:
+          "Live WhatsApp sending is disabled for this workspace connection.",
+        createdAt: daysAgo(2, 13, 24),
+        sentAt: null,
+      },
+    },
+    {
+      incoming: {
+        externalMessageId: "seed-incoming-007",
+        contactName: "Zakaria",
+        senderPhone: "+212688888888",
+        recipientPhone: "+212600000000",
+        content: "chhal taman captur",
+        normalizedContent: "chhal taman captur",
+        matchedRuleId: getRuleId("price"),
+        processingStatus: IncomingMessageProcessingStatus.MATCHED,
+        processingReason:
+          "Matched the price rule from a Darija pricing question.",
+        fallbackEligible: false,
+        fallbackUsed: false,
+        receivedAt: daysAgo(1, 10, 5),
+        processedAt: daysAgo(1, 10, 6),
+      },
+      outgoing: {
+        externalMessageId: "seed-outgoing-007",
+        matchedRuleId: getRuleId("price"),
+        recipientPhone: "+212688888888",
+        content:
+          "Salam. For pricing, send the product name or a photo and our team will reply quickly with the right offer.",
+        status: OutgoingMessageStatus.SENT,
+        replySource: OutgoingReplySource.RULE_MATCH,
+        failureReason: null,
+        createdAt: daysAgo(1, 10, 8),
+        sentAt: daysAgo(1, 10, 10),
+      },
+    },
+    {
+      incoming: {
+        externalMessageId: "seed-incoming-008",
+        contactName: "Hajar",
+        senderPhone: "+212699999999",
+        recipientPhone: "+212600000000",
+        content: "salam wash 3ndkom service apres vente",
+        normalizedContent: "salam wash 3ndkom service apres vente",
+        matchedRuleId: null,
+        processingStatus: IncomingMessageProcessingStatus.NO_MATCH,
+        processingReason:
+          "No active workspace rule matched the normalized message. A workspace fallback reply was prepared.",
+        fallbackEligible: true,
+        fallbackUsed: true,
+        receivedAt: daysAgo(0, 15, 30),
+        processedAt: daysAgo(0, 15, 31),
+      },
+      outgoing: {
+        externalMessageId: "seed-outgoing-008",
+        matchedRuleId: null,
+        recipientPhone: "+212699999999",
+        content: fallbackReplyMessage,
+        status: OutgoingMessageStatus.PREPARED,
+        replySource: OutgoingReplySource.FALLBACK,
+        failureReason:
+          "Live WhatsApp sending is disabled for this workspace connection.",
+        createdAt: daysAgo(0, 15, 33),
+        sentAt: null,
+      },
+    },
+  ];
+
+  for (const sample of analyticsSamples) {
+    const incomingLog = await prisma.incomingMessageLog.upsert({
+      where: {
+        externalMessageId: sample.incoming.externalMessageId,
+      },
+      update: {
+        workspaceId: workspace.id,
+        whatsAppConnectionId: connection.id,
+        contactName: sample.incoming.contactName,
+        senderPhone: sample.incoming.senderPhone,
+        recipientPhone: sample.incoming.recipientPhone,
+        content: sample.incoming.content,
+        normalizedContent: sample.incoming.normalizedContent,
+        matchedRuleId: sample.incoming.matchedRuleId,
+        processingStatus: sample.incoming.processingStatus,
+        processingReason: sample.incoming.processingReason,
+        fallbackEligible: sample.incoming.fallbackEligible,
+        fallbackUsed: sample.incoming.fallbackUsed,
+        receivedAt: sample.incoming.receivedAt,
+        processedAt: sample.incoming.processedAt,
+      },
+      create: {
+        workspaceId: workspace.id,
+        whatsAppConnectionId: connection.id,
+        externalMessageId: sample.incoming.externalMessageId,
+        contactName: sample.incoming.contactName,
+        senderPhone: sample.incoming.senderPhone,
+        recipientPhone: sample.incoming.recipientPhone,
+        content: sample.incoming.content,
+        normalizedContent: sample.incoming.normalizedContent,
+        matchedRuleId: sample.incoming.matchedRuleId,
+        processingStatus: sample.incoming.processingStatus,
+        processingReason: sample.incoming.processingReason,
+        fallbackEligible: sample.incoming.fallbackEligible,
+        fallbackUsed: sample.incoming.fallbackUsed,
+        receivedAt: sample.incoming.receivedAt,
+        processedAt: sample.incoming.processedAt,
+      },
+      select: {
+        id: true,
       },
     });
-  } else {
-    await prisma.outgoingMessageLog.create({
-      data: {
+
+    await prisma.outgoingMessageLog.upsert({
+      where: {
+        externalMessageId: sample.outgoing.externalMessageId,
+      },
+      update: {
         workspaceId: workspace.id,
         whatsAppConnectionId: connection.id,
-        matchedRuleId: null,
-        relatedIncomingMessageId: fallbackIncomingLog.id,
-        recipientPhone: "+212633333333",
-        content:
-          "Salam 👋 thanks for your message. We received it and our team will reply as soon as possible.",
-        status: OutgoingMessageStatus.PREPARED,
-        replySource: OutgoingReplySource.FALLBACK,
-        failureReason:
-          "Live WhatsApp sending is disabled for this workspace connection.",
-        sentAt: null,
+        matchedRuleId: sample.outgoing.matchedRuleId,
+        relatedIncomingMessageId: incomingLog.id,
+        recipientPhone: sample.outgoing.recipientPhone,
+        content: sample.outgoing.content,
+        status: sample.outgoing.status,
+        replySource: sample.outgoing.replySource,
+        failureReason: sample.outgoing.failureReason,
+        createdAt: sample.outgoing.createdAt,
+        sentAt: sample.outgoing.sentAt,
+      },
+      create: {
+        workspaceId: workspace.id,
+        whatsAppConnectionId: connection.id,
+        externalMessageId: sample.outgoing.externalMessageId,
+        matchedRuleId: sample.outgoing.matchedRuleId,
+        relatedIncomingMessageId: incomingLog.id,
+        recipientPhone: sample.outgoing.recipientPhone,
+        content: sample.outgoing.content,
+        status: sample.outgoing.status,
+        replySource: sample.outgoing.replySource,
+        failureReason: sample.outgoing.failureReason,
+        createdAt: sample.outgoing.createdAt,
+        sentAt: sample.outgoing.sentAt,
       },
     });
   }

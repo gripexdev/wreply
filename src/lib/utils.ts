@@ -42,5 +42,5 @@ export function truncateText(value: string | null | undefined, maxLength = 88) {
     return trimmedValue;
   }
 
-  return `${trimmedValue.slice(0, maxLength - 1).trimEnd()}…`;
+  return `${trimmedValue.slice(0, maxLength - 3).trimEnd()}...`;
 }
