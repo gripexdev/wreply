@@ -44,6 +44,15 @@ enum WhatsAppConnectionStatus {
   DISCONNECTED
 }
 
+enum IncomingMessageProcessingStatus {
+  RECEIVED
+  MATCHED
+  NO_MATCH
+  UNSUPPORTED
+  DUPLICATE
+  FAILED
+}
+
 enum MessageType {
   TEXT
   IMAGE
@@ -54,6 +63,7 @@ enum MessageType {
 }
 
 enum OutgoingMessageStatus {
+  PREPARED
   QUEUED
   SENT
   DELIVERED
@@ -84,7 +94,7 @@ model Workspace {
   autoReplyRules      AutoReplyRule[]
   incomingMessageLogs IncomingMessageLog[]
   outgoingMessageLogs OutgoingMessageLog[]
-  whatsappConnections WhatsAppConnection[]
+  whatsAppConnection  WhatsAppConnection?
   createdAt           DateTime             @default(now())
   updatedAt           DateTime             @updatedAt
 }
@@ -135,6 +145,8 @@ model AutoReplyRule {
   priority     Int                   @default(1)
   isActive     Boolean               @default(true)
   workspace    Workspace             @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  incomingMessageLogs IncomingMessageLog[] @relation("IncomingMatchedRule")
+  outgoingMessageLogs OutgoingMessageLog[] @relation("OutgoingMatchedRule")
   createdAt    DateTime              @default(now())
   updatedAt    DateTime              @updatedAt
 
@@ -146,57 +158,79 @@ model AutoReplyRule {
 }
 
 model WhatsAppConnection {
-  id                  String                   @id @default(cuid())
-  workspaceId         String
-  label               String
-  phoneNumber         String?
-  provider            WhatsAppProvider         @default(CLOUD_API)
-  status              WhatsAppConnectionStatus @default(PENDING)
-  providerReference   String?                  @unique
-  lastHeartbeatAt     DateTime?
-  settings            Json?
-  workspace           Workspace                @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
-  incomingMessageLogs IncomingMessageLog[]
-  outgoingMessageLogs OutgoingMessageLog[]
-  createdAt           DateTime                 @default(now())
-  updatedAt           DateTime                 @updatedAt
+  id                    String                   @id @default(cuid())
+  workspaceId           String                   @unique
+  label                 String
+  phoneNumber           String?
+  phoneNumberId         String?                  @unique
+  businessAccountId     String?
+  provider              WhatsAppProvider         @default(CLOUD_API)
+  status                WhatsAppConnectionStatus @default(PENDING)
+  providerReference     String?                  @unique
+  accessTokenEncrypted  String?                  @db.Text
+  verifyTokenEncrypted  String?                  @db.Text
+  appSecretEncrypted    String?                  @db.Text
+  webhookKey            String                   @unique
+  webhookSubscribed     Boolean                  @default(false)
+  sendRepliesEnabled    Boolean                  @default(false)
+  lastWebhookAt         DateTime?
+  lastVerifiedAt        DateTime?
+  lastHeartbeatAt       DateTime?
+  settings              Json?
+  workspace             Workspace                @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  incomingMessageLogs   IncomingMessageLog[]
+  outgoingMessageLogs   OutgoingMessageLog[]
+  createdAt             DateTime                 @default(now())
+  updatedAt             DateTime                 @updatedAt
 
-  @@index([workspaceId, status])
+  @@index([status, webhookSubscribed])
 }
 
 model IncomingMessageLog {
-  id                   String              @id @default(cuid())
+  id                   String                        @id @default(cuid())
   workspaceId          String
   whatsAppConnectionId String?
-  externalMessageId    String?             @unique
+  matchedRuleId        String?
+  externalMessageId    String?                       @unique
   senderPhone          String
   recipientPhone       String
-  messageType          MessageType         @default(TEXT)
+  messageType          MessageType                   @default(TEXT)
   content              String?
+  normalizedContent    String?
+  processingStatus     IncomingMessageProcessingStatus @default(RECEIVED)
+  processingReason     String?
   payload              Json?
-  receivedAt           DateTime            @default(now())
-  workspace            Workspace           @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
-  whatsAppConnection   WhatsAppConnection? @relation(fields: [whatsAppConnectionId], references: [id], onDelete: SetNull)
-  createdAt            DateTime            @default(now())
+  receivedAt           DateTime                      @default(now())
+  processedAt          DateTime?
+  workspace            Workspace                     @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  whatsAppConnection   WhatsAppConnection?           @relation(fields: [whatsAppConnectionId], references: [id], onDelete: SetNull)
+  matchedRule          AutoReplyRule?                @relation("IncomingMatchedRule", fields: [matchedRuleId], references: [id], onDelete: SetNull)
+  createdAt            DateTime                      @default(now())
 
   @@index([workspaceId, receivedAt(sort: Desc)])
+  @@index([workspaceId, processingStatus, receivedAt(sort: Desc)])
+  @@index([matchedRuleId])
 }
 
 model OutgoingMessageLog {
   id                   String                @id @default(cuid())
   workspaceId          String
   whatsAppConnectionId String?
+  matchedRuleId        String?
   externalMessageId    String?               @unique
   recipientPhone       String
   messageType          MessageType           @default(TEXT)
   content              String?
-  status               OutgoingMessageStatus @default(QUEUED)
+  status               OutgoingMessageStatus @default(PREPARED)
+  failureReason        String?
   payload              Json?
   sentAt               DateTime?
   workspace            Workspace             @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
   whatsAppConnection   WhatsAppConnection?   @relation(fields: [whatsAppConnectionId], references: [id], onDelete: SetNull)
+  matchedRule          AutoReplyRule?        @relation("OutgoingMatchedRule", fields: [matchedRuleId], references: [id], onDelete: SetNull)
   createdAt            DateTime              @default(now())
   updatedAt            DateTime              @updatedAt
 
   @@index([workspaceId, status, createdAt(sort: Desc)])
+  @@index([matchedRuleId])
 }

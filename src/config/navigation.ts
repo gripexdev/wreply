@@ -1,4 +1,9 @@
-import { Blocks, LayoutDashboard, MessageSquareQuote } from "lucide-react";
+import {
+  Blocks,
+  LayoutDashboard,
+  MessageSquareQuote,
+  Smartphone,
+} from "lucide-react";
 
 import type { FoundationItem, NavigationItem } from "@/types/navigation";
 
@@ -14,6 +19,12 @@ export const dashboardNavigation: NavigationItem[] = [
     href: "/dashboard/rules",
     description: "Create, test, and reorder auto-reply rules.",
     icon: MessageSquareQuote,
+  },
+  {
+    title: "WhatsApp",
+    href: "/dashboard/whatsapp",
+    description: "Configure webhook delivery and inbound auto-replies.",
+    icon: Smartphone,
   },
 ];
 

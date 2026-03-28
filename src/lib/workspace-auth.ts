@@ -1,9 +1,17 @@
 import { getCurrentSession } from "@/lib/auth";
+import type { AppUserRole } from "@/types/auth";
 
 export class WorkspaceAuthorizationError extends Error {
   constructor(message = "Unauthorized") {
     super(message);
     this.name = "WorkspaceAuthorizationError";
+  }
+}
+
+export class WorkspacePermissionError extends Error {
+  constructor(message = "Forbidden") {
+    super(message);
+    this.name = "WorkspacePermissionError";
   }
 }
 
@@ -16,6 +24,19 @@ export async function getRequiredWorkspaceContext() {
 
   return {
     userId: session.user.id,
+    role: session.user.role as AppUserRole,
     workspaceId: session.user.workspaceId,
   };
+}
+
+export async function getRequiredWorkspaceOwnerContext() {
+  const context = await getRequiredWorkspaceContext();
+
+  if (context.role !== "OWNER") {
+    throw new WorkspacePermissionError(
+      "Only workspace owners can manage WhatsApp connection settings.",
+    );
+  }
+
+  return context;
 }

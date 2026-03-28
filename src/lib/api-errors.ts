@@ -1,12 +1,23 @@
 import { NextResponse } from "next/server";
 import { ZodError } from "zod";
 
-import { WorkspaceAuthorizationError } from "@/lib/workspace-auth";
+import {
+  WorkspaceAuthorizationError,
+  WorkspacePermissionError,
+} from "@/lib/workspace-auth";
 import { RuleServiceError } from "@/services/rules/rule.service";
+import {
+  WhatsAppConnectionServiceError,
+  WhatsAppWebhookServiceError,
+} from "@/services/whatsapp/whatsapp-errors";
 
 export function createApiErrorResponse(error: unknown) {
   if (error instanceof WorkspaceAuthorizationError) {
     return NextResponse.json({ message: error.message }, { status: 401 });
+  }
+
+  if (error instanceof WorkspacePermissionError) {
+    return NextResponse.json({ message: error.message }, { status: 403 });
   }
 
   if (error instanceof ZodError) {
@@ -32,6 +43,16 @@ export function createApiErrorResponse(error: unknown) {
     return NextResponse.json(
       { message: error.message },
       { status: statusCodeMap[error.code] },
+    );
+  }
+
+  if (
+    error instanceof WhatsAppConnectionServiceError ||
+    error instanceof WhatsAppWebhookServiceError
+  ) {
+    return NextResponse.json(
+      { message: error.message },
+      { status: error.statusCode },
     );
   }
 

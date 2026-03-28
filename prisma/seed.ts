@@ -3,6 +3,7 @@ import "dotenv/config";
 import {
   AutoReplyRuleLanguage,
   AutoReplyRuleMatchType,
+  IncomingMessageProcessingStatus,
   OutgoingMessageStatus,
   PrismaClient,
   SubscriptionStatus,
@@ -11,6 +12,8 @@ import {
   WhatsAppProvider,
 } from "@prisma/client";
 import { hash } from "bcryptjs";
+
+import { encryptSecretValue } from "../src/lib/whatsapp/secrets";
 
 const prisma = new PrismaClient();
 
@@ -102,24 +105,39 @@ async function main() {
   });
 
   const connection = await prisma.whatsAppConnection.upsert({
-    where: { providerReference: "seed-connection-atlas" },
+    where: { workspaceId: workspace.id },
     update: {
-      workspaceId: workspace.id,
       label: "Main showroom line",
       phoneNumber: "+212600000000",
+      phoneNumberId: "seed-phone-number-id-atlas",
+      businessAccountId: "seed-business-account-atlas",
       provider: WhatsAppProvider.CLOUD_API,
       status: WhatsAppConnectionStatus.CONNECTED,
+      verifyTokenEncrypted: encryptSecretValue("atlas-verify-token"),
+      webhookKey: "atlas-webhook-key",
+      webhookSubscribed: true,
+      sendRepliesEnabled: false,
+      lastVerifiedAt: new Date(),
     },
     create: {
       workspaceId: workspace.id,
       label: "Main showroom line",
       phoneNumber: "+212600000000",
+      phoneNumberId: "seed-phone-number-id-atlas",
+      businessAccountId: "seed-business-account-atlas",
       provider: WhatsAppProvider.CLOUD_API,
       status: WhatsAppConnectionStatus.CONNECTED,
       providerReference: "seed-connection-atlas",
+      verifyTokenEncrypted: encryptSecretValue("atlas-verify-token"),
+      webhookKey: "atlas-webhook-key",
+      webhookSubscribed: true,
+      sendRepliesEnabled: false,
+      lastVerifiedAt: new Date(),
       lastHeartbeatAt: new Date(),
     },
   });
+
+  const seededRuleIds = new Map<string, string>();
 
   const seededRules = [
     {
@@ -185,7 +203,7 @@ async function main() {
   ];
 
   for (const rule of seededRules) {
-    await prisma.autoReplyRule.upsert({
+    const createdRule = await prisma.autoReplyRule.upsert({
       where: {
         workspaceId_keyword_matchType_language: {
           workspaceId: workspace.id,
@@ -205,6 +223,8 @@ async function main() {
         ...rule,
       },
     });
+
+    seededRuleIds.set(rule.keyword, createdRule.id);
   }
 
   await prisma.incomingMessageLog.upsert({
@@ -215,6 +235,11 @@ async function main() {
       senderPhone: "+212611111111",
       recipientPhone: "+212600000000",
       content: "What are your opening hours?",
+      normalizedContent: "what are your opening hours",
+      matchedRuleId: seededRuleIds.get("horaires"),
+      processingStatus: IncomingMessageProcessingStatus.MATCHED,
+      processingReason: "Seeded sample matched the horaires rule.",
+      processedAt: new Date(),
     },
     create: {
       workspaceId: workspace.id,
@@ -223,6 +248,11 @@ async function main() {
       senderPhone: "+212611111111",
       recipientPhone: "+212600000000",
       content: "What are your opening hours?",
+      normalizedContent: "what are your opening hours",
+      matchedRuleId: seededRuleIds.get("horaires"),
+      processingStatus: IncomingMessageProcessingStatus.MATCHED,
+      processingReason: "Seeded sample matched the horaires rule.",
+      processedAt: new Date(),
     },
   });
 
@@ -231,6 +261,7 @@ async function main() {
     update: {
       workspaceId: workspace.id,
       whatsAppConnectionId: connection.id,
+      matchedRuleId: seededRuleIds.get("horaires"),
       recipientPhone: "+212611111111",
       content: "We are open Monday to Saturday from 9:00 to 19:00.",
       status: OutgoingMessageStatus.DELIVERED,
@@ -240,6 +271,7 @@ async function main() {
       workspaceId: workspace.id,
       whatsAppConnectionId: connection.id,
       externalMessageId: "seed-outgoing-001",
+      matchedRuleId: seededRuleIds.get("horaires"),
       recipientPhone: "+212611111111",
       content: "We are open Monday to Saturday from 9:00 to 19:00.",
       status: OutgoingMessageStatus.DELIVERED,
