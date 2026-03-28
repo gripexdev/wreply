@@ -1,0 +1,194 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum UserRole {
+  OWNER
+  ADMIN
+  MEMBER
+}
+
+enum SubscriptionStatus {
+  TRIALING
+  ACTIVE
+  PAST_DUE
+  CANCELED
+  EXPIRED
+}
+
+enum RuleMatchMode {
+  CONTAINS_ANY
+  CONTAINS_ALL
+  EXACT_MATCH
+}
+
+enum WhatsAppProvider {
+  CLOUD_API
+  BUSINESS_PLATFORM
+}
+
+enum WhatsAppConnectionStatus {
+  PENDING
+  CONNECTED
+  REQUIRES_ACTION
+  DISCONNECTED
+}
+
+enum MessageType {
+  TEXT
+  IMAGE
+  AUDIO
+  VIDEO
+  DOCUMENT
+  TEMPLATE
+}
+
+enum OutgoingMessageStatus {
+  QUEUED
+  SENT
+  DELIVERED
+  FAILED
+}
+
+model User {
+  id             String      @id @default(cuid())
+  email          String      @unique
+  name           String
+  passwordHash   String
+  role           UserRole    @default(OWNER)
+  workspaceId    String?
+  workspace      Workspace?  @relation(fields: [workspaceId], references: [id], onDelete: SetNull)
+  ownedWorkspace Workspace?  @relation("WorkspaceOwner")
+  createdAt      DateTime    @default(now())
+  updatedAt      DateTime    @updatedAt
+}
+
+model Workspace {
+  id                  String               @id @default(cuid())
+  name                String
+  slug                String               @unique
+  ownerId             String               @unique
+  owner               User                 @relation("WorkspaceOwner", fields: [ownerId], references: [id], onDelete: Cascade)
+  members             User[]
+  subscriptions       Subscription[]
+  autoReplyRules      AutoReplyRule[]
+  incomingMessageLogs IncomingMessageLog[]
+  outgoingMessageLogs OutgoingMessageLog[]
+  whatsappConnections WhatsAppConnection[]
+  createdAt           DateTime             @default(now())
+  updatedAt           DateTime             @updatedAt
+}
+
+model Plan {
+  id                    String         @id @default(cuid())
+  slug                  String         @unique
+  name                  String
+  description           String?
+  monthlyPriceMad       Int
+  yearlyPriceMad        Int?
+  maxRules              Int
+  maxMonthlyMessages    Int
+  maxWhatsAppConnections Int
+  isActive              Boolean        @default(true)
+  subscriptions         Subscription[]
+  createdAt             DateTime       @default(now())
+  updatedAt             DateTime       @updatedAt
+}
+
+model Subscription {
+  id                     String             @id @default(cuid())
+  workspaceId            String
+  planId                 String
+  status                 SubscriptionStatus @default(TRIALING)
+  startsAt               DateTime           @default(now())
+  currentPeriodStart     DateTime?
+  currentPeriodEnd       DateTime?
+  cancelAtPeriodEnd      Boolean            @default(false)
+  providerCustomerId     String?            @unique
+  providerSubscriptionId String?            @unique
+  workspace              Workspace          @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  plan                   Plan               @relation(fields: [planId], references: [id], onDelete: Restrict)
+  createdAt              DateTime           @default(now())
+  updatedAt              DateTime           @updatedAt
+
+  @@index([workspaceId, status])
+}
+
+model AutoReplyRule {
+  id               String        @id @default(cuid())
+  workspaceId      String
+  name             String
+  description      String?
+  keywords         String[]
+  matchMode        RuleMatchMode @default(CONTAINS_ANY)
+  responseTemplate String
+  priority         Int           @default(100)
+  isActive         Boolean       @default(true)
+  workspace        Workspace     @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  createdAt        DateTime      @default(now())
+  updatedAt        DateTime      @updatedAt
+
+  @@unique([workspaceId, name])
+  @@index([workspaceId, isActive, priority])
+}
+
+model WhatsAppConnection {
+  id                  String                   @id @default(cuid())
+  workspaceId         String
+  label               String
+  phoneNumber         String?
+  provider            WhatsAppProvider         @default(CLOUD_API)
+  status              WhatsAppConnectionStatus @default(PENDING)
+  providerReference   String?                  @unique
+  lastHeartbeatAt     DateTime?
+  settings            Json?
+  workspace           Workspace                @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  incomingMessageLogs IncomingMessageLog[]
+  outgoingMessageLogs OutgoingMessageLog[]
+  createdAt           DateTime                 @default(now())
+  updatedAt           DateTime                 @updatedAt
+
+  @@index([workspaceId, status])
+}
+
+model IncomingMessageLog {
+  id                   String              @id @default(cuid())
+  workspaceId          String
+  whatsAppConnectionId String?
+  externalMessageId    String?             @unique
+  senderPhone          String
+  recipientPhone       String
+  messageType          MessageType         @default(TEXT)
+  content              String?
+  payload              Json?
+  receivedAt           DateTime            @default(now())
+  workspace            Workspace           @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  whatsAppConnection   WhatsAppConnection? @relation(fields: [whatsAppConnectionId], references: [id], onDelete: SetNull)
+  createdAt            DateTime            @default(now())
+
+  @@index([workspaceId, receivedAt(sort: Desc)])
+}
+
+model OutgoingMessageLog {
+  id                   String                @id @default(cuid())
+  workspaceId          String
+  whatsAppConnectionId String?
+  externalMessageId    String?               @unique
+  recipientPhone       String
+  messageType          MessageType           @default(TEXT)
+  content              String?
+  status               OutgoingMessageStatus @default(QUEUED)
+  payload              Json?
+  sentAt               DateTime?
+  workspace            Workspace             @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  whatsAppConnection   WhatsAppConnection?   @relation(fields: [whatsAppConnectionId], references: [id], onDelete: SetNull)
+  createdAt            DateTime              @default(now())
+  updatedAt            DateTime              @updatedAt
+
+  @@index([workspaceId, status, createdAt(sort: Desc)])
+}

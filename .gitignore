@@ -1,0 +1,13 @@
+.next
+node_modules
+.vscode
+.env
+.env.local
+.env.production.local
+CLAUDE.md
+*.log
+npm-debug.log*
+prisma/dev.db
+prisma/dev.db-journal
+coverage
+dist
