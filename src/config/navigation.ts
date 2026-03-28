@@ -1,4 +1,4 @@
-import { Blocks, LayoutDashboard } from "lucide-react";
+import { Blocks, LayoutDashboard, MessageSquareQuote } from "lucide-react";
 
 import type { FoundationItem, NavigationItem } from "@/types/navigation";
 
@@ -8,6 +8,12 @@ export const dashboardNavigation: NavigationItem[] = [
     href: "/dashboard",
     description: "Foundation overview and environment status.",
     icon: LayoutDashboard,
+  },
+  {
+    title: "Rules",
+    href: "/dashboard/rules",
+    description: "Create, filter, and reorder auto-reply rules.",
+    icon: MessageSquareQuote,
   },
 ];
 

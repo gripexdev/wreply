@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { DM_Sans, Space_Grotesk } from "next/font/google";
 
+import { ToastProvider } from "@/components/ui/toast-provider";
 import { siteConfig } from "@/config/site";
 
 import "./globals.css";
@@ -34,7 +35,7 @@ export default function RootLayout({
       <body
         className={`${displayFont.variable} ${bodyFont.variable} font-body min-h-screen antialiased`}
       >
-        {children}
+        <ToastProvider>{children}</ToastProvider>
       </body>
     </html>
   );

@@ -21,10 +21,15 @@ enum SubscriptionStatus {
   EXPIRED
 }
 
-enum RuleMatchMode {
-  CONTAINS_ANY
-  CONTAINS_ALL
-  EXACT_MATCH
+enum AutoReplyRuleMatchType {
+  EXACT
+  CONTAINS
+}
+
+enum AutoReplyRuleLanguage {
+  ANY
+  DARIJA
+  FRENCH
 }
 
 enum WhatsAppProvider {
@@ -120,21 +125,24 @@ model Subscription {
 }
 
 model AutoReplyRule {
-  id               String        @id @default(cuid())
-  workspaceId      String
-  name             String
-  description      String?
-  keywords         String[]
-  matchMode        RuleMatchMode @default(CONTAINS_ANY)
-  responseTemplate String
-  priority         Int           @default(100)
-  isActive         Boolean       @default(true)
-  workspace        Workspace     @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
-  createdAt        DateTime      @default(now())
-  updatedAt        DateTime      @updatedAt
+  id           String                @id @default(cuid())
+  workspaceId  String
+  keyword      String
+  replyMessage String                @db.Text
+  matchType    AutoReplyRuleMatchType @default(CONTAINS)
+  language     AutoReplyRuleLanguage @default(ANY)
+  category     String?
+  priority     Int                   @default(1)
+  isActive     Boolean               @default(true)
+  workspace    Workspace             @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  createdAt    DateTime              @default(now())
+  updatedAt    DateTime              @updatedAt
 
-  @@unique([workspaceId, name])
+  @@unique([workspaceId, keyword, matchType, language])
+  @@index([workspaceId, priority])
   @@index([workspaceId, isActive, priority])
+  @@index([workspaceId, language, matchType])
+  @@index([workspaceId, category])
 }
 
 model WhatsAppConnection {

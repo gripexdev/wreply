@@ -8,6 +8,8 @@ const variantStyles = {
   secondary:
     "border border-white/15 bg-white/5 text-foreground hover:bg-white/10",
   ghost: "text-foreground hover:bg-white/8",
+  danger:
+    "bg-rose-500 text-white shadow-[0_18px_45px_-18px_rgba(244,63,94,0.75)] hover:bg-rose-400",
 };
 
 const sizeStyles = {

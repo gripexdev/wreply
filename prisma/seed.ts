@@ -1,9 +1,10 @@
 import "dotenv/config";
 
 import {
+  AutoReplyRuleLanguage,
+  AutoReplyRuleMatchType,
   OutgoingMessageStatus,
   PrismaClient,
-  RuleMatchMode,
   SubscriptionStatus,
   UserRole,
   WhatsAppConnectionStatus,
@@ -120,31 +121,91 @@ async function main() {
     },
   });
 
-  await prisma.autoReplyRule.createMany({
-    data: [
-      {
-        workspaceId: workspace.id,
-        name: "Business hours",
-        description: "Foundational FAQ rule for hours and availability.",
-        keywords: ["hour", "horaire", "wa9t", "open"],
-        matchMode: RuleMatchMode.CONTAINS_ANY,
-        responseTemplate:
-          "Our showroom is open Monday to Saturday from 9:00 to 19:00.",
-        priority: 10,
+  const seededRules = [
+    {
+      keyword: "price",
+      replyMessage:
+        "Salam 👋 For pricing, send the product name or a photo and our team will reply quickly with the right offer.",
+      matchType: AutoReplyRuleMatchType.CONTAINS,
+      language: AutoReplyRuleLanguage.ANY,
+      category: "Sales",
+      priority: 1,
+      isActive: true,
+    },
+    {
+      keyword: "prix",
+      replyMessage:
+        "Bonjour 👋 Pour le prix, merci d'envoyer le nom du produit ou une photo et nous vous répondrons rapidement.",
+      matchType: AutoReplyRuleMatchType.CONTAINS,
+      language: AutoReplyRuleLanguage.FRENCH,
+      category: "Sales",
+      priority: 2,
+      isActive: true,
+    },
+    {
+      keyword: "fin",
+      replyMessage:
+        "Rahna f 201 Boulevard Ghandi, Casablanca. Hna Google Maps: https://maps.google.com/?q=201+Boulevard+Ghandi+Casablanca",
+      matchType: AutoReplyRuleMatchType.CONTAINS,
+      language: AutoReplyRuleLanguage.DARIJA,
+      category: "Store info",
+      priority: 3,
+      isActive: true,
+    },
+    {
+      keyword: "stock",
+      replyMessage:
+        "Merci 🙌 Send the product name and we will confirm stock availability before you place the order.",
+      matchType: AutoReplyRuleMatchType.CONTAINS,
+      language: AutoReplyRuleLanguage.ANY,
+      category: "Inventory",
+      priority: 4,
+      isActive: true,
+    },
+    {
+      keyword: "livraison",
+      replyMessage:
+        "La livraison est disponible dans Casablanca et les grandes villes. Envoyez votre quartier pour confirmer le délai.",
+      matchType: AutoReplyRuleMatchType.CONTAINS,
+      language: AutoReplyRuleLanguage.FRENCH,
+      category: "Delivery",
+      priority: 5,
+      isActive: true,
+    },
+    {
+      keyword: "horaires",
+      replyMessage:
+        "Ma3akoum mn ltnin l s-sbt, men 9:00 l 19:00. Ila bghiti rendez-vous, sift lina l-wa9t li kaynseb lik.",
+      matchType: AutoReplyRuleMatchType.CONTAINS,
+      language: AutoReplyRuleLanguage.DARIJA,
+      category: "Store info",
+      priority: 6,
+      isActive: true,
+    },
+  ];
+
+  for (const rule of seededRules) {
+    await prisma.autoReplyRule.upsert({
+      where: {
+        workspaceId_keyword_matchType_language: {
+          workspaceId: workspace.id,
+          keyword: rule.keyword,
+          matchType: rule.matchType,
+          language: rule.language,
+        },
       },
-      {
-        workspaceId: workspace.id,
-        name: "Location",
-        description: "Foundational FAQ rule for directions.",
-        keywords: ["location", "adresse", "fin kayn", "where"],
-        matchMode: RuleMatchMode.CONTAINS_ANY,
-        responseTemplate:
-          "We are based in Casablanca and share directions directly on WhatsApp after qualification.",
-        priority: 20,
+      update: {
+        replyMessage: rule.replyMessage,
+        category: rule.category,
+        priority: rule.priority,
+        isActive: rule.isActive,
       },
-    ],
-    skipDuplicates: true,
-  });
+      create: {
+        workspaceId: workspace.id,
+        ...rule,
+      },
+    });
+  }
 
   await prisma.incomingMessageLog.upsert({
     where: { externalMessageId: "seed-incoming-001" },

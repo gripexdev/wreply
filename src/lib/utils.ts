@@ -12,3 +12,11 @@ export function formatCurrencyMad(amount: number) {
     maximumFractionDigits: 0,
   }).format(amount);
 }
+
+export function formatShortDate(date: string | Date) {
+  return new Intl.DateTimeFormat("en", {
+    month: "short",
+    day: "numeric",
+    year: "numeric",
+  }).format(new Date(date));
+}
