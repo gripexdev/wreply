@@ -20,8 +20,8 @@ function ConversationBubble({
       className={cn(
         "max-w-[36rem] rounded-[30px] border px-5 py-5 shadow-[inset_0_1px_0_rgba(255,255,255,0.04)]",
         log.direction === "INBOUND"
-          ? "border-sky-400/18 bg-[linear-gradient(180deg,rgba(18,40,68,0.74),rgba(10,20,35,0.96))] text-sky-50"
-          : "border-emerald-400/18 bg-[linear-gradient(180deg,rgba(17,61,55,0.76),rgba(9,23,25,0.98))] text-emerald-50",
+          ? "border-[#3B82F6]/18 bg-[linear-gradient(180deg,rgba(18,40,68,0.74),rgba(10,20,35,0.96))] text-[#EFF6FF]"
+          : "border-[#A855F7]/18 bg-[linear-gradient(180deg,rgba(36,28,74,0.76),rgba(14,16,36,0.98))] text-[#F5F3FF]",
       )}
     >
       <p className="text-[0.68rem] tracking-[0.2em] text-white/48 uppercase">
@@ -54,7 +54,7 @@ export function MessageLogTable({
               "overflow-hidden",
               log.direction === "INBOUND"
                 ? "bg-[linear-gradient(180deg,rgba(8,17,31,0.96),rgba(7,12,22,0.98))]"
-                : "bg-[linear-gradient(180deg,rgba(8,25,24,0.95),rgba(7,12,20,0.98))]",
+                : "bg-[linear-gradient(180deg,rgba(19,13,35,0.95),rgba(7,12,20,0.98))]",
             )}
           >
             <CardContent className="p-6 xl:p-7">

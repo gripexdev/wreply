@@ -9,7 +9,7 @@ export const Card = React.forwardRef<
   <div
     ref={ref}
     className={cn(
-      "panel-sheen group/card bg-card relative overflow-hidden rounded-[30px] border border-white/[0.08] shadow-[0_32px_90px_-52px_rgba(0,0,0,0.96),inset_0_1px_0_rgba(255,255,255,0.05)] backdrop-blur-2xl transition duration-300 ease-out hover:-translate-y-[2px] hover:border-white/[0.12] hover:shadow-[0_38px_110px_-56px_rgba(0,0,0,0.98),0_12px_48px_-38px_rgba(68,216,180,0.25)]",
+      "panel-sheen aurora-panel group/card bg-card relative overflow-hidden rounded-[30px] border border-white/[0.08] shadow-[0_0_0_1px_rgba(255,255,255,0.02),0_22px_72px_-54px_rgba(0,0,0,0.88)] backdrop-blur-2xl transition duration-300 ease-out hover:-translate-y-[1px] hover:scale-[1.005] hover:border-white/[0.12] hover:shadow-[0_0_0_1px_rgba(255,255,255,0.03),0_32px_90px_-58px_rgba(0,0,0,0.92),0_0_36px_-22px_rgba(34,211,238,0.16),0_0_44px_-26px_rgba(168,85,247,0.14)]",
       className,
     )}
     {...props}
@@ -47,7 +47,7 @@ export function CardDescription({
   return (
     <p
       className={cn(
-        "text-muted-foreground text-[0.95rem] leading-6",
+        "text-muted-foreground text-[0.82rem] leading-5",
         className,
       )}
       {...props}

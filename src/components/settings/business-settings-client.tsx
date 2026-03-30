@@ -1,6 +1,12 @@
 "use client";
 
-import { Building2, Clock3, LoaderCircle, MapPin, Sparkles } from "lucide-react";
+import {
+  Building2,
+  Clock3,
+  LoaderCircle,
+  MapPin,
+  Sparkles,
+} from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
@@ -81,12 +87,12 @@ function readResponse<T>(response: Response) {
 function StatusCard({
   title,
   value,
-  description,
+  hint,
   icon: Icon,
 }: Readonly<{
   title: string;
   value: string;
-  description: string;
+  hint: string;
   icon: React.ComponentType<{ className?: string }>;
 }>) {
   return (
@@ -103,9 +109,7 @@ function StatusCard({
         <p className="font-display mt-4 text-3xl font-semibold text-white">
           {value}
         </p>
-        <p className="text-muted-foreground mt-2 text-sm leading-6">
-          {description}
-        </p>
+        <p className="text-muted-foreground mt-1 text-xs">{hint}</p>
       </CardContent>
     </Card>
   );
@@ -187,7 +191,9 @@ export function BusinessSettingsClient({
       });
       router.refresh();
     } catch {
-      setFormError("Unable to save business settings right now. Please try again.");
+      setFormError(
+        "Unable to save business settings right now. Please try again.",
+      );
     } finally {
       setIsSaving(false);
     }
@@ -212,15 +218,13 @@ export function BusinessSettingsClient({
             <div className="flex flex-wrap items-start justify-between gap-4">
               <div className="max-w-3xl">
                 <Badge className="border-primary/20 bg-primary/10 text-primary">
-                  Workspace settings
+                  Settings
                 </Badge>
                 <h1 className="font-display mt-4 text-3xl font-semibold text-white sm:text-4xl">
                   Business settings
                 </h1>
-                <p className="text-muted-foreground mt-3 max-w-2xl text-sm leading-7 sm:text-base">
-                  Define the business identity operators should see across the
-                  product and configure the fallback reply used when no rule
-                  matches an incoming customer message.
+                <p className="text-muted-foreground mt-3 text-sm sm:text-base">
+                  Profile and fallback.
                 </p>
               </div>
 
@@ -235,11 +239,10 @@ export function BusinessSettingsClient({
           <CardContent className="flex h-full flex-col justify-between p-6">
             <div>
               <p className="text-muted-foreground text-xs tracking-[0.22em] uppercase">
-                Reply posture
+                Fallback
               </p>
-              <p className="mt-4 text-sm leading-7 text-white/90">
-                Keep fallback messaging clear and honest so customers receive a
-                calm acknowledgment even when no rule applies yet.
+              <p className="mt-4 text-sm text-white/74">
+                Set the default reply.
               </p>
             </div>
             <div className="mt-6 flex flex-wrap gap-2">
@@ -260,19 +263,19 @@ export function BusinessSettingsClient({
         <StatusCard
           title="Business profile"
           value={`${profileCompletion}%`}
-          description="How complete the key workspace identity fields are right now."
+          hint="Profile"
           icon={Building2}
         />
         <StatusCard
           title="Fallback mode"
           value={settings.fallbackReplyEnabled ? "Enabled" : "Disabled"}
-          description="Unmatched customer messages can use the workspace fallback reply when this is on."
+          hint="Unmatched reply"
           icon={Sparkles}
         />
         <StatusCard
           title="Working hours"
           value={settings.workingHours || "Not set"}
-          description="Used by operators as a reliable at-a-glance reference."
+          hint="Hours"
           icon={Clock3}
         />
       </section>
@@ -282,10 +285,7 @@ export function BusinessSettingsClient({
           <Card>
             <CardHeader>
               <CardTitle className="text-white">Business identity</CardTitle>
-              <CardDescription>
-                These fields shape the operator-facing profile for the current
-                workspace and can be reused in future reply templates.
-              </CardDescription>
+              <CardDescription>Name and tone.</CardDescription>
             </CardHeader>
             <CardContent className="grid gap-5 md:grid-cols-2">
               <div className="space-y-2 md:col-span-2">
@@ -321,7 +321,8 @@ export function BusinessSettingsClient({
                   disabled={isSaving}
                 />
                 <p className="text-muted-foreground text-sm">
-                  A friendly name you want operators to use in customer-facing replies.
+                  A friendly name you want operators to use in customer-facing
+                  replies.
                 </p>
                 {fieldErrors.replyDisplayName ? (
                   <p className="text-sm text-rose-300">
@@ -331,7 +332,9 @@ export function BusinessSettingsClient({
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="business-language">Default language preference</Label>
+                <Label htmlFor="business-language">
+                  Default language preference
+                </Label>
                 <Select
                   id="business-language"
                   value={formState.languagePreference}
@@ -349,7 +352,8 @@ export function BusinessSettingsClient({
                   <option value="FRENCH">French</option>
                 </Select>
                 <p className="text-muted-foreground text-sm">
-                  A workspace default for future reply experiences and operator context.
+                  A workspace default for future reply experiences and operator
+                  context.
                 </p>
                 {fieldErrors.languagePreference ? (
                   <p className="text-sm text-rose-300">
@@ -363,14 +367,13 @@ export function BusinessSettingsClient({
           <Card>
             <CardHeader>
               <CardTitle className="text-white">Contact references</CardTitle>
-              <CardDescription>
-                Keep the business contact details easy to reuse for future auto-replies,
-                operator handoffs, and location answers.
-              </CardDescription>
+              <CardDescription>Phone, address, maps.</CardDescription>
             </CardHeader>
             <CardContent className="grid gap-5 md:grid-cols-2">
               <div className="space-y-2">
-                <Label htmlFor="business-phone-number">Contact phone number</Label>
+                <Label htmlFor="business-phone-number">
+                  Contact phone number
+                </Label>
                 <Input
                   id="business-phone-number"
                   value={formState.businessPhoneNumber}
@@ -410,13 +413,16 @@ export function BusinessSettingsClient({
                 <Textarea
                   id="business-address"
                   value={formState.address}
-                  onChange={(event) => updateField("address", event.target.value)}
+                  onChange={(event) =>
+                    updateField("address", event.target.value)
+                  }
                   placeholder="201 Boulevard Ghandi, Casablanca"
                   disabled={isSaving}
                   className="min-h-24"
                 />
                 <p className="text-muted-foreground text-sm">
-                  Useful for future rule replies about location, delivery zones, or in-store pickup.
+                  Useful for future rule replies about location, delivery zones,
+                  or in-store pickup.
                 </p>
                 {fieldErrors.address ? (
                   <p className="text-sm text-rose-300">{fieldErrors.address}</p>
@@ -449,10 +455,7 @@ export function BusinessSettingsClient({
           <Card>
             <CardHeader>
               <CardTitle className="text-white">Fallback reply</CardTitle>
-              <CardDescription>
-                Decide what WReply should do when an inbound message does not
-                match any active rule yet.
-              </CardDescription>
+              <CardDescription>Default unmatched reply.</CardDescription>
             </CardHeader>
             <CardContent className="space-y-5">
               <div className="flex items-start justify-between gap-4 rounded-[22px] border border-white/10 bg-white/[0.03] px-4 py-4">
@@ -460,9 +463,8 @@ export function BusinessSettingsClient({
                   <p className="text-sm font-semibold text-white">
                     Enable unmatched fallback reply
                   </p>
-                  <p className="text-muted-foreground mt-1 text-sm leading-6">
-                    When enabled, unmatched inbound messages will create a fallback
-                    outbound reply candidate using the message below.
+                  <p className="text-muted-foreground mt-1 text-xs">
+                    Use the fallback message.
                   </p>
                 </div>
                 <Switch
@@ -476,7 +478,9 @@ export function BusinessSettingsClient({
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="fallback-reply-message">Fallback reply message</Label>
+                <Label htmlFor="fallback-reply-message">
+                  Fallback reply message
+                </Label>
                 <Textarea
                   id="fallback-reply-message"
                   value={formState.fallbackReplyMessage}
@@ -487,7 +491,8 @@ export function BusinessSettingsClient({
                   disabled={isSaving}
                 />
                 <p className="text-muted-foreground text-sm">
-                  Keep this short, reassuring, and honest. It should confirm receipt without pretending a full answer already exists.
+                  Keep this short, reassuring, and honest. It should confirm
+                  receipt without pretending a full answer already exists.
                 </p>
                 {fieldErrors.fallbackReplyMessage ? (
                   <p className="text-sm text-rose-300">
@@ -521,10 +526,8 @@ export function BusinessSettingsClient({
         <div className="space-y-6">
           <Card>
             <CardHeader>
-              <CardTitle className="text-white">Operator-ready snapshot</CardTitle>
-              <CardDescription>
-                A quick operational summary of the business profile currently stored for this workspace.
-              </CardDescription>
+              <CardTitle className="text-white">Snapshot</CardTitle>
+              <CardDescription>Current profile.</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="flex items-start gap-4 rounded-[22px] border border-white/10 bg-white/[0.03] p-4">
@@ -562,9 +565,7 @@ export function BusinessSettingsClient({
           <Card>
             <CardHeader>
               <CardTitle className="text-white">Fallback preview</CardTitle>
-              <CardDescription>
-                This is what unmatched-message behavior currently looks like from an operator perspective.
-              </CardDescription>
+              <CardDescription>Current message.</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="rounded-[22px] border border-white/10 bg-white/[0.03] p-4">

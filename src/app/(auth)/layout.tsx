@@ -4,9 +4,9 @@ import { Brand } from "@/components/common/brand";
 import { Badge } from "@/components/ui/badge";
 
 const authHighlights = [
-  "Credentials auth wired with NextAuth and Prisma-backed users.",
-  "Protected dashboard route available immediately after sign in.",
-  "PostgreSQL schema ready for future product modules.",
+  "Sign in fast.",
+  "Open your workspace.",
+  "Manage replies in one place.",
 ];
 
 export default function AuthLayout({
@@ -22,14 +22,13 @@ export default function AuthLayout({
             <Brand />
             <div className="space-y-5">
               <Badge className="border-primary/30 bg-primary/10 text-primary">
-                Secure foundation
+                WReply
               </Badge>
               <h1 className="font-display text-4xl font-semibold tracking-tight text-white">
-                Clean SaaS architecture for the first real WReply milestone.
+                WhatsApp replies, under control.
               </h1>
-              <p className="text-muted-foreground max-w-lg text-base leading-8">
-                Authentication, protected routes, Prisma, and a modular
-                dashboard shell are in place before feature work begins.
+              <p className="text-muted-foreground max-w-lg text-sm leading-7">
+                Simple access. Clear control.
               </p>
             </div>
           </div>
@@ -47,9 +46,7 @@ export default function AuthLayout({
             ))}
             <div className="border-primary/20 bg-primary/10 text-primary flex items-center gap-3 rounded-[24px] border p-4">
               <ShieldCheck className="h-5 w-5" />
-              <p className="text-sm font-medium">
-                Ready for professional feature-by-feature delivery.
-              </p>
+              <p className="text-sm font-medium">Secure by default.</p>
             </div>
           </div>
         </section>

@@ -41,16 +41,13 @@ export function RulesToolbar({
         <div className="flex flex-col gap-4 xl:flex-row xl:items-center xl:justify-between">
           <div>
             <p className="text-[0.68rem] tracking-[0.24em] text-white/36 uppercase">
-              Automation builder
+              Filters
             </p>
             <div className="mt-2 flex flex-wrap items-center gap-3">
-              <p className="text-sm leading-6 text-white/58">
-                Search logic blocks, narrow the matcher view, and open the
-                simulator without leaving this workflow.
-              </p>
+              <p className="text-sm text-white/58">Rules and search.</p>
               <span className="inline-flex items-center gap-2 rounded-full border border-white/[0.08] bg-white/[0.03] px-3 py-1.5 text-xs tracking-[0.2em] text-white/48 uppercase">
                 <Sparkles className="text-primary h-3.5 w-3.5" />
-                {isSyncing ? "Syncing" : "Filters live"}
+                {isSyncing ? "Syncing" : "Live"}
               </span>
             </div>
           </div>

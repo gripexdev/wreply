@@ -6,7 +6,7 @@ export default function SignUpPage() {
     <div className="w-full max-w-xl">
       <AuthFormShell
         title="Create your WReply workspace"
-        description="Set up the owner account and first workspace. This step only wires the foundation, not onboarding flows."
+        description="Start your workspace."
         footerText="Already have an account?"
         footerHref="/sign-in"
         footerAction="Sign in"

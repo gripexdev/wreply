@@ -101,13 +101,13 @@ async function readResponse<T>(response: Response) {
 function SummaryCard({
   title,
   value,
-  description,
+  hint,
   icon: Icon,
   accentClassName,
 }: Readonly<{
   title: string;
   value: string | number;
-  description: string;
+  hint: string;
   icon: ComponentType<{ className?: string }>;
   accentClassName: string;
 }>) {
@@ -131,9 +131,7 @@ function SummaryCard({
           </span>
         </div>
         <div className="relative mt-5 h-px bg-gradient-to-r from-white/[0.12] via-white/[0.04] to-transparent" />
-        <p className="relative mt-4 text-sm leading-6 text-white/54">
-          {description}
-        </p>
+        <p className="relative mt-2 text-xs text-white/42">{hint}</p>
       </CardContent>
     </Card>
   );
@@ -460,23 +458,20 @@ export function RulesPageClient({
             <div className="space-y-6">
               <div className="flex flex-wrap items-center gap-3">
                 <Badge className="border-primary/15 bg-primary/10 text-primary">
-                  Automation builder
+                  Rules
                 </Badge>
                 <Badge className="border-white/[0.08] bg-white/[0.045] text-white/66">
-                  Workspace-scoped rules
+                  Live
                 </Badge>
               </div>
 
               <div className="space-y-4">
                 <h1 className="font-display text-4xl font-semibold tracking-[-0.06em] text-white sm:text-5xl">
-                  Turn repeated questions into
-                  <span className="text-gradient"> smart reply blocks</span>
+                  Automation
+                  <span className="text-gradient"> blocks</span>
                 </h1>
-                <p className="max-w-3xl text-sm leading-8 text-white/58 sm:text-base">
-                  Each rule watches for a trigger, decides how to match it, and
-                  transforms it into a consistent reply block for the workspace.
-                  Build coverage for pricing, delivery, store details, stock,
-                  and opening hours without thinking in raw table rows.
+                <p className="max-w-2xl text-sm text-white/48 sm:text-base">
+                  Trigger in. Reply out.
                 </p>
               </div>
 
@@ -506,10 +501,10 @@ export function RulesPageClient({
             <div className="space-y-5">
               <div>
                 <p className="text-[0.68rem] tracking-[0.22em] text-white/36 uppercase">
-                  Rule anatomy
+                  Flow
                 </p>
                 <h2 className="font-display mt-3 text-2xl font-semibold tracking-[-0.04em] text-white">
-                  Small automation pieces, clear logic
+                  Small blocks. Clear logic.
                 </h2>
               </div>
 
@@ -519,7 +514,7 @@ export function RulesPageClient({
                     Trigger
                   </p>
                   <p className="mt-2 text-sm font-semibold tracking-[-0.01em] text-white">
-                    customer says &quot;prix&quot;
+                    prix
                   </p>
                 </div>
                 <div className="text-primary flex justify-center">
@@ -530,8 +525,7 @@ export function RulesPageClient({
                     Reply
                   </p>
                   <p className="mt-2 text-sm leading-6 text-white/70">
-                    Ask for the product name or photo so the business can answer
-                    pricing quickly.
+                    Ask for the product name or photo.
                   </p>
                 </div>
               </div>
@@ -539,10 +533,10 @@ export function RulesPageClient({
 
             <div className="mt-6 flex flex-wrap gap-2">
               <Badge className="border-white/[0.08] bg-white/[0.045] text-white/66">
-                Exact and contains
+                Exact + contains
               </Badge>
               <Badge className="border-white/[0.08] bg-white/[0.045] text-white/66">
-                Darija and French ready
+                Darija + French
               </Badge>
             </div>
           </CardContent>
@@ -553,23 +547,23 @@ export function RulesPageClient({
         <SummaryCard
           title="Logic blocks"
           value={summary.total}
-          description="All rules in the current workspace, regardless of filters."
+          hint="All rules"
           icon={Layers3}
           accentClassName="from-primary/28 via-primary/10 to-transparent"
         />
         <SummaryCard
           title="Live automation"
           value={summary.active}
-          description="Enabled rules that are available to the matcher right now."
+          hint="Enabled"
           icon={Zap}
           accentClassName="from-emerald-300/20 via-emerald-200/8 to-transparent"
         />
         <SummaryCard
           title="Categories"
           value={categories.length}
-          description="Optional labels used to organize automation pieces more clearly."
+          hint="Labels"
           icon={ListFilter}
-          accentClassName="from-sky-300/20 via-sky-300/8 to-transparent"
+          accentClassName="from-[#A855F7]/20 via-[#A855F7]/8 to-transparent"
         />
       </section>
 
@@ -585,9 +579,8 @@ export function RulesPageClient({
       />
 
       {isReorderLocked ? (
-        <div className="rounded-[24px] border border-white/[0.08] bg-white/[0.03] px-4 py-3 text-sm leading-6 text-white/56">
-          Clear search and filters to reorder priorities. Priority changes stay
-          scoped to the full workspace logic sequence.
+        <div className="rounded-[24px] border border-white/[0.08] bg-white/[0.03] px-4 py-3 text-sm text-white/48">
+          Clear filters to reorder.
         </div>
       ) : null}
 

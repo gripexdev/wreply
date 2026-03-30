@@ -4,13 +4,13 @@ import { cn } from "@/lib/utils";
 
 const variantStyles = {
   primary:
-    "border-transparent bg-[linear-gradient(135deg,#63e8c5_0%,#35d0bc_48%,#2f8fff_100%)] text-slate-950 shadow-[0_24px_60px_-28px_rgba(47,143,255,0.6),0_18px_45px_-24px_rgba(68,216,180,0.6)] hover:brightness-[1.05] hover:shadow-[0_26px_70px_-30px_rgba(47,143,255,0.7),0_22px_52px_-26px_rgba(68,216,180,0.7)]",
+    "border-transparent bg-[linear-gradient(135deg,#3B82F6_0%,#22D3EE_100%)] text-[#03111F] shadow-[0_0_0_1px_rgba(255,255,255,0.03),0_22px_60px_-34px_rgba(59,130,246,0.34),0_16px_40px_-24px_rgba(34,211,238,0.34)] hover:scale-[1.01] hover:brightness-[1.04] hover:shadow-[0_0_0_1px_rgba(255,255,255,0.04),0_26px_72px_-38px_rgba(59,130,246,0.38),0_18px_44px_-24px_rgba(34,211,238,0.4)]",
   secondary:
-    "border-white/[0.1] bg-[linear-gradient(180deg,rgba(18,26,43,0.92),rgba(10,15,25,0.96))] text-foreground shadow-[inset_0_1px_0_rgba(255,255,255,0.04)] hover:border-white/[0.14] hover:bg-[linear-gradient(180deg,rgba(24,33,54,0.95),rgba(11,17,28,0.98))] hover:shadow-[0_18px_45px_-32px_rgba(0,0,0,0.92)]",
+    "border-white/[0.08] bg-[linear-gradient(180deg,rgba(12,18,30,0.72),rgba(7,11,20,0.9))] text-foreground shadow-[inset_0_1px_0_rgba(255,255,255,0.03)] hover:scale-[1.01] hover:border-white/[0.12] hover:bg-[linear-gradient(180deg,rgba(16,22,37,0.82),rgba(8,12,22,0.94))]",
   ghost:
-    "border-transparent bg-transparent text-white/88 hover:bg-white/[0.055] hover:text-white",
+    "border-transparent bg-transparent text-white/72 hover:scale-[1.01] hover:bg-white/[0.045] hover:text-white",
   danger:
-    "border-transparent bg-[linear-gradient(135deg,#fb7185_0%,#f43f5e_56%,#be123c_100%)] text-white shadow-[0_22px_48px_-26px_rgba(244,63,94,0.6)] hover:brightness-[1.04]",
+    "border-transparent bg-[linear-gradient(135deg,#fb7185_0%,#f43f5e_56%,#be123c_100%)] text-white shadow-[0_18px_42px_-26px_rgba(244,63,94,0.42)] hover:scale-[1.01] hover:brightness-[1.03]",
 };
 
 const sizeStyles = {

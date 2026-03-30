@@ -18,12 +18,12 @@ import type { MessageLogListItem } from "@/types/message-logs";
 
 const directionBadgeStyles = {
   INBOUND: {
-    className: "border-sky-400/18 bg-sky-500/10 text-sky-100",
+    className: "border-[#3B82F6]/18 bg-[#3B82F6]/10 text-[#DBEAFE]",
     icon: ArrowDownLeft,
     label: "Inbound",
   },
   OUTBOUND: {
-    className: "border-emerald-400/18 bg-emerald-500/10 text-emerald-100",
+    className: "border-[#A855F7]/18 bg-[#A855F7]/10 text-[#F3E8FF]",
     icon: ArrowUpRight,
     label: "Outbound",
   },
@@ -242,7 +242,7 @@ export function MessageLogBadges({
         <LogBadge
           icon={Sparkles}
           label="Rule reply"
-          className="border-emerald-400/18 bg-emerald-500/10 text-emerald-100"
+          className="border-[#A855F7]/18 bg-[#A855F7]/10 text-[#F3E8FF]"
         />
       ) : null}
     </div>

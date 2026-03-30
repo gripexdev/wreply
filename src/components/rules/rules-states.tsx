@@ -60,11 +60,9 @@ export function RulesErrorState({
           <CircleAlert className="h-9 w-9" />
         </span>
         <h3 className="font-display text-3xl font-semibold tracking-[-0.04em] text-white">
-          Unable to load automation blocks
+          Rules unavailable
         </h3>
-        <p className="mt-3 max-w-lg text-sm leading-7 text-white/58">
-          {message}
-        </p>
+        <p className="mt-3 max-w-lg text-sm text-white/48">{message}</p>
         <Button className="mt-7" onClick={onRetry}>
           Try again
         </Button>
@@ -95,15 +93,13 @@ export function RulesEmptyState({
           </span>
 
           <h3 className="font-display mt-8 text-3xl font-semibold tracking-[-0.05em] text-white sm:text-4xl">
-            {isFiltered
-              ? "No automation blocks match these filters"
-              : "Create your first auto-reply"}
+            {isFiltered ? "No rules found" : "Create your first auto-reply"}
           </h3>
 
-          <p className="mt-4 text-sm leading-8 text-white/58 sm:text-base">
+          <p className="mt-4 text-sm text-white/48 sm:text-base">
             {isFiltered
-              ? "Try a broader search, switch the filters back to all, or create a new rule that better covers the customer questions you keep seeing."
-              : "Start with the questions customers ask every day. Each rule becomes a reusable block that watches for a trigger and turns it into a fast reply."}
+              ? "Try a wider filter."
+              : "Start with the questions you get every day."}
           </p>
 
           <div className="mx-auto mt-8 max-w-xl rounded-[28px] border border-dashed border-white/[0.12] bg-white/[0.025] p-5 text-left">
@@ -126,8 +122,7 @@ export function RulesEmptyState({
                   Reply
                 </p>
                 <p className="mt-2 text-sm leading-6 text-white/70">
-                  Salam. Send the product name or photo and we will reply with
-                  pricing quickly.
+                  Salam. Send the product name or photo.
                 </p>
               </div>
             </div>
@@ -137,12 +132,7 @@ export function RulesEmptyState({
             {!isFiltered ? (
               <Button onClick={onCreateRule}>New Rule</Button>
             ) : (
-              <>
-                <Button onClick={onClearFilters}>Clear filters</Button>
-                <Button variant="secondary" onClick={onCreateRule}>
-                  New Rule
-                </Button>
-              </>
+              <Button onClick={onClearFilters}>Clear filters</Button>
             )}
           </div>
         </div>

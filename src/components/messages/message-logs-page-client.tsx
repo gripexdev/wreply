@@ -95,12 +95,12 @@ async function readResponse<T>(response: Response) {
 function SummaryCard({
   title,
   value,
-  description,
+  hint,
   icon: Icon,
 }: Readonly<{
   title: string;
   value: string | number;
-  description: string;
+  hint: string;
   icon: ComponentType<{ className?: string }>;
 }>) {
   return (
@@ -118,7 +118,7 @@ function SummaryCard({
         <p className="font-display mt-5 text-3xl font-semibold tracking-[-0.04em] text-white">
           {value}
         </p>
-        <p className="mt-2 text-sm leading-6 text-white/66">{description}</p>
+        <p className="mt-1 text-xs text-white/42">{hint}</p>
       </CardContent>
     </Card>
   );
@@ -278,27 +278,24 @@ export function MessageLogsPageClient({
             <div className="absolute inset-x-0 top-0 h-36 bg-[radial-gradient(circle_at_top_left,rgba(68,216,180,0.18),transparent_64%)]" />
             <div className="relative">
               <Badge className="border-primary/20 bg-primary/10 text-primary">
-                Conversation intelligence
+                Messages
               </Badge>
               <h1 className="font-display mt-4 max-w-3xl text-3xl font-semibold tracking-[-0.05em] text-white sm:text-4xl">
-                See what customers asked, what automation decided, and where
-                delivery needs attention.
+                Message activity
               </h1>
-              <p className="mt-4 max-w-2xl text-sm leading-7 text-white/68 sm:text-base">
-                WReply turns raw inbound and outbound logs into an
-                operator-ready view of rule matches, fallback behavior, and
-                reply outcomes across your workspace.
+              <p className="mt-3 text-sm text-white/48 sm:text-base">
+                Live message flow.
               </p>
 
               <div className="mt-6 flex flex-wrap gap-3">
                 <div className="rounded-full border border-white/[0.08] bg-white/[0.03] px-4 py-2 text-sm text-white/72">
-                  Inbound signal
+                  Inbound
                 </div>
                 <div className="rounded-full border border-white/[0.08] bg-white/[0.03] px-4 py-2 text-sm text-white/72">
-                  Match visibility
+                  Matches
                 </div>
                 <div className="rounded-full border border-white/[0.08] bg-white/[0.03] px-4 py-2 text-sm text-white/72">
-                  Delivery traceability
+                  Delivery
                 </div>
               </div>
             </div>
@@ -310,11 +307,9 @@ export function MessageLogsPageClient({
             <div className="flex items-center justify-between gap-4">
               <div>
                 <p className="text-[0.68rem] tracking-[0.2em] text-white/42 uppercase">
-                  Live operator snapshot
+                  Snapshot
                 </p>
-                <p className="mt-2 text-sm leading-6 text-white/74">
-                  A fast read on message flow for the current filters.
-                </p>
+                <p className="mt-2 text-xs text-white/44">Fast read.</p>
               </div>
               <span className="text-primary flex h-12 w-12 items-center justify-center rounded-[18px] border border-white/[0.08] bg-white/[0.04]">
                 <Radar className="h-5 w-5" />
@@ -328,8 +323,8 @@ export function MessageLogsPageClient({
                     <p className="text-sm font-semibold text-white">
                       Rule matches
                     </p>
-                    <p className="mt-1 text-sm text-white/62">
-                      Inbound messages that resolved through an active rule.
+                    <p className="mt-1 text-xs text-white/44">
+                      Matched inbound.
                     </p>
                   </div>
                   <p className="font-display text-2xl font-semibold text-white">
@@ -365,25 +360,25 @@ export function MessageLogsPageClient({
         <SummaryCard
           title="Messages tracked"
           value={summary.total}
-          description="Inbound and outbound activity visible in the current scope."
+          hint="In view"
           icon={MessageCircleMore}
         />
         <SummaryCard
           title="Matched inbound"
           value={summary.matchedInbound}
-          description="Customer messages that resolved through a saved rule."
+          hint="Covered"
           icon={Sparkles}
         />
         <SummaryCard
           title="Fallback replies"
           value={summary.fallbackReplies}
-          description="Replies created from fallback behavior instead of a rule match."
+          hint="Fallback"
           icon={Bot}
         />
         <SummaryCard
           title="Failed sends"
           value={summary.failedReplies}
-          description="Outbound attempts that reached the provider and failed."
+          hint="Review"
           icon={ShieldAlert}
         />
       </section>
@@ -418,11 +413,10 @@ export function MessageLogsPageClient({
             <CardContent className="flex flex-col gap-3 p-5 sm:flex-row sm:items-center sm:justify-between sm:p-6">
               <div>
                 <p className="text-[0.68rem] tracking-[0.2em] text-white/42 uppercase">
-                  Conversation stream
+                  Stream
                 </p>
-                <p className="mt-2 text-sm leading-6 text-white/70">
-                  Review the latest inbound questions and outbound replies with
-                  match context, fallback visibility, and delivery state.
+                <p className="mt-2 text-xs text-white/44">
+                  Latest inbound and outbound.
                 </p>
               </div>
               <div className="flex items-center gap-3 rounded-full border border-white/[0.08] bg-white/[0.03] px-4 py-2 text-sm text-white/62">

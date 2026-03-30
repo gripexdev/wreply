@@ -11,8 +11,8 @@ import {
 } from "@/components/analytics/analytics-charts";
 import { AnalyticsEmptyState } from "@/components/analytics/analytics-empty-state";
 import {
-  TopRulesInsight,
   DeliveryIssuesInsight,
+  TopRulesInsight,
 } from "@/components/analytics/analytics-insights";
 import { AnalyticsKpiGrid } from "@/components/analytics/analytics-kpi-grid";
 import { AnalyticsRangeSelector } from "@/components/analytics/analytics-range-selector";
@@ -31,8 +31,7 @@ import { getWorkspaceAnalytics } from "@/services/analytics/analytics.service";
 
 export const metadata: Metadata = {
   title: "Analytics",
-  description:
-    "Monitor inbound demand, match coverage, fallback usage, and outbound delivery performance for the current workspace.",
+  description: "Track message volume, coverage, fallback use, and delivery.",
 };
 
 function getSingleValue(value: string | string[] | undefined) {
@@ -62,29 +61,27 @@ export default async function DashboardAnalyticsPage({
     analytics.kpis.outboundSent + analytics.kpis.outboundDelivered;
 
   return (
-    <div className="space-y-8">
-      <section className="grid gap-4 xl:grid-cols-[1.12fr_0.88fr]">
+    <div className="space-y-6">
+      <section className="grid gap-4 xl:grid-cols-[1.14fr_0.86fr]">
         <Card className="surface-glow overflow-hidden">
           <CardContent className="p-6 sm:p-7">
             <div className="flex flex-wrap items-start justify-between gap-4">
               <div className="max-w-3xl">
                 <Badge className="border-primary/20 bg-primary/10 text-primary">
-                  Workspace analytics
+                  Analytics
                 </Badge>
                 <h1 className="font-display mt-4 text-4xl font-semibold tracking-[-0.05em] text-white sm:text-5xl">
-                  Understand volume, coverage,
-                  <span className="text-gradient"> and reply outcomes</span>
+                  Volume, coverage,
+                  <span className="text-gradient"> delivery</span>
                 </h1>
-                <p className="text-muted-foreground mt-3 max-w-2xl text-sm leading-7 sm:text-base">
-                  Track how many inbound messages reached this workspace, how
-                  often rules matched, where fallback was used, and which
-                  outbound replies need attention.
+                <p className="mt-3 text-sm leading-7 text-white/52 sm:text-base">
+                  Real workspace signals only.
                 </p>
               </div>
 
-              <div className="rounded-[24px] border border-white/10 bg-white/[0.03] px-4 py-3">
-                <p className="text-muted-foreground text-xs tracking-[0.18em] uppercase">
-                  Selected range
+              <div className="rounded-[24px] border border-white/[0.08] bg-white/[0.03] px-4 py-3">
+                <p className="text-[0.64rem] tracking-[0.18em] text-white/34 uppercase">
+                  Range
                 </p>
                 <p className="mt-2 text-sm font-semibold text-white">
                   {analytics.rangeLabel}
@@ -100,14 +97,14 @@ export default async function DashboardAnalyticsPage({
                   className={buttonStyles({ variant: "secondary" })}
                 >
                   <MessageSquareText className="mr-2 h-4 w-4" />
-                  Open messages
+                  Messages
                 </Link>
                 <Link
                   href="/dashboard/rules"
                   className={buttonStyles({ variant: "secondary" })}
                 >
                   <Bot className="mr-2 h-4 w-4" />
-                  Improve rules
+                  Rules
                 </Link>
               </div>
             </div>
@@ -118,48 +115,42 @@ export default async function DashboardAnalyticsPage({
           <CardHeader>
             <CardTitle className="flex items-center gap-3 text-white">
               <BarChart3 className="text-primary h-5 w-5" />
-              Operator snapshot
+              Snapshot
             </CardTitle>
-            <CardDescription>
-              Every metric on this page is derived from real inbound and
-              outbound logs scoped to the active workspace.
-            </CardDescription>
+            <CardDescription>Fast read.</CardDescription>
           </CardHeader>
           <CardContent className="grid gap-4 sm:grid-cols-2">
-            <div className="rounded-[22px] border border-white/10 bg-white/[0.03] p-4">
-              <p className="text-muted-foreground text-xs tracking-[0.18em] uppercase">
-                Reporting window
+            <div className="rounded-[22px] border border-white/[0.08] bg-white/[0.03] p-4">
+              <p className="text-[0.64rem] tracking-[0.18em] text-white/34 uppercase">
+                Window
               </p>
-              <p className="mt-3 text-sm font-semibold text-white">
+              <p className="mt-2 text-sm font-semibold text-white">
                 {analytics.windowLabel}
               </p>
             </div>
-            <div className="rounded-[22px] border border-white/10 bg-white/[0.03] p-4">
-              <p className="text-muted-foreground text-xs tracking-[0.18em] uppercase">
+            <div className="rounded-[22px] border border-white/[0.08] bg-white/[0.03] p-4">
+              <p className="text-[0.64rem] tracking-[0.18em] text-white/34 uppercase">
                 Coverage
               </p>
-              <p className="mt-3 text-sm font-semibold text-white">
-                {analytics.kpis.matchedMessages} of{" "}
-                {analytics.kpis.totalIncomingMessages} inbound messages matched
-                an active rule.
+              <p className="mt-2 text-sm font-semibold text-white">
+                {analytics.kpis.matchedMessages}/
+                {analytics.kpis.totalIncomingMessages}
               </p>
             </div>
-            <div className="rounded-[22px] border border-white/10 bg-white/[0.03] p-4">
-              <p className="text-muted-foreground text-xs tracking-[0.18em] uppercase">
-                Fallback usage
+            <div className="rounded-[22px] border border-white/[0.08] bg-white/[0.03] p-4">
+              <p className="text-[0.64rem] tracking-[0.18em] text-white/34 uppercase">
+                Fallback
               </p>
-              <p className="mt-3 text-sm font-semibold text-white">
-                {analytics.kpis.fallbackRepliesUsed} messages used fallback
-                replies in this range.
+              <p className="mt-2 text-sm font-semibold text-white">
+                {analytics.kpis.fallbackRepliesUsed}
               </p>
             </div>
-            <div className="rounded-[22px] border border-white/10 bg-white/[0.03] p-4">
-              <p className="text-muted-foreground text-xs tracking-[0.18em] uppercase">
-                Delivery posture
+            <div className="rounded-[22px] border border-white/[0.08] bg-white/[0.03] p-4">
+              <p className="text-[0.64rem] tracking-[0.18em] text-white/34 uppercase">
+                Sent / failed
               </p>
-              <p className="mt-3 text-sm font-semibold text-white">
-                {successfulOutbound} outbound replies reached sent or delivered
-                status, with {analytics.kpis.outboundFailed} failures to review.
+              <p className="mt-2 text-sm font-semibold text-white">
+                {successfulOutbound} / {analytics.kpis.outboundFailed}
               </p>
             </div>
           </CardContent>
@@ -192,22 +183,21 @@ export default async function DashboardAnalyticsPage({
         <AnalyticsEmptyState />
       )}
 
-      <Card className="border-white/10 bg-white/[0.02]">
+      <Card className="border-white/[0.08] bg-white/[0.02]">
         <CardContent className="flex flex-col gap-4 p-6 lg:flex-row lg:items-center lg:justify-between">
           <div>
             <p className="text-sm font-semibold text-white">
-              Need more data in analytics?
+              Need more signal?
             </p>
-            <p className="text-muted-foreground mt-2 max-w-2xl text-sm leading-6">
-              Connect WhatsApp, test more rules, or inspect live message logs to
-              improve automation coverage and delivery quality.
+            <p className="mt-1 text-xs text-white/44">
+              Connect WhatsApp or test rules.
             </p>
           </div>
           <Link
             href="/dashboard/whatsapp"
             className={buttonStyles({ variant: "secondary" })}
           >
-            Review WhatsApp setup
+            WhatsApp
             <ArrowRight className="ml-2 h-4 w-4" />
           </Link>
         </CardContent>

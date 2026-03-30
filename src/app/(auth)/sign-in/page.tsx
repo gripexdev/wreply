@@ -6,7 +6,7 @@ export default function SignInPage() {
     <div className="w-full max-w-xl">
       <AuthFormShell
         title="Sign in to WReply"
-        description="Access your protected workspace foundation and continue building the product from a clean baseline."
+        description="Open your workspace."
         footerText="Need a workspace?"
         footerHref="/sign-up"
         footerAction="Create an account"

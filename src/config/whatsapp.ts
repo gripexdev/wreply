@@ -24,7 +24,7 @@ export const whatsappStatusMeta: Record<
     label: "Configured",
     description:
       "Core webhook settings are saved. Complete remaining checklist items before enabling live replies.",
-    badgeClassName: "border-sky-400/20 bg-sky-500/10 text-sky-100",
+    badgeClassName: "border-[#3B82F6]/20 bg-[#3B82F6]/10 text-[#DBEAFE]",
   },
   ready_for_testing: {
     label: "Ready for testing",

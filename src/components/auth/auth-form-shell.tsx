@@ -27,9 +27,7 @@ export function AuthFormShell({
     <Card className="border-white/10 bg-black/20">
       <CardHeader className="space-y-3">
         <CardTitle className="text-3xl text-white">{title}</CardTitle>
-        <CardDescription className="max-w-md text-base">
-          {description}
-        </CardDescription>
+        <CardDescription className="max-w-md">{description}</CardDescription>
       </CardHeader>
       <CardContent className="space-y-6">
         {children}

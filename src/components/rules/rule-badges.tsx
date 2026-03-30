@@ -8,7 +8,7 @@ export function RuleLanguageBadge({
   language: RuleLanguage;
 }>) {
   return (
-    <Badge className="border-sky-300/15 bg-sky-300/10 text-sky-100">
+    <Badge className="border-[#3B82F6]/15 bg-[#3B82F6]/10 text-[#DBEAFE]">
       {getRuleLanguageLabel(language)}
     </Badge>
   );
@@ -20,7 +20,7 @@ export function RuleMatchTypeBadge({
   matchType: RuleMatchType;
 }>) {
   return (
-    <Badge className="border-violet-300/15 bg-violet-300/10 text-violet-100">
+    <Badge className="border-[#A855F7]/15 bg-[#A855F7]/10 text-[#F3E8FF]">
       {getRuleMatchTypeLabel(matchType)}
     </Badge>
   );

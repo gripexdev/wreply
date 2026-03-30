@@ -20,8 +20,8 @@ function MessageBubble({
       className={cn(
         "max-w-[92%] rounded-[28px] border px-4 py-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.04)]",
         log.direction === "INBOUND"
-          ? "border-sky-400/18 bg-[linear-gradient(180deg,rgba(20,44,74,0.72),rgba(12,23,40,0.92))] text-sky-50"
-          : "border-emerald-400/18 bg-[linear-gradient(180deg,rgba(18,58,55,0.74),rgba(10,28,29,0.96))] text-emerald-50",
+          ? "border-[#3B82F6]/18 bg-[linear-gradient(180deg,rgba(20,44,74,0.72),rgba(12,23,40,0.92))] text-[#EFF6FF]"
+          : "border-[#A855F7]/18 bg-[linear-gradient(180deg,rgba(38,28,74,0.74),rgba(18,14,36,0.96))] text-[#F5F3FF]",
       )}
     >
       <div className="flex items-center gap-2 text-[0.68rem] tracking-[0.18em] text-white/52 uppercase">
@@ -55,7 +55,7 @@ export function MessageLogCards({
               "overflow-hidden",
               log.direction === "INBOUND"
                 ? "bg-[linear-gradient(180deg,rgba(9,21,38,0.96),rgba(8,13,24,0.98))]"
-                : "bg-[linear-gradient(180deg,rgba(8,27,25,0.94),rgba(7,14,21,0.98))]",
+                : "bg-[linear-gradient(180deg,rgba(20,14,37,0.94),rgba(9,12,22,0.98))]",
             )}
           >
             <CardContent className="space-y-5 p-5">

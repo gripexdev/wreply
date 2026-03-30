@@ -71,19 +71,16 @@ export function MessageLogToolbar({
               </span>
               <div>
                 <p className="text-[0.68rem] tracking-[0.22em] text-white/40 uppercase">
-                  Conversation filters
+                  Filters
                 </p>
-                <p className="text-sm text-white/78">
-                  Narrow message activity by direction, outcome, fallback path,
-                  and delivery state.
-                </p>
+                <p className="text-sm text-white/58">Message activity.</p>
               </div>
             </div>
           </div>
 
           <div className="flex flex-wrap items-center gap-3">
             <div className="rounded-full border border-white/[0.08] bg-white/[0.03] px-3 py-2 text-sm text-white/62">
-              {isSyncing ? "Refreshing activity..." : "Filters synced with URL"}
+              {isSyncing ? "Refreshing" : "Synced"}
             </div>
             {settingsHref ? (
               <Link
