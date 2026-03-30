@@ -7,11 +7,17 @@ import { Button, buttonStyles } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select } from "@/components/ui/select";
 import {
+  rulePageSizeOptions,
   ruleLanguageFilterOptions,
   ruleMatchTypeFilterOptions,
+  ruleSortOptions,
   ruleStatusOptions,
 } from "@/config/rules";
-import type { RulesQueryState } from "@/types/rules";
+import type {
+  RulePageSize,
+  RuleSortOption,
+  RulesQueryState,
+} from "@/types/rules";
 
 export function RulesToolbar({
   filters,
@@ -19,6 +25,8 @@ export function RulesToolbar({
   categories,
   onSearchInputChange,
   onFilterChange,
+  onSortChange,
+  onPageSizeChange,
   onCreateRule,
   isSyncing,
   testHref,
@@ -28,9 +36,11 @@ export function RulesToolbar({
   categories: string[];
   onSearchInputChange: (value: string) => void;
   onFilterChange: (
-    key: keyof Omit<RulesQueryState, "search">,
+    key: "status" | "language" | "matchType" | "category",
     value: string,
   ) => void;
+  onSortChange: (value: RuleSortOption) => void;
+  onPageSizeChange: (value: RulePageSize) => void;
   onCreateRule: () => void;
   isSyncing: boolean;
   testHref?: string;
@@ -79,7 +89,19 @@ export function RulesToolbar({
             />
           </div>
 
-          <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+          <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
+            <Select
+              value={filters.sort}
+              onChange={(event) =>
+                onSortChange(event.target.value as RuleSortOption)
+              }
+            >
+              {ruleSortOptions.map((option) => (
+                <option key={option.value} value={option.value}>
+                  {option.label}
+                </option>
+              ))}
+            </Select>
             <Select
               value={filters.status}
               onChange={(event) => onFilterChange("status", event.target.value)}
@@ -91,43 +113,55 @@ export function RulesToolbar({
               ))}
             </Select>
             <Select
-              value={filters.language}
+              value={String(filters.pageSize)}
               onChange={(event) =>
-                onFilterChange("language", event.target.value)
+                onPageSizeChange(Number(event.target.value) as RulePageSize)
               }
             >
-              {ruleLanguageFilterOptions.map((option) => (
+              {rulePageSizeOptions.map((option) => (
                 <option key={option.value} value={option.value}>
                   {option.label}
-                </option>
-              ))}
-            </Select>
-            <Select
-              value={filters.matchType}
-              onChange={(event) =>
-                onFilterChange("matchType", event.target.value)
-              }
-            >
-              {ruleMatchTypeFilterOptions.map((option) => (
-                <option key={option.value} value={option.value}>
-                  {option.label}
-                </option>
-              ))}
-            </Select>
-            <Select
-              value={filters.category}
-              onChange={(event) =>
-                onFilterChange("category", event.target.value)
-              }
-            >
-              <option value="">All categories</option>
-              {categories.map((category) => (
-                <option key={category} value={category}>
-                  {category}
                 </option>
               ))}
             </Select>
           </div>
+        </div>
+
+        <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+          <Select
+            value={filters.language}
+            onChange={(event) => onFilterChange("language", event.target.value)}
+          >
+            {ruleLanguageFilterOptions.map((option) => (
+              <option key={option.value} value={option.value}>
+                {option.label}
+              </option>
+            ))}
+          </Select>
+          <Select
+            value={filters.matchType}
+            onChange={(event) =>
+              onFilterChange("matchType", event.target.value)
+            }
+          >
+            {ruleMatchTypeFilterOptions.map((option) => (
+              <option key={option.value} value={option.value}>
+                {option.label}
+              </option>
+            ))}
+          </Select>
+          <Select
+            value={filters.category}
+            onChange={(event) => onFilterChange("category", event.target.value)}
+          >
+            <option value="">All categories</option>
+            {categories.map((category) => (
+              <option key={category} value={category}>
+                {category}
+              </option>
+            ))}
+          </Select>
+          <div className="hidden xl:block" />
         </div>
       </div>
     </div>

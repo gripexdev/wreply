@@ -7,12 +7,15 @@ import { usePathname } from "next/navigation";
 
 import { RuleDeleteDialog } from "@/components/rules/rule-delete-dialog";
 import { RuleFormDialog } from "@/components/rules/rule-form-dialog";
+import { RuleInspector } from "@/components/rules/rule-inspector";
 import { RulesCards } from "@/components/rules/rules-cards";
+import { RulesPagination } from "@/components/rules/rules-pagination";
 import {
   RulesEmptyState,
   RulesErrorState,
   RulesLoadingState,
 } from "@/components/rules/rules-states";
+import { RulesTable } from "@/components/rules/rules-table";
 import { RulesToolbar } from "@/components/rules/rules-toolbar";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
@@ -22,8 +25,10 @@ import type {
   RuleListItem,
   RuleMoveResponse,
   RuleMutationResponse,
+  RulePageSize,
   RulesListResponse,
   RulesQueryState,
+  RuleSortOption,
 } from "@/types/rules";
 
 function readFilters(searchParams: URLSearchParams) {
@@ -33,6 +38,9 @@ function readFilters(searchParams: URLSearchParams) {
     language: searchParams.get("language") ?? undefined,
     matchType: searchParams.get("matchType") ?? undefined,
     category: searchParams.get("category") ?? undefined,
+    sort: searchParams.get("sort") ?? undefined,
+    page: searchParams.get("page") ?? undefined,
+    pageSize: searchParams.get("pageSize") ?? undefined,
   });
 
   if (parsed.success) {
@@ -63,6 +71,18 @@ function buildRulesQuery(filters: RulesQueryState) {
 
   if (filters.category) {
     searchParams.set("category", filters.category);
+  }
+
+  if (filters.sort !== "priority_asc") {
+    searchParams.set("sort", filters.sort);
+  }
+
+  if (filters.page !== 1) {
+    searchParams.set("page", String(filters.page));
+  }
+
+  if (filters.pageSize !== 25) {
+    searchParams.set("pageSize", String(filters.pageSize));
   }
 
   return searchParams.toString();
@@ -153,6 +173,7 @@ export function RulesPageClient({
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [reloadToken, setReloadToken] = useState(0);
   const [busyRuleId, setBusyRuleId] = useState<string | null>(null);
+  const [selectedRuleId, setSelectedRuleId] = useState<string | null>(null);
   const hasLoadedOnceRef = useRef(false);
   const [editorState, setEditorState] = useState<{
     mode: "create" | "edit";
@@ -166,7 +187,7 @@ export function RulesPageClient({
       setFilters((currentValue) =>
         currentValue.search === nextSearch
           ? currentValue
-          : { ...currentValue, search: nextSearch },
+          : { ...currentValue, search: nextSearch, page: 1 },
       );
     }, 220);
 
@@ -250,24 +271,95 @@ export function RulesPageClient({
     return () => controller.abort();
   }, [filters, reloadToken]);
 
+  useEffect(() => {
+    if (!data) {
+      return;
+    }
+
+    setFilters((currentValue) =>
+      currentValue.page === data.filters.page
+        ? currentValue
+        : { ...currentValue, page: data.filters.page },
+    );
+  }, [data]);
+
+  useEffect(() => {
+    if (!data) {
+      return;
+    }
+
+    if (data.rules.length === 0) {
+      setSelectedRuleId(null);
+      return;
+    }
+
+    const hasSelectedRule = data.rules.some(
+      (rule) => rule.id === selectedRuleId,
+    );
+
+    if (!hasSelectedRule) {
+      setSelectedRuleId(data.rules[0].id);
+    }
+  }, [data, selectedRuleId]);
+
   const currentRules = data?.rules ?? [];
   const summary = data?.summary ?? { total: 0, active: 0, inactive: 0 };
   const categories = data?.categories ?? [];
+  const pagination = data?.pagination ?? {
+    page: filters.page,
+    pageSize: filters.pageSize,
+    totalItems: 0,
+    totalPages: 1,
+    startItem: 0,
+    endItem: 0,
+  };
   const isFiltered = isFilteredView(filters);
-  const isReorderLocked = isFiltered;
+  const isReorderLocked =
+    isFiltered ||
+    filters.sort !== "priority_asc" ||
+    pagination.totalPages > 1 ||
+    filters.page !== 1;
+  const selectedRule =
+    currentRules.find((rule) => rule.id === selectedRuleId) ?? null;
+  const selectedRuleIndex = selectedRule
+    ? currentRules.findIndex((rule) => rule.id === selectedRule.id)
+    : -1;
 
   function refreshRules() {
     setReloadToken((currentValue) => currentValue + 1);
   }
 
   function handleFilterChange(
-    key: keyof Omit<RulesQueryState, "search">,
+    key: "status" | "language" | "matchType" | "category",
     value: string,
   ) {
     setFilters((currentValue) => ({
       ...currentValue,
       [key]: value,
+      page: 1,
     }));
+  }
+
+  function handleSortChange(value: RuleSortOption) {
+    setFilters((currentValue) => ({
+      ...currentValue,
+      sort: value,
+      page: 1,
+    }));
+  }
+
+  function handlePageSizeChange(value: RulePageSize) {
+    setFilters((currentValue) => ({
+      ...currentValue,
+      pageSize: value,
+      page: 1,
+    }));
+  }
+
+  function handlePageChange(page: number) {
+    setFilters((currentValue) =>
+      currentValue.page === page ? currentValue : { ...currentValue, page },
+    );
   }
 
   function clearFilters() {
@@ -446,7 +538,17 @@ export function RulesPageClient({
           data.summary.inactive - (deleteRule.isActive ? 0 : 1),
         ),
       },
+      pagination: {
+        ...data.pagination,
+        totalItems: Math.max(0, data.pagination.totalItems - 1),
+        endItem: Math.max(0, data.pagination.endItem - 1),
+      },
     });
+
+    if (selectedRuleId === deleteRule.id) {
+      setSelectedRuleId(null);
+    }
+
     refreshRules();
   }
 
@@ -471,7 +573,7 @@ export function RulesPageClient({
                   <span className="text-gradient"> blocks</span>
                 </h1>
                 <p className="max-w-2xl text-sm text-white/48 sm:text-base">
-                  Trigger in. Reply out.
+                  Scan, edit, and tune every reply flow.
                 </p>
               </div>
 
@@ -504,7 +606,7 @@ export function RulesPageClient({
                   Flow
                 </p>
                 <h2 className="font-display mt-3 text-2xl font-semibold tracking-[-0.04em] text-white">
-                  Small blocks. Clear logic.
+                  Scale without losing clarity.
                 </h2>
               </div>
 
@@ -533,10 +635,10 @@ export function RulesPageClient({
 
             <div className="mt-6 flex flex-wrap gap-2">
               <Badge className="border-white/[0.08] bg-white/[0.045] text-white/66">
-                Exact + contains
+                Compact table
               </Badge>
               <Badge className="border-white/[0.08] bg-white/[0.045] text-white/66">
-                Darija + French
+                Inspector
               </Badge>
             </div>
           </CardContent>
@@ -573,14 +675,16 @@ export function RulesPageClient({
         categories={categories}
         onSearchInputChange={(value) => setSearchInput(value)}
         onFilterChange={handleFilterChange}
+        onSortChange={handleSortChange}
+        onPageSizeChange={handlePageSizeChange}
         onCreateRule={() => setEditorState({ mode: "create", rule: null })}
         isSyncing={isRefreshing}
         testHref="/dashboard/rules/test"
       />
 
-      {isReorderLocked ? (
+      {isReorderLocked && currentRules.length > 0 ? (
         <div className="rounded-[24px] border border-white/[0.08] bg-white/[0.03] px-4 py-3 text-sm text-white/48">
-          Clear filters to reorder.
+          Priority mode is available only on the full unfiltered list.
         </div>
       ) : null}
 
@@ -601,15 +705,49 @@ export function RulesPageClient({
           onClearFilters={clearFilters}
         />
       ) : (
-        <RulesCards
-          rules={currentRules}
-          busyRuleId={busyRuleId}
-          disableMove={isReorderLocked}
-          onToggle={handleToggleRule}
-          onMove={handleMoveRule}
-          onEdit={(rule) => setEditorState({ mode: "edit", rule })}
-          onDelete={(rule) => setDeleteRule(rule)}
-        />
+        <div className="space-y-4">
+          <div className="hidden items-start gap-5 lg:grid lg:grid-cols-[minmax(0,1.12fr)_minmax(340px,0.88fr)] xl:grid-cols-[minmax(0,1.22fr)_minmax(360px,0.78fr)]">
+            <div className="space-y-4">
+              <RulesTable
+                rules={currentRules}
+                selectedRuleId={selectedRuleId}
+                onSelect={setSelectedRuleId}
+              />
+              <RulesPagination
+                pagination={pagination}
+                onPageChange={handlePageChange}
+              />
+            </div>
+
+            <RuleInspector
+              rule={selectedRule}
+              busyRuleId={busyRuleId}
+              disableMove={isReorderLocked}
+              totalRules={currentRules.length}
+              currentIndex={selectedRuleIndex}
+              onToggle={handleToggleRule}
+              onMove={handleMoveRule}
+              onEdit={(rule) => setEditorState({ mode: "edit", rule })}
+              onDelete={(rule) => setDeleteRule(rule)}
+            />
+          </div>
+
+          <div className="space-y-4 lg:hidden">
+            <RulesCards
+              rules={currentRules}
+              busyRuleId={busyRuleId}
+              disableMove={isReorderLocked}
+              onToggle={handleToggleRule}
+              onMove={handleMoveRule}
+              onEdit={(rule) => setEditorState({ mode: "edit", rule })}
+              onDelete={(rule) => setDeleteRule(rule)}
+            />
+            <RulesPagination
+              pagination={pagination}
+              onPageChange={handlePageChange}
+            />
+          </div>
+        </div>
       )}
 
       <RuleFormDialog

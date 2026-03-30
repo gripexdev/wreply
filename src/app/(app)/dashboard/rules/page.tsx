@@ -25,6 +25,9 @@ export default async function DashboardRulesPage({
     language: getSingleValue(params.language),
     matchType: getSingleValue(params.matchType),
     category: getSingleValue(params.category),
+    sort: getSingleValue(params.sort),
+    page: getSingleValue(params.page),
+    pageSize: getSingleValue(params.pageSize),
   });
 
   return (

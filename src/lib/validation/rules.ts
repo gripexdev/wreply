@@ -23,6 +23,12 @@ const categorySchema = z
 export const ruleMatchTypeSchema = z.enum(["EXACT", "CONTAINS"]);
 export const ruleLanguageSchema = z.enum(["ANY", "DARIJA", "FRENCH"]);
 export const ruleStatusFilterSchema = z.enum(["all", "active", "inactive"]);
+export const ruleSortSchema = z.enum([
+  "priority_asc",
+  "updated_desc",
+  "keyword_asc",
+  "keyword_desc",
+]);
 
 export const createRuleSchema = z.object({
   keyword: keywordSchema,
@@ -69,6 +75,22 @@ export const rulesQuerySchema = z.object({
     .max(48, "Category filter is too long.")
     .optional()
     .default(""),
+  sort: ruleSortSchema.optional().default("priority_asc"),
+  page: z.coerce
+    .number()
+    .int("Page must be a whole number.")
+    .min(1, "Page must be at least 1.")
+    .optional()
+    .default(1),
+  pageSize: z.coerce
+    .number()
+    .int("Page size must be a whole number.")
+    .refine((value) => [25, 50, 100].includes(value), {
+      message: "Page size must be 25, 50, or 100.",
+    })
+    .transform((value) => value as 25 | 50 | 100)
+    .optional()
+    .default(25),
 });
 
 export type CreateRuleInput = z.input<typeof createRuleSchema>;

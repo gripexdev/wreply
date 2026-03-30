@@ -13,7 +13,11 @@ import {
   type UpdateRuleInput,
   type UpdateRuleStatusInput,
 } from "@/lib/validation/rules";
-import type { RuleListItem, RulesListResponse } from "@/types/rules";
+import type {
+  RuleListItem,
+  RulesListResponse,
+  RuleSortOption,
+} from "@/types/rules";
 
 class RuleServiceError extends Error {
   constructor(
@@ -109,6 +113,22 @@ function clampPriority(priority: number, max: number) {
   return Math.max(1, Math.min(priority, max));
 }
 
+function getRulesOrderBy(
+  sort: RuleSortOption,
+): Prisma.AutoReplyRuleOrderByWithRelationInput[] {
+  switch (sort) {
+    case "updated_desc":
+      return [{ updatedAt: "desc" }, { priority: "asc" }, { id: "asc" }];
+    case "keyword_asc":
+      return [{ keyword: "asc" }, { priority: "asc" }, { id: "asc" }];
+    case "keyword_desc":
+      return [{ keyword: "desc" }, { priority: "asc" }, { id: "asc" }];
+    case "priority_asc":
+    default:
+      return [{ priority: "asc" }, { updatedAt: "desc" }, { id: "asc" }];
+  }
+}
+
 export async function listWorkspaceRules(
   workspaceId: string,
   rawQuery: RulesQueryInput,
@@ -146,10 +166,18 @@ export async function listWorkspaceRules(
       : {}),
   };
 
+  const filteredTotal = await prisma.autoReplyRule.count({ where });
+  const totalPages = Math.max(1, Math.ceil(filteredTotal / query.pageSize));
+  const page = Math.min(query.page, totalPages);
+  const skip = (page - 1) * query.pageSize;
+  const orderBy = getRulesOrderBy(query.sort);
+
   const [rules, total, active, inactive, categories] = await Promise.all([
     prisma.autoReplyRule.findMany({
       where,
-      orderBy: [{ priority: "asc" }, { updatedAt: "desc" }],
+      orderBy,
+      skip,
+      take: query.pageSize,
     }),
     prisma.autoReplyRule.count({
       where: {
@@ -195,7 +223,18 @@ export async function listWorkspaceRules(
       active,
       inactive,
     },
-    filters: query,
+    filters: {
+      ...query,
+      page,
+    },
+    pagination: {
+      page,
+      pageSize: query.pageSize,
+      totalItems: filteredTotal,
+      totalPages,
+      startItem: filteredTotal === 0 ? 0 : skip + 1,
+      endItem: filteredTotal === 0 ? 0 : skip + rules.length,
+    },
   };
 }
 

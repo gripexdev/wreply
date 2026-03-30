@@ -1,6 +1,8 @@
 import type {
   RuleLanguage,
   RuleMatchType,
+  RulePageSize,
+  RuleSortOption,
   RuleStatusFilter,
 } from "@/types/rules";
 
@@ -28,6 +30,25 @@ export const ruleStatusOptions: Array<{
   { value: "all", label: "All statuses" },
   { value: "active", label: "Active" },
   { value: "inactive", label: "Inactive" },
+];
+
+export const ruleSortOptions: Array<{
+  value: RuleSortOption;
+  label: string;
+}> = [
+  { value: "priority_asc", label: "Priority" },
+  { value: "updated_desc", label: "Recently updated" },
+  { value: "keyword_asc", label: "Keyword A-Z" },
+  { value: "keyword_desc", label: "Keyword Z-A" },
+];
+
+export const rulePageSizeOptions: Array<{
+  value: RulePageSize;
+  label: string;
+}> = [
+  { value: 25, label: "25 / page" },
+  { value: 50, label: "50 / page" },
+  { value: 100, label: "100 / page" },
 ];
 
 export const ruleLanguageFilterOptions = [
