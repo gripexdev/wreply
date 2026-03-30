@@ -62,7 +62,7 @@ export default async function DashboardAnalyticsPage({
     analytics.kpis.outboundSent + analytics.kpis.outboundDelivered;
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-8">
       <section className="grid gap-4 xl:grid-cols-[1.12fr_0.88fr]">
         <Card className="surface-glow overflow-hidden">
           <CardContent className="p-6 sm:p-7">
@@ -71,8 +71,9 @@ export default async function DashboardAnalyticsPage({
                 <Badge className="border-primary/20 bg-primary/10 text-primary">
                   Workspace analytics
                 </Badge>
-                <h1 className="font-display mt-4 text-3xl font-semibold text-white sm:text-4xl">
-                  Understand volume, coverage, and reply outcomes
+                <h1 className="font-display mt-4 text-4xl font-semibold tracking-[-0.05em] text-white sm:text-5xl">
+                  Understand volume, coverage,
+                  <span className="text-gradient"> and reply outcomes</span>
                 </h1>
                 <p className="text-muted-foreground mt-3 max-w-2xl text-sm leading-7 sm:text-base">
                   Track how many inbound messages reached this workspace, how

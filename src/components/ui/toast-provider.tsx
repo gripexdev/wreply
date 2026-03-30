@@ -27,9 +27,11 @@ const toastIconMap = {
 };
 
 const toastClasses = {
-  success: "border-emerald-400/20 bg-emerald-500/10 text-emerald-50",
-  error: "border-rose-400/20 bg-rose-500/10 text-rose-50",
-  info: "border-white/10 bg-white/8 text-white",
+  success:
+    "border-emerald-300/15 bg-[linear-gradient(180deg,rgba(9,36,30,0.95),rgba(7,21,18,0.98))] text-emerald-50",
+  error:
+    "border-rose-300/15 bg-[linear-gradient(180deg,rgba(50,17,29,0.95),rgba(28,11,16,0.98))] text-rose-50",
+  info: "border-white/[0.09] bg-[linear-gradient(180deg,rgba(19,27,44,0.94),rgba(10,15,25,0.98))] text-white",
 };
 
 export function ToastProvider({
@@ -68,16 +70,20 @@ export function ToastProvider({
             <div
               key={toast.id}
               className={cn(
-                "pointer-events-auto rounded-[24px] border px-4 py-4 shadow-[0_30px_80px_-50px_rgba(0,0,0,1)] backdrop-blur-xl",
+                "panel-sheen pointer-events-auto overflow-hidden rounded-[24px] border px-4 py-4 shadow-[0_28px_80px_-46px_rgba(0,0,0,0.96)] backdrop-blur-2xl",
                 toastClasses[toast.variant],
               )}
             >
               <div className="flex items-start gap-3">
-                <Icon className="mt-0.5 h-5 w-5 shrink-0" />
+                <span className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-[14px] border border-white/10 bg-white/[0.05]">
+                  <Icon className="h-4 w-4" />
+                </span>
                 <div className="min-w-0 flex-1">
-                  <p className="text-sm font-semibold">{toast.title}</p>
+                  <p className="text-sm font-semibold tracking-[-0.01em]">
+                    {toast.title}
+                  </p>
                   {toast.description ? (
-                    <p className="mt-1 text-sm leading-6 text-current/80">
+                    <p className="mt-1 text-sm leading-6 text-current/78">
                       {toast.description}
                     </p>
                   ) : null}
@@ -85,7 +91,7 @@ export function ToastProvider({
                 <button
                   type="button"
                   aria-label="Dismiss notification"
-                  className="rounded-full p-1 text-current/70 transition hover:bg-white/8 hover:text-current"
+                  className="rounded-full p-1 text-current/64 transition hover:bg-white/[0.06] hover:text-current"
                   onClick={() =>
                     setToasts((currentValue) =>
                       currentValue.filter(

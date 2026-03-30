@@ -1,9 +1,9 @@
 import Link from "next/link";
 import {
   ArrowRight,
-  Database,
-  LockKeyhole,
-  MessageSquareQuote,
+  Bot,
+  MessageSquareDashed,
+  ShieldCheck,
   Sparkles,
 } from "lucide-react";
 
@@ -18,32 +18,32 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 
-const foundationCards = [
+const featureCards = [
   {
-    title: "Protected workspace shell",
+    title: "Message automation",
     description:
-      "A responsive dashboard layout with route protection and session-aware navigation.",
-    icon: LockKeyhole,
+      "Rules, fallback behavior, and WhatsApp processing live inside one focused operator workflow.",
+    icon: Bot,
   },
   {
-    title: "Prisma domain model",
+    title: "Operational clarity",
     description:
-      "Core entities for workspaces, plans, subscriptions, reply rules, logs, and connections.",
-    icon: Database,
+      "Logs, analytics, and connection status help teams see what matched, what failed, and what needs refinement.",
+    icon: MessageSquareDashed,
   },
   {
-    title: "Feature-ready foundation",
+    title: "Trusted by design",
     description:
-      "Structured for future webhook, billing, rules, and analytics work without pretending they already exist.",
-    icon: MessageSquareQuote,
+      "Protected routes, workspace scoping, and honest delivery logging keep the product grounded in real operator trust.",
+    icon: ShieldCheck,
   },
 ];
 
 export default function LandingPage() {
   return (
     <div className="shell-grid min-h-screen">
-      <div className="mx-auto flex min-h-screen w-full max-w-7xl flex-col px-6 py-6 sm:px-8 lg:px-10">
-        <header className="flex items-center justify-between rounded-full border border-white/10 bg-black/20 px-5 py-4 backdrop-blur-xl">
+      <div className="mx-auto flex min-h-screen w-full max-w-[1380px] flex-col px-6 py-6 sm:px-8 lg:px-10">
+        <header className="panel-sheen flex items-center justify-between rounded-[28px] border border-white/[0.08] bg-[linear-gradient(180deg,rgba(11,17,31,0.82),rgba(8,12,21,0.9))] px-5 py-4 shadow-[0_20px_60px_-42px_rgba(0,0,0,0.92)] backdrop-blur-2xl">
           <Brand compact />
           <div className="flex items-center gap-3">
             <Link
@@ -53,27 +53,33 @@ export default function LandingPage() {
               Sign in
             </Link>
             <Link href="/sign-up" className={buttonStyles()}>
-              Start foundation
+              Start workspace
             </Link>
           </div>
         </header>
 
-        <main className="flex flex-1 items-center py-12">
-          <div className="grid w-full items-center gap-10 lg:grid-cols-[1.1fr_0.9fr]">
+        <main className="flex flex-1 items-center py-12 lg:py-16">
+          <div className="grid w-full items-center gap-10 xl:grid-cols-[1.05fr_0.95fr]">
             <section className="space-y-8">
-              <Badge className="border-primary/30 bg-primary/10 text-primary">
-                Foundation step
+              <Badge className="border-primary/15 bg-primary/10 text-primary">
+                Premium automation workspace
               </Badge>
+
               <div className="space-y-6">
-                <h1 className="font-display max-w-3xl text-5xl font-semibold tracking-tight text-white sm:text-6xl">
-                  WReply is now structured like a real SaaS, not a prototype.
+                <h1 className="font-display max-w-4xl text-5xl font-semibold tracking-[-0.05em] text-white sm:text-6xl xl:text-7xl">
+                  WhatsApp automation for Moroccan businesses,
+                  <span className="text-gradient">
+                    {" "}
+                    designed like a real SaaS
+                  </span>
                 </h1>
-                <p className="text-muted-foreground max-w-2xl text-lg leading-8">
-                  This foundation ships the architecture, auth base flow,
-                  database schema, Docker setup, and dashboard shell for a
-                  WhatsApp auto-reply platform focused on Moroccan businesses.
+                <p className="max-w-2xl text-lg leading-8 text-white/60">
+                  WReply gives operators a calmer command center for rules,
+                  message activity, WhatsApp setup, fallback behavior, and
+                  analytics without the clutter of a generic dashboard template.
                 </p>
               </div>
+
               <div className="flex flex-wrap gap-4">
                 <Link href="/sign-up" className={buttonStyles({ size: "lg" })}>
                   Create workspace
@@ -83,37 +89,38 @@ export default function LandingPage() {
                   href="/dashboard"
                   className={buttonStyles({ variant: "secondary", size: "lg" })}
                 >
-                  View protected area
+                  Open dashboard
                 </Link>
               </div>
+
               <div className="grid gap-4 sm:grid-cols-3">
-                <Card className="bg-black/20">
+                <Card className="bg-white/[0.03]">
                   <CardContent className="p-5">
-                    <p className="text-muted-foreground text-xs tracking-[0.2em] uppercase">
-                      Languages
+                    <p className="text-[0.68rem] tracking-[0.22em] text-white/38 uppercase">
+                      Coverage
                     </p>
-                    <p className="mt-3 text-2xl font-semibold text-white">
-                      Darija, FR, AR
+                    <p className="font-display mt-4 text-3xl font-semibold tracking-[-0.04em] text-white">
+                      Rules + fallback
                     </p>
                   </CardContent>
                 </Card>
-                <Card className="bg-black/20">
+                <Card className="bg-white/[0.03]">
                   <CardContent className="p-5">
-                    <p className="text-muted-foreground text-xs tracking-[0.2em] uppercase">
-                      Auth
+                    <p className="text-[0.68rem] tracking-[0.22em] text-white/38 uppercase">
+                      Visibility
                     </p>
-                    <p className="mt-3 text-2xl font-semibold text-white">
-                      Ready
+                    <p className="font-display mt-4 text-3xl font-semibold tracking-[-0.04em] text-white">
+                      Logs + analytics
                     </p>
                   </CardContent>
                 </Card>
-                <Card className="bg-black/20">
+                <Card className="bg-white/[0.03]">
                   <CardContent className="p-5">
-                    <p className="text-muted-foreground text-xs tracking-[0.2em] uppercase">
-                      Database
+                    <p className="text-[0.68rem] tracking-[0.22em] text-white/38 uppercase">
+                      Channel
                     </p>
-                    <p className="mt-3 text-2xl font-semibold text-white">
-                      Prisma + Postgres
+                    <p className="font-display mt-4 text-3xl font-semibold tracking-[-0.04em] text-white">
+                      WhatsApp Cloud
                     </p>
                   </CardContent>
                 </Card>
@@ -121,36 +128,36 @@ export default function LandingPage() {
             </section>
 
             <section className="surface-glow">
-              <Card className="overflow-hidden border-white/10 bg-black/20">
-                <CardHeader className="flex flex-row items-center justify-between border-b border-white/10 pb-5">
+              <Card className="overflow-hidden">
+                <CardHeader className="flex flex-row items-center justify-between border-b border-white/[0.08] pb-5">
                   <div>
                     <CardTitle className="text-white">
-                      Product foundation board
+                      Product overview
                     </CardTitle>
                     <CardDescription>
-                      What is intentionally live in this step.
+                      A cleaner, darker, more distinctive operator experience.
                     </CardDescription>
                   </div>
                   <Sparkles className="text-primary h-5 w-5" />
                 </CardHeader>
-                <CardContent className="space-y-4 p-6">
-                  {foundationCards.map((item) => {
+                <CardContent className="space-y-4">
+                  {featureCards.map((item) => {
                     const Icon = item.icon;
 
                     return (
                       <div
                         key={item.title}
-                        className="hover:border-primary/30 rounded-[24px] border border-white/10 bg-white/[0.03] p-5 transition hover:bg-white/[0.05]"
+                        className="rounded-[24px] border border-white/[0.08] bg-white/[0.03] p-5 transition duration-200 hover:border-white/[0.12] hover:bg-white/[0.045]"
                       >
                         <div className="flex items-start gap-4">
-                          <span className="bg-primary/10 text-primary mt-1 flex h-11 w-11 items-center justify-center rounded-2xl">
+                          <span className="border-primary/15 bg-primary/10 text-primary flex h-12 w-12 items-center justify-center rounded-[18px] border">
                             <Icon className="h-5 w-5" />
                           </span>
                           <div className="space-y-2">
-                            <h3 className="font-display text-lg font-semibold text-white">
+                            <h3 className="font-display text-lg font-semibold tracking-[-0.02em] text-white">
                               {item.title}
                             </h3>
-                            <p className="text-muted-foreground text-sm leading-6">
+                            <p className="text-sm leading-6 text-white/58">
                               {item.description}
                             </p>
                           </div>
@@ -158,12 +165,12 @@ export default function LandingPage() {
                       </div>
                     );
                   })}
-                  <div className="rounded-[24px] border border-dashed border-white/15 bg-transparent p-5">
-                    <p className="text-muted-foreground text-sm leading-6">
-                      WhatsApp webhooks, rules CRUD, billing, and analytics are
-                      not implemented in this milestone. The architecture is
-                      prepared so those features can be added without
-                      restructuring the project.
+
+                  <div className="rounded-[24px] border border-dashed border-white/[0.12] bg-white/[0.015] p-5">
+                    <p className="text-sm leading-7 text-white/56">
+                      The product stays honest about capability. Every visible
+                      metric, log, connection state, and fallback outcome is
+                      based on real stored data or real runtime behavior.
                     </p>
                   </div>
                 </CardContent>

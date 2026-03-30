@@ -1,5 +1,6 @@
 import { BarChart3, Layers3, MessagesSquare, Smartphone } from "lucide-react";
 
+import { Badge } from "@/components/ui/badge";
 import {
   Card,
   CardContent,
@@ -39,65 +40,111 @@ export default async function DashboardPage() {
   const currentPlan = foundationData?.subscription?.plan;
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-8">
       <Card className="surface-glow overflow-hidden">
-        <CardHeader className="border-b border-white/10 pb-6">
-          <CardTitle className="text-3xl text-white">
-            Dashboard foundation
-          </CardTitle>
-          <CardDescription>
-            Signed in as {session.user.email}. This area is protected and ready
-            for the next feature slices.
-          </CardDescription>
-        </CardHeader>
-        <CardContent className="grid gap-4 p-6 sm:grid-cols-2 xl:grid-cols-4">
-          <div className="rounded-[24px] border border-white/10 bg-white/[0.03] p-5">
-            <p className="text-muted-foreground text-xs tracking-[0.2em] uppercase">
-              Current plan
-            </p>
-            <p className="font-display mt-3 text-2xl font-semibold text-white">
-              {currentPlan?.name ?? "No plan yet"}
-            </p>
-            <p className="text-muted-foreground mt-2 text-sm">
-              {currentPlan
-                ? `${formatCurrencyMad(currentPlan.monthlyPriceMad)} / month`
-                : "Subscription provider not wired yet."}
-            </p>
+        <CardContent className="grid gap-6 p-6 sm:p-7 xl:grid-cols-[1.08fr_0.92fr]">
+          <div className="space-y-5">
+            <Badge className="border-primary/15 bg-primary/10 text-primary">
+              Workspace command center
+            </Badge>
+            <div className="space-y-4">
+              <h2 className="font-display text-4xl font-semibold tracking-[-0.05em] text-white sm:text-5xl">
+                Operators see the product,
+                <span className="text-gradient"> not the scaffolding</span>
+              </h2>
+              <p className="max-w-2xl text-base leading-7 text-white/58">
+                Signed in as {session.user.email}. This workspace now has a
+                clearer shell for rules, WhatsApp setup, message visibility,
+                settings, and analytics without changing product logic.
+              </p>
+            </div>
           </div>
-          {metricDefinitions.map((item) => {
-            const Icon = item.icon;
-            const value = foundationData?.[item.key] ?? 0;
 
-            return (
-              <div
-                key={item.key}
-                className="rounded-[24px] border border-white/10 bg-white/[0.03] p-5"
-              >
-                <div className="flex items-center justify-between">
-                  <p className="text-muted-foreground text-xs tracking-[0.2em] uppercase">
-                    {item.label}
-                  </p>
-                  <Icon className="text-primary h-4 w-4" />
-                </div>
-                <p className="font-display mt-3 text-3xl font-semibold text-white">
-                  {value}
-                </p>
-                <p className="text-muted-foreground mt-2 text-sm">
-                  Real counts from the current Prisma workspace records.
-                </p>
-              </div>
-            );
-          })}
+          <div className="grid gap-4 sm:grid-cols-2">
+            <div className="rounded-[24px] border border-white/[0.08] bg-white/[0.03] p-5">
+              <p className="text-[0.68rem] tracking-[0.22em] text-white/38 uppercase">
+                Current plan
+              </p>
+              <p className="font-display mt-4 text-3xl font-semibold tracking-[-0.04em] text-white">
+                {currentPlan?.name ?? "No plan yet"}
+              </p>
+              <p className="mt-2 text-sm leading-6 text-white/54">
+                {currentPlan
+                  ? `${formatCurrencyMad(currentPlan.monthlyPriceMad)} / month`
+                  : "Subscription provider is intentionally not wired yet."}
+              </p>
+            </div>
+            <div className="rounded-[24px] border border-white/[0.08] bg-white/[0.03] p-5">
+              <p className="text-[0.68rem] tracking-[0.22em] text-white/38 uppercase">
+                Delivery stance
+              </p>
+              <p className="font-display mt-4 text-3xl font-semibold tracking-[-0.04em] text-white">
+                Honest logs
+              </p>
+              <p className="mt-2 text-sm leading-6 text-white/54">
+                Prepared, sent, delivered, and failed states remain visible to
+                operators throughout the product.
+              </p>
+            </div>
+          </div>
         </CardContent>
       </Card>
+
+      <section className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+        {metricDefinitions.map((item) => {
+          const Icon = item.icon;
+          const value = foundationData?.[item.key] ?? 0;
+
+          return (
+            <Card key={item.key} className="bg-white/[0.03]">
+              <CardContent className="p-5">
+                <div className="flex items-center justify-between">
+                  <p className="text-[0.68rem] tracking-[0.22em] text-white/38 uppercase">
+                    {item.label}
+                  </p>
+                  <span className="border-primary/15 bg-primary/10 text-primary flex h-10 w-10 items-center justify-center rounded-[16px] border">
+                    <Icon className="h-4 w-4" />
+                  </span>
+                </div>
+                <p className="font-display mt-4 text-4xl font-semibold tracking-[-0.05em] text-white">
+                  {value}
+                </p>
+                <p className="mt-2 text-sm leading-6 text-white/54">
+                  Real counts from the current workspace records.
+                </p>
+              </CardContent>
+            </Card>
+          );
+        })}
+
+        <Card className="bg-white/[0.03]">
+          <CardContent className="p-5">
+            <div className="flex items-center justify-between">
+              <p className="text-[0.68rem] tracking-[0.22em] text-white/38 uppercase">
+                Analytics
+              </p>
+              <span className="border-primary/15 bg-primary/10 text-primary flex h-10 w-10 items-center justify-center rounded-[16px] border">
+                <BarChart3 className="h-4 w-4" />
+              </span>
+            </div>
+            <p className="font-display mt-4 text-4xl font-semibold tracking-[-0.05em] text-white">
+              Live
+            </p>
+            <p className="mt-2 text-sm leading-6 text-white/54">
+              Message volume, coverage, fallback usage, and delivery health are
+              visible from real workspace logs.
+            </p>
+          </CardContent>
+        </Card>
+      </section>
 
       <div className="grid gap-6 xl:grid-cols-[1.1fr_0.9fr]">
         <Card>
           <CardHeader>
-            <CardTitle className="text-white">Architecture status</CardTitle>
+            <CardTitle className="text-white">System foundations</CardTitle>
             <CardDescription>
-              These modules are complete for this milestone and ready for
-              extension.
+              These slices are complete and ready to support ongoing product
+              work.
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
@@ -107,18 +154,20 @@ export default async function DashboardPage() {
               return (
                 <div
                   key={item.title}
-                  className="flex items-start gap-4 rounded-[24px] border border-white/10 bg-white/[0.03] p-5"
+                  className="rounded-[24px] border border-white/[0.08] bg-white/[0.03] p-5"
                 >
-                  <span className="bg-primary/10 text-primary flex h-12 w-12 items-center justify-center rounded-2xl">
-                    <Icon className="h-5 w-5" />
-                  </span>
-                  <div className="space-y-2">
-                    <h3 className="font-display text-lg font-semibold text-white">
-                      {item.title}
-                    </h3>
-                    <p className="text-muted-foreground text-sm leading-6">
-                      {item.description}
-                    </p>
+                  <div className="flex items-start gap-4">
+                    <span className="border-primary/15 bg-primary/10 text-primary flex h-12 w-12 items-center justify-center rounded-[18px] border">
+                      <Icon className="h-5 w-5" />
+                    </span>
+                    <div className="space-y-2">
+                      <h3 className="font-display text-lg font-semibold tracking-[-0.02em] text-white">
+                        {item.title}
+                      </h3>
+                      <p className="text-sm leading-6 text-white/56">
+                        {item.description}
+                      </p>
+                    </div>
                   </div>
                 </div>
               );
@@ -130,37 +179,39 @@ export default async function DashboardPage() {
           <CardHeader>
             <CardTitle className="flex items-center gap-3 text-white">
               <BarChart3 className="text-primary h-5 w-5" />
-              Next feature lanes
+              Product lanes
             </CardTitle>
             <CardDescription>
-              What the foundation is prepared to support, without claiming those
-              systems already exist.
+              These areas are now framed by the same design language without
+              pretending unfinished systems already exist.
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
-            <div className="rounded-[24px] border border-dashed border-white/15 p-5">
-              <p className="text-sm font-semibold text-white">
-                WhatsApp integration lane
+            <div className="rounded-[24px] border border-dashed border-white/[0.12] bg-white/[0.02] p-5">
+              <p className="text-sm font-semibold tracking-[-0.01em] text-white">
+                WhatsApp operations
               </p>
-              <p className="text-muted-foreground mt-2 text-sm leading-6">
-                Schema and routing boundaries are ready for webhook ingestion
-                and connection sync flows.
-              </p>
-            </div>
-            <div className="rounded-[24px] border border-dashed border-white/15 p-5">
-              <p className="text-sm font-semibold text-white">Billing lane</p>
-              <p className="text-muted-foreground mt-2 text-sm leading-6">
-                Plans and subscriptions exist in the schema, but provider logic
-                and invoicing are intentionally absent.
+              <p className="mt-2 text-sm leading-6 text-white/56">
+                Connection status, inbound processing, and honest outbound
+                states already fit into the same operator shell.
               </p>
             </div>
-            <div className="rounded-[24px] border border-dashed border-white/15 p-5">
-              <p className="text-sm font-semibold text-white">
-                Rules management lane
+            <div className="rounded-[24px] border border-dashed border-white/[0.12] bg-white/[0.02] p-5">
+              <p className="text-sm font-semibold tracking-[-0.01em] text-white">
+                Rules and coverage
               </p>
-              <p className="text-muted-foreground mt-2 text-sm leading-6">
-                The model is ready for CRUD and execution logic, but no
-                automation engine is implemented in this step.
+              <p className="mt-2 text-sm leading-6 text-white/56">
+                Rules management, matching, and fallback behavior now sit next
+                to analytics in one consistent visual hierarchy.
+              </p>
+            </div>
+            <div className="rounded-[24px] border border-dashed border-white/[0.12] bg-white/[0.02] p-5">
+              <p className="text-sm font-semibold tracking-[-0.01em] text-white">
+                Future product work
+              </p>
+              <p className="mt-2 text-sm leading-6 text-white/56">
+                Billing, AI, and deeper admin surfaces remain intentionally
+                outside this redesign step.
               </p>
             </div>
           </CardContent>
