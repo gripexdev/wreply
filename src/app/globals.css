@@ -247,6 +247,222 @@ textarea {
   color: transparent;
 }
 
+.marketing-page {
+  position: relative;
+}
+
+.marketing-page::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  background:
+    radial-gradient(
+      circle at 50% -10%,
+      rgba(34, 211, 238, 0.1),
+      transparent 34%
+    ),
+    radial-gradient(
+      circle at 85% 18%,
+      rgba(168, 85, 247, 0.08),
+      transparent 28%
+    ),
+    radial-gradient(
+      circle at 18% 74%,
+      rgba(236, 72, 153, 0.05),
+      transparent 24%
+    );
+  pointer-events: none;
+}
+
+.marketing-grid {
+  position: relative;
+}
+
+.marketing-grid::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+  background-size: 96px 96px;
+  mask-image: linear-gradient(
+    180deg,
+    transparent 0%,
+    black 12%,
+    black 88%,
+    transparent 100%
+  );
+  opacity: 0.16;
+  pointer-events: none;
+}
+
+.marketing-rail {
+  position: relative;
+}
+
+.marketing-rail::before,
+.marketing-rail::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 1px;
+  background: linear-gradient(
+    180deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.08) 16%,
+    rgba(255, 255, 255, 0.03) 84%,
+    transparent 100%
+  );
+  opacity: 0.6;
+  pointer-events: none;
+}
+
+.marketing-rail::before {
+  left: 4.5%;
+}
+
+.marketing-rail::after {
+  right: 4.5%;
+}
+
+.marketing-surface {
+  position: relative;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: linear-gradient(
+    180deg,
+    rgba(10, 15, 26, 0.9) 0%,
+    rgba(7, 11, 20, 0.98) 100%
+  );
+  backdrop-filter: blur(24px);
+}
+
+.marketing-surface::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.05) 0%,
+    rgba(255, 255, 255, 0.015) 14%,
+    transparent 40%
+  );
+  pointer-events: none;
+}
+
+.marketing-stage {
+  position: relative;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background:
+    radial-gradient(
+      circle at 50% 42%,
+      rgba(34, 211, 238, 0.12),
+      transparent 24%
+    ),
+    linear-gradient(180deg, rgba(7, 11, 20, 0.98) 0%, rgba(5, 8, 15, 1) 100%);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.04),
+    0 36px 90px -64px rgba(0, 0, 0, 0.92);
+}
+
+.marketing-stage::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+  background-size: 72px 72px;
+  mask-image: radial-gradient(circle at center, black 26%, transparent 92%);
+  opacity: 0.22;
+  pointer-events: none;
+}
+
+.marketing-stage::after {
+  content: "";
+  position: absolute;
+  inset: auto 10% -28% 10%;
+  height: 220px;
+  border-radius: 999px;
+  background: radial-gradient(
+    circle,
+    rgba(168, 85, 247, 0.12),
+    transparent 70%
+  );
+  filter: blur(26px);
+  pointer-events: none;
+}
+
+.marketing-glow-cyan {
+  background:
+    radial-gradient(
+      circle at 50% 38%,
+      rgba(34, 211, 238, 0.14),
+      transparent 26%
+    ),
+    linear-gradient(180deg, rgba(7, 11, 20, 0.98) 0%, rgba(5, 8, 15, 1) 100%);
+}
+
+.marketing-glow-pink {
+  background:
+    radial-gradient(
+      circle at 50% 38%,
+      rgba(236, 72, 153, 0.14),
+      transparent 26%
+    ),
+    linear-gradient(180deg, rgba(7, 11, 20, 0.98) 0%, rgba(5, 8, 15, 1) 100%);
+}
+
+.marketing-glow-purple {
+  background:
+    radial-gradient(
+      circle at 50% 38%,
+      rgba(168, 85, 247, 0.14),
+      transparent 26%
+    ),
+    linear-gradient(180deg, rgba(7, 11, 20, 0.98) 0%, rgba(5, 8, 15, 1) 100%);
+}
+
+.marketing-glow-blue {
+  background:
+    radial-gradient(
+      circle at 50% 38%,
+      rgba(59, 130, 246, 0.14),
+      transparent 26%
+    ),
+    linear-gradient(180deg, rgba(7, 11, 20, 0.98) 0%, rgba(5, 8, 15, 1) 100%);
+}
+
+.marketing-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.03);
+  padding: 0.5rem 0.875rem;
+  font-size: 0.72rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.62);
+}
+
+.marketing-divider {
+  height: 1px;
+  width: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.08) 20%,
+    rgba(255, 255, 255, 0.04) 80%,
+    transparent 100%
+  );
+}
+
 @keyframes shimmer {
   100% {
     transform: translateX(200%);
