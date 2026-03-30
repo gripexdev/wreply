@@ -188,9 +188,11 @@ export function MessageLogDetailDialog({
                     value={
                       log.replySource === "FALLBACK"
                         ? "Fallback reply"
-                        : log.replySource === "RULE_MATCH"
-                          ? "Matched rule"
-                          : "No outbound origin"
+                        : log.replySource === "AI_KNOWLEDGE"
+                          ? "AI knowledge"
+                          : log.replySource === "RULE_MATCH"
+                            ? "Matched rule"
+                            : "No outbound origin"
                     }
                   />
                   <SectionField
@@ -303,9 +305,11 @@ export function MessageLogDetailDialog({
                     value={
                       log.relatedMessage.replySource === "FALLBACK"
                         ? "Fallback"
-                        : log.relatedMessage.replySource === "RULE_MATCH"
-                          ? "Matched rule"
-                          : "No reply origin"
+                        : log.relatedMessage.replySource === "AI_KNOWLEDGE"
+                          ? "AI knowledge"
+                          : log.relatedMessage.replySource === "RULE_MATCH"
+                            ? "Matched rule"
+                            : "No reply origin"
                     }
                   />
                   <SectionField

@@ -3,6 +3,7 @@ import { redirect } from "next/navigation";
 
 import { BusinessSettingsClient } from "@/components/settings/business-settings-client";
 import { getRequiredSession } from "@/lib/auth";
+import { getWorkspaceAssistantSettings } from "@/services/assistant/assistant-knowledge.service";
 import { getWorkspaceBusinessSettings } from "@/services/workspace/workspace-settings.service";
 
 export const metadata: Metadata = {
@@ -22,7 +23,15 @@ export default async function DashboardSettingsPage() {
     redirect("/dashboard");
   }
 
-  const settings = await getWorkspaceBusinessSettings(session.user.workspaceId);
+  const [settings, assistantSettings] = await Promise.all([
+    getWorkspaceBusinessSettings(session.user.workspaceId),
+    getWorkspaceAssistantSettings(session.user.workspaceId),
+  ]);
 
-  return <BusinessSettingsClient initialSettings={settings} />;
+  return (
+    <BusinessSettingsClient
+      initialSettings={settings}
+      initialAssistantSettings={assistantSettings}
+    />
+  );
 }

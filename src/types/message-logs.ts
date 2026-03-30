@@ -9,7 +9,7 @@ export type MessageLogSendStatusFilter =
   | "FAILED";
 export type MessageLogFallbackFilter = "all" | "used" | "not_used";
 export type MessageLogDateRangeFilter = "all" | "24h" | "7d" | "30d";
-export type OutboundReplySource = "RULE_MATCH" | "FALLBACK";
+export type OutboundReplySource = "RULE_MATCH" | "AI_KNOWLEDGE" | "FALLBACK";
 
 export interface MessageLogsQueryState {
   search: string;
@@ -71,4 +71,3 @@ export interface MessageLogsListResponse {
   summary: MessageLogsSummary;
   filters: MessageLogsQueryState;
 }
-

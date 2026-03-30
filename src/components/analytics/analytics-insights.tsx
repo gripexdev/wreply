@@ -115,7 +115,11 @@ export function DeliveryIssuesInsight({
                   </div>
                   {issue.replySource ? (
                     <Badge className="border-white/[0.08] bg-white/[0.03] text-white/72">
-                      {issue.replySource === "FALLBACK" ? "fallback" : "rule"}
+                      {issue.replySource === "FALLBACK"
+                        ? "fallback"
+                        : issue.replySource === "AI_KNOWLEDGE"
+                          ? "ai"
+                          : "rule"}
                     </Badge>
                   ) : null}
                 </div>

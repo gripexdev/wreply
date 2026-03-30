@@ -154,9 +154,12 @@ export function MessageLogTable({
                         <p className="mt-2 text-sm font-semibold text-white">
                           {log.matchedRule
                             ? log.matchedRule.keyword
-                            : log.replySource === "FALLBACK" || log.fallbackUsed
-                              ? "Fallback message"
-                              : "No rule source"}
+                            : log.replySource === "AI_KNOWLEDGE"
+                              ? "AI knowledge"
+                              : log.replySource === "FALLBACK" ||
+                                  log.fallbackUsed
+                                ? "Fallback message"
+                                : "No rule source"}
                         </p>
                       </div>
                       <div className="rounded-[20px] border border-white/[0.08] bg-black/18 p-4">

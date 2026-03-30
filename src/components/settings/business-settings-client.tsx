@@ -10,6 +10,7 @@ import {
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
+import { AssistantTrainingCard } from "@/components/settings/assistant-training-card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -27,6 +28,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/components/ui/toast-provider";
 import { formatShortDate } from "@/lib/utils";
 import { updateWorkspaceBusinessSettingsSchema } from "@/lib/validation/workspace-settings";
+import type { WorkspaceAssistantSettingsView } from "@/types/assistant";
 import type {
   WorkspaceBusinessSettingsMutationResponse,
   WorkspaceBusinessSettingsView,
@@ -117,8 +119,10 @@ function StatusCard({
 
 export function BusinessSettingsClient({
   initialSettings,
+  initialAssistantSettings,
 }: Readonly<{
   initialSettings: WorkspaceBusinessSettingsView;
+  initialAssistantSettings: WorkspaceAssistantSettingsView;
 }>) {
   const router = useRouter();
   const { pushToast } = useToast();
@@ -524,6 +528,8 @@ export function BusinessSettingsClient({
         </form>
 
         <div className="space-y-6">
+          <AssistantTrainingCard initialSettings={initialAssistantSettings} />
+
           <Card>
             <CardHeader>
               <CardTitle className="text-white">Snapshot</CardTitle>

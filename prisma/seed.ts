@@ -29,6 +29,18 @@ function daysAgo(days: number, hour = 10, minute = 0) {
 async function main() {
   const fallbackReplyMessage =
     "Salam, thanks for your message. We received it and our team will reply as soon as possible.";
+  const assistantWebsiteUrl = "https://atlasmotors.ma";
+  const assistantWebsiteContent = [
+    "Atlas Motors sells inspected used cars in Casablanca.",
+    "Customers can book a showroom visit or reserve a vehicle with a deposit after speaking with the team.",
+    "After-sales support is available for maintenance questions and delivery coordination.",
+    "For delivery, customers should share their city or neighborhood so the team can confirm the exact timing.",
+  ].join(" ");
+  const assistantManualKnowledge = [
+    "The business offers after-sales help for paperwork, registration follow-up, and basic maintenance questions.",
+    "For bookings, customers should send the car model, preferred visit time, and phone number.",
+    "The team replies in Darija or French depending on the customer message.",
+  ].join(" ");
 
   const [starterPlan, growthPlan] = await Promise.all([
     prisma.plan.upsert({
@@ -94,6 +106,10 @@ async function main() {
       languagePreference: AutoReplyRuleLanguage.ANY,
       fallbackReplyEnabled: true,
       fallbackReplyMessage,
+      assistantWebsiteUrl,
+      assistantWebsiteContent,
+      assistantManualKnowledge,
+      assistantKnowledgeUpdatedAt: daysAgo(0, 9, 0),
     },
     create: {
       name: "Atlas Motors",
@@ -108,6 +124,10 @@ async function main() {
       languagePreference: AutoReplyRuleLanguage.ANY,
       fallbackReplyEnabled: true,
       fallbackReplyMessage,
+      assistantWebsiteUrl,
+      assistantWebsiteContent,
+      assistantManualKnowledge,
+      assistantKnowledgeUpdatedAt: daysAgo(0, 9, 0),
     },
   });
 
@@ -508,6 +528,37 @@ async function main() {
         failureReason:
           "Live WhatsApp sending is disabled for this workspace connection.",
         createdAt: daysAgo(0, 15, 33),
+        sentAt: null,
+      },
+    },
+    {
+      incoming: {
+        externalMessageId: "seed-incoming-009",
+        contactName: "Omar",
+        senderPhone: "+212612345678",
+        recipientPhone: "+212600000000",
+        content: "salam kayn service apres vente ?",
+        normalizedContent: "salam kayn service apres vente",
+        matchedRuleId: null,
+        processingStatus: IncomingMessageProcessingStatus.NO_MATCH,
+        processingReason:
+          "No active workspace rule matched the normalized message. An AI knowledge reply was prepared from the workspace training data.",
+        fallbackEligible: true,
+        fallbackUsed: false,
+        receivedAt: daysAgo(0, 17, 5),
+        processedAt: daysAgo(0, 17, 6),
+      },
+      outgoing: {
+        externalMessageId: "seed-outgoing-009",
+        matchedRuleId: null,
+        recipientPhone: "+212612345678",
+        content:
+          "Salam. Oui, nous aidons pour le suivi apres vente et les questions de maintenance de base. Envoyez le modele du vehicule et votre demande.",
+        status: OutgoingMessageStatus.PREPARED,
+        replySource: OutgoingReplySource.AI_KNOWLEDGE,
+        failureReason:
+          "Live WhatsApp sending is disabled for this workspace connection.",
+        createdAt: daysAgo(0, 17, 8),
         sentAt: null,
       },
     },

@@ -110,6 +110,14 @@ export function getMessageLogOutcomeSummary(log: MessageLogListItem) {
     };
   }
 
+  if (log.replySource === "AI_KNOWLEDGE") {
+    return {
+      title: "AI knowledge reply",
+      description:
+        "No rule matched, so the assistant replied from the workspace knowledge base.",
+    };
+  }
+
   if (log.replySource === "FALLBACK" || log.fallbackUsed) {
     return {
       title: "Fallback reply",
@@ -155,9 +163,11 @@ export function getMessageLogStatusSummary(log: MessageLogListItem) {
       case "MATCHED":
         return "Resolved by the matching engine.";
       case "NO_MATCH":
-        return log.fallbackUsed
-          ? "No rule matched. Fallback behavior covered the reply."
-          : "No rule matched this customer message.";
+        return log.replySource === "AI_KNOWLEDGE"
+          ? "No rule matched. The assistant replied from trained knowledge."
+          : log.fallbackUsed
+            ? "No rule matched. Fallback behavior covered the reply."
+            : "No rule matched this customer message.";
       case "FAILED":
         return "Processing failed before the automation flow completed.";
       case "UNSUPPORTED":
@@ -227,6 +237,14 @@ export function MessageLogBadges({
           icon={sendConfig.icon}
           label={sendConfig.label}
           className={sendConfig.className}
+        />
+      ) : null}
+
+      {log.replySource === "AI_KNOWLEDGE" ? (
+        <LogBadge
+          icon={Bot}
+          label="AI reply"
+          className="border-[#22D3EE]/18 bg-[#22D3EE]/10 text-[#CFFAFE]"
         />
       ) : null}
 

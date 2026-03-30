@@ -2,6 +2,7 @@ import { MessageType, Prisma, type OutgoingReplySource } from "@prisma/client";
 
 import { prisma } from "@/database/client";
 import { parseWhatsAppTextMessages } from "@/lib/whatsapp/payload-parser";
+import { generateWorkspaceAssistantReply } from "@/services/assistant/assistant-reply.service";
 import { verifyWhatsAppWebhookSignature } from "@/lib/whatsapp/verify-signature";
 import { verifyWhatsAppWebhookChallenge } from "@/lib/whatsapp/webhook-verify";
 import { testWorkspaceMessageMatch } from "@/services/messages/message-matching.service";
@@ -18,7 +19,10 @@ function parseWebhookPayload(rawBody: string) {
   try {
     return JSON.parse(rawBody) as unknown;
   } catch {
-    throw new WhatsAppWebhookServiceError("Invalid WhatsApp webhook payload.", 400);
+    throw new WhatsAppWebhookServiceError(
+      "Invalid WhatsApp webhook payload.",
+      400,
+    );
   }
 }
 
@@ -40,7 +44,10 @@ function toTopLevelJsonPayload(
   return toNestedJsonValue(value) as Prisma.InputJsonValue;
 }
 
-async function markWebhookSeen(connectionId: string, phoneNumber: string | null) {
+async function markWebhookSeen(
+  connectionId: string,
+  phoneNumber: string | null,
+) {
   await prisma.whatsAppConnection.update({
     where: {
       id: connectionId,
@@ -74,7 +81,11 @@ function buildReplyOutcomeReason(
   deliveryState: "PREPARED" | "SENT" | "FAILED",
 ) {
   const sourceLabel =
-    replySource === "FALLBACK" ? "workspace fallback reply" : "matched rule reply";
+    replySource === "FALLBACK"
+      ? "workspace fallback reply"
+      : replySource === "AI_KNOWLEDGE"
+        ? "knowledge-based AI reply"
+        : "matched rule reply";
 
   if (deliveryState === "SENT") {
     return `A ${sourceLabel} was sent successfully.`;
@@ -254,7 +265,9 @@ export async function processWhatsAppWebhookRequest(input: {
   rawBody: string;
   signatureHeader: string | null;
 }): Promise<WhatsAppWebhookProcessingSummary> {
-  const pathConnection = await getWhatsAppConnectionByWebhookKey(input.webhookKey);
+  const pathConnection = await getWhatsAppConnectionByWebhookKey(
+    input.webhookKey,
+  );
 
   if (pathConnection.appSecret) {
     const signatureIsValid = verifyWhatsAppWebhookSignature({
@@ -316,7 +329,9 @@ export async function processWhatsAppWebhookRequest(input: {
       continue;
     }
 
-    const receivedAt = message.receivedAt ? new Date(message.receivedAt) : new Date();
+    const receivedAt = message.receivedAt
+      ? new Date(message.receivedAt)
+      : new Date();
     let incomingLogId: string | null = null;
 
     try {
@@ -380,8 +395,13 @@ export async function processWhatsAppWebhookRequest(input: {
 
     let fallbackUsed = false;
     let processingReason = matchResult.reason;
+    let replySourceUsed: OutgoingReplySource | null = null;
+    let assistantReplyResult: Awaited<
+      ReturnType<typeof generateWorkspaceAssistantReply>
+    > | null = null;
 
     if (matchResult.matched && matchResult.matchedRule) {
+      replySourceUsed = "RULE_MATCH";
       const replyOutcome = await createAndDispatchReply({
         workspaceId: resolvedConnection.workspaceId,
         connection: resolvedConnection,
@@ -408,36 +428,32 @@ export async function processWhatsAppWebhookRequest(input: {
         replyOutcome.deliveryState,
       )}`;
     } else {
-      const fallbackSettings = await getCachedWorkspaceFallbackSettings(
-        workspaceFallbackSettingsCache,
-        resolvedConnection.workspaceId,
-      );
-      const fallbackMessage = fallbackSettings.fallbackReplyMessage?.trim() ?? "";
+      assistantReplyResult = await generateWorkspaceAssistantReply({
+        workspaceId: resolvedConnection.workspaceId,
+        customerMessage: message.messageText,
+      });
 
-      if (fallbackSettings.fallbackReplyEnabled && fallbackMessage) {
-        fallbackUsed = true;
-
+      if (
+        assistantReplyResult.usedAiReply &&
+        assistantReplyResult.replyMessage
+      ) {
+        replySourceUsed = "AI_KNOWLEDGE";
         const replyOutcome = await createAndDispatchReply({
           workspaceId: resolvedConnection.workspaceId,
           connection: resolvedConnection,
           incomingLogId,
           recipientPhone: message.senderPhone,
-          messageBody: fallbackMessage,
+          messageBody: assistantReplyResult.replyMessage,
           matchedRuleId: null,
-          replySource: "FALLBACK",
+          replySource: "AI_KNOWLEDGE",
           payloadMetadata: {
-            fallbackMessage,
-            fallbackSettings: toNestedJsonValue({
-              businessName: fallbackSettings.businessName,
-              replyDisplayName: fallbackSettings.replyDisplayName,
-              languagePreference: fallbackSettings.languagePreference,
-            }),
+            assistantReply: toNestedJsonValue(assistantReplyResult),
             matchResult: toNestedJsonValue(matchResult),
           },
         });
 
-        processingReason = `${matchResult.reason} ${buildReplyOutcomeReason(
-          "FALLBACK",
+        processingReason = `${assistantReplyResult.reason} ${buildReplyOutcomeReason(
+          "AI_KNOWLEDGE",
           replyOutcome.deliveryState,
         )}`;
 
@@ -449,7 +465,51 @@ export async function processWhatsAppWebhookRequest(input: {
           summary.preparedReplies += 1;
         }
       } else {
-        processingReason = `${matchResult.reason} Workspace fallback reply is disabled or missing.`;
+        const fallbackSettings = await getCachedWorkspaceFallbackSettings(
+          workspaceFallbackSettingsCache,
+          resolvedConnection.workspaceId,
+        );
+        const fallbackMessage =
+          fallbackSettings.fallbackReplyMessage?.trim() ?? "";
+
+        if (fallbackSettings.fallbackReplyEnabled && fallbackMessage) {
+          fallbackUsed = true;
+          replySourceUsed = "FALLBACK";
+
+          const replyOutcome = await createAndDispatchReply({
+            workspaceId: resolvedConnection.workspaceId,
+            connection: resolvedConnection,
+            incomingLogId,
+            recipientPhone: message.senderPhone,
+            messageBody: fallbackMessage,
+            matchedRuleId: null,
+            replySource: "FALLBACK",
+            payloadMetadata: {
+              fallbackMessage,
+              fallbackSettings: toNestedJsonValue({
+                businessName: fallbackSettings.businessName,
+                replyDisplayName: fallbackSettings.replyDisplayName,
+                languagePreference: fallbackSettings.languagePreference,
+              }),
+              matchResult: toNestedJsonValue(matchResult),
+            },
+          });
+
+          processingReason = `${matchResult.reason} ${buildReplyOutcomeReason(
+            "FALLBACK",
+            replyOutcome.deliveryState,
+          )}`;
+
+          if (replyOutcome.deliveryState === "FAILED") {
+            summary.failedReplies += 1;
+          } else if (replyOutcome.deliveryState === "SENT") {
+            summary.sentReplies += 1;
+          } else {
+            summary.preparedReplies += 1;
+          }
+        } else {
+          processingReason = `${assistantReplyResult.reason} Workspace fallback reply is disabled or missing.`;
+        }
       }
     }
 
@@ -469,7 +529,9 @@ export async function processWhatsAppWebhookRequest(input: {
           rawEvent: toNestedJsonValue(message.payloadFragment),
           customerName: message.customerName,
           matchResult: toNestedJsonValue(matchResult),
-          fallbackUsed: fallbackUsed,
+          fallbackUsed,
+          replySourceUsed,
+          assistantReply: toNestedJsonValue(assistantReplyResult),
         },
       },
     });

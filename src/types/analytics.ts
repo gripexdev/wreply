@@ -42,7 +42,7 @@ export interface AnalyticsDeliveryIssue {
   createdAt: string;
   failureReason: string;
   contentPreview: string;
-  replySource: "RULE_MATCH" | "FALLBACK" | null;
+  replySource: "RULE_MATCH" | "AI_KNOWLEDGE" | "FALLBACK" | null;
 }
 
 export interface WorkspaceAnalyticsView {

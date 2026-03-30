@@ -187,7 +187,9 @@ function buildOutgoingWhere(
       : {}),
     ...(filters.outcome === "unmatched"
       ? {
-          replySource: "FALLBACK",
+          replySource: {
+            in: ["FALLBACK", "AI_KNOWLEDGE"],
+          },
         }
       : {}),
     ...(filters.fallback === "used"
@@ -200,6 +202,9 @@ function buildOutgoingWhere(
           OR: [
             {
               replySource: "RULE_MATCH",
+            },
+            {
+              replySource: "AI_KNOWLEDGE",
             },
             {
               replySource: null,
@@ -254,9 +259,7 @@ function toContentPreview(content: string | null | undefined) {
   return truncateText(content, 96) || "No message content";
 }
 
-function toInboundItem(
-  log: IncomingMessageLogRecord,
-): MessageLogListItem {
+function toInboundItem(log: IncomingMessageLogRecord): MessageLogListItem {
   const relatedOutbound = log.outgoingReplies[0] ?? null;
 
   return {
@@ -301,9 +304,7 @@ function toInboundItem(
   };
 }
 
-function toOutboundItem(
-  log: OutgoingMessageLogRecord,
-): MessageLogListItem {
+function toOutboundItem(log: OutgoingMessageLogRecord): MessageLogListItem {
   return {
     id: log.id,
     direction: "OUTBOUND",
@@ -315,7 +316,7 @@ function toOutboundItem(
     matched:
       log.replySource === "RULE_MATCH"
         ? true
-        : log.replySource === "FALLBACK"
+        : log.replySource === "FALLBACK" || log.replySource === "AI_KNOWLEDGE"
           ? false
           : null,
     matchedRule: log.matchedRule
@@ -330,7 +331,7 @@ function toOutboundItem(
     fallbackEligible:
       log.replySource === "FALLBACK"
         ? true
-        : log.relatedIncomingMessage?.fallbackEligible ?? null,
+        : (log.relatedIncomingMessage?.fallbackEligible ?? null),
     fallbackUsed: log.replySource === "FALLBACK",
     sendStatus: log.status,
     replySource: log.replySource,

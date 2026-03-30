@@ -83,6 +83,8 @@ Required variables:
 - `NEXTAUTH_SECRET`
 - `NEXT_PUBLIC_APP_NAME`
 - `NEXT_PUBLIC_APP_URL`
+- `OPENAI_API_KEY` for AI knowledge replies
+- `OPENAI_MODEL` optional, defaults to `gpt-5.4-mini`
 
 ## Local Setup
 

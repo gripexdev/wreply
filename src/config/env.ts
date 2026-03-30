@@ -1,5 +1,11 @@
 import { z } from "zod";
 
+const optionalNonEmptyString = z.preprocess(
+  (value) =>
+    typeof value === "string" && value.trim().length === 0 ? undefined : value,
+  z.string().min(1).optional(),
+);
+
 const envSchema = z.object({
   NODE_ENV: z
     .enum(["development", "test", "production"])
@@ -13,6 +19,8 @@ const envSchema = z.object({
   NEXT_PUBLIC_APP_URL: z
     .string()
     .url("NEXT_PUBLIC_APP_URL must be a valid URL."),
+  OPENAI_API_KEY: optionalNonEmptyString,
+  OPENAI_MODEL: optionalNonEmptyString.default("gpt-5.4-mini"),
 });
 
 const parsedEnv = envSchema.safeParse({
@@ -22,6 +30,8 @@ const parsedEnv = envSchema.safeParse({
   NEXTAUTH_SECRET: process.env.NEXTAUTH_SECRET,
   NEXT_PUBLIC_APP_NAME: process.env.NEXT_PUBLIC_APP_NAME,
   NEXT_PUBLIC_APP_URL: process.env.NEXT_PUBLIC_APP_URL,
+  OPENAI_API_KEY: process.env.OPENAI_API_KEY,
+  OPENAI_MODEL: process.env.OPENAI_MODEL,
 });
 
 if (!parsedEnv.success) {
