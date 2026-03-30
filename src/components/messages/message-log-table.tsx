@@ -1,9 +1,38 @@
-import { ArrowRight, ChevronRight } from "lucide-react";
+import { ChevronRight, Link2, Radar, Sparkles } from "lucide-react";
 
-import { MessageLogBadges } from "@/components/messages/message-log-badges";
+import {
+  getMessageLogOutcomeSummary,
+  getMessageLogStatusSummary,
+  MessageLogBadges,
+} from "@/components/messages/message-log-badges";
 import { Button } from "@/components/ui/button";
-import { formatDateTime } from "@/lib/utils";
+import { Card, CardContent } from "@/components/ui/card";
+import { cn, formatDateTime } from "@/lib/utils";
 import type { MessageLogListItem } from "@/types/message-logs";
+
+function ConversationBubble({
+  log,
+}: Readonly<{
+  log: MessageLogListItem;
+}>) {
+  return (
+    <div
+      className={cn(
+        "max-w-[36rem] rounded-[30px] border px-5 py-5 shadow-[inset_0_1px_0_rgba(255,255,255,0.04)]",
+        log.direction === "INBOUND"
+          ? "border-sky-400/18 bg-[linear-gradient(180deg,rgba(18,40,68,0.74),rgba(10,20,35,0.96))] text-sky-50"
+          : "border-emerald-400/18 bg-[linear-gradient(180deg,rgba(17,61,55,0.76),rgba(9,23,25,0.98))] text-emerald-50",
+      )}
+    >
+      <p className="text-[0.68rem] tracking-[0.2em] text-white/48 uppercase">
+        {log.direction === "INBOUND" ? "Customer message" : "Outbound reply"}
+      </p>
+      <p className="mt-3 text-sm leading-7 text-current/95">
+        {log.contentPreview}
+      </p>
+    </div>
+  );
+}
 
 export function MessageLogTable({
   logs,
@@ -13,89 +42,143 @@ export function MessageLogTable({
   onView: (log: MessageLogListItem) => void;
 }>) {
   return (
-    <div className="hidden overflow-hidden rounded-[28px] border border-white/10 bg-[#0a1220]/78 shadow-[0_25px_100px_-65px_rgba(0,0,0,0.95)] lg:block">
-      <div className="grid grid-cols-[0.9fr_1fr_1.4fr_1.2fr_1.1fr_0.9fr_0.6fr] gap-4 border-b border-white/10 px-6 py-4 text-xs tracking-[0.2em] uppercase text-white/50">
-        <span>Direction</span>
-        <span>Contact</span>
-        <span>Preview</span>
-        <span>Outcome</span>
-        <span>Status</span>
-        <span>Time</span>
-        <span />
-      </div>
+    <div className="hidden space-y-4 lg:block">
+      {logs.map((log) => {
+        const outcome = getMessageLogOutcomeSummary(log);
+        const status = getMessageLogStatusSummary(log);
 
-      {logs.map((log) => (
-        <div
-          key={`${log.direction}-${log.id}`}
-          className="grid grid-cols-[0.9fr_1fr_1.4fr_1.2fr_1.1fr_0.9fr_0.6fr] gap-4 border-b border-white/6 px-6 py-5 last:border-b-0"
-        >
-          <div className="space-y-3">
-            <MessageLogBadges log={log} compact />
-          </div>
+        return (
+          <Card
+            key={`${log.direction}-${log.id}`}
+            className={cn(
+              "overflow-hidden",
+              log.direction === "INBOUND"
+                ? "bg-[linear-gradient(180deg,rgba(8,17,31,0.96),rgba(7,12,22,0.98))]"
+                : "bg-[linear-gradient(180deg,rgba(8,25,24,0.95),rgba(7,12,20,0.98))]",
+            )}
+          >
+            <CardContent className="p-6 xl:p-7">
+              <div className="flex flex-wrap items-start justify-between gap-4">
+                <div className="min-w-0 space-y-3">
+                  <MessageLogBadges log={log} />
+                  <div className="flex flex-wrap items-center gap-3 text-sm text-white/84">
+                    <span className="font-semibold text-white">
+                      {log.contactName || log.contactPhone}
+                    </span>
+                    {log.contactName ? (
+                      <span className="text-white/42">{log.contactPhone}</span>
+                    ) : null}
+                    <span className="text-white/32">•</span>
+                    <span className="text-white/58">
+                      {formatDateTime(log.timestamp)}
+                    </span>
+                  </div>
+                </div>
 
-          <div className="space-y-1">
-            <p className="text-sm font-semibold text-white">
-              {log.contactName || log.contactPhone}
-            </p>
-            {log.contactName ? (
-              <p className="text-muted-foreground text-sm">{log.contactPhone}</p>
-            ) : null}
-          </div>
-
-          <div className="space-y-2">
-            <p className="max-h-12 overflow-hidden text-sm leading-6 text-white/90">
-              {log.contentPreview}
-            </p>
-            {log.relatedMessage ? (
-              <div className="text-muted-foreground flex items-center gap-2 text-xs">
-                <ArrowRight className="h-3.5 w-3.5" />
-                Linked {log.relatedMessage.direction.toLowerCase()} reply
+                <Button
+                  variant="secondary"
+                  size="icon"
+                  onClick={() => onView(log)}
+                >
+                  <ChevronRight className="h-4 w-4" />
+                </Button>
               </div>
-            ) : null}
-          </div>
 
-          <div className="space-y-1">
-            <p className="text-sm font-semibold text-white">
-              {log.matchedRule
-                ? `Rule: ${log.matchedRule.keyword}`
-                : log.fallbackUsed || log.replySource === "FALLBACK"
-                  ? "Fallback reply"
-                  : "No rule match"}
-            </p>
-            <p className="text-muted-foreground max-h-12 overflow-hidden text-sm leading-6">
-              {log.processingReason || log.failureReason || "No extra details yet."}
-            </p>
-          </div>
+              <div className="mt-6 grid gap-5 xl:grid-cols-[1.25fr_0.75fr]">
+                <div className="rounded-[28px] border border-white/[0.08] bg-black/18 p-5">
+                  <div
+                    className={cn(
+                      "flex min-h-[14rem]",
+                      log.direction === "INBOUND"
+                        ? "items-start justify-start"
+                        : "items-end justify-end",
+                    )}
+                  >
+                    <ConversationBubble log={log} />
+                  </div>
 
-          <div className="space-y-1">
-            <p className="text-sm font-semibold text-white">
-              {log.direction === "INBOUND"
-                ? log.processingStatus?.replace("_", " ").toLowerCase() ??
-                  "received"
-                : log.sendStatus?.toLowerCase() ?? "prepared"}
-            </p>
-            <p className="text-muted-foreground text-sm">
-              {log.replySource === "FALLBACK"
-                ? "Fallback origin"
-                : log.replySource === "RULE_MATCH"
-                  ? "Rule origin"
-                  : log.fallbackEligible
-                    ? "Fallback eligible"
-                    : "No fallback"}
-            </p>
-          </div>
+                  {log.relatedMessage ? (
+                    <div className="mt-5 flex items-center gap-2 text-sm text-white/56">
+                      <Link2 className="h-4 w-4" />
+                      Linked {log.relatedMessage.direction.toLowerCase()}{" "}
+                      message available in detail view
+                    </div>
+                  ) : null}
+                </div>
 
-          <div className="text-muted-foreground text-sm leading-6">
-            {formatDateTime(log.timestamp)}
-          </div>
+                <div className="grid gap-4">
+                  <div className="rounded-[26px] border border-white/[0.08] bg-white/[0.03] p-5">
+                    <div className="flex items-center gap-3">
+                      <span className="text-primary flex h-10 w-10 items-center justify-center rounded-[16px] border border-white/[0.08] bg-white/[0.04]">
+                        <Sparkles className="h-4 w-4" />
+                      </span>
+                      <div>
+                        <p className="text-[0.68rem] tracking-[0.2em] text-white/42 uppercase">
+                          Automation decision
+                        </p>
+                        <p className="mt-1 text-base font-semibold text-white">
+                          {outcome.title}
+                        </p>
+                      </div>
+                    </div>
+                    <p className="mt-4 text-sm leading-6 text-white/72">
+                      {outcome.description}
+                    </p>
+                    {log.processingReason || log.failureReason ? (
+                      <div className="mt-4 rounded-[20px] border border-white/[0.08] bg-black/18 p-4 text-sm leading-6 text-white/74">
+                        {log.processingReason || log.failureReason}
+                      </div>
+                    ) : null}
+                  </div>
 
-          <div className="flex justify-end">
-            <Button variant="secondary" size="icon" onClick={() => onView(log)}>
-              <ChevronRight className="h-4 w-4" />
-            </Button>
-          </div>
-        </div>
-      ))}
+                  <div className="rounded-[26px] border border-white/[0.08] bg-white/[0.03] p-5">
+                    <div className="flex items-center gap-3">
+                      <span className="text-primary flex h-10 w-10 items-center justify-center rounded-[16px] border border-white/[0.08] bg-white/[0.04]">
+                        <Radar className="h-4 w-4" />
+                      </span>
+                      <div>
+                        <p className="text-[0.68rem] tracking-[0.2em] text-white/42 uppercase">
+                          Status signal
+                        </p>
+                        <p className="mt-1 text-sm leading-6 text-white/80">
+                          {status}
+                        </p>
+                      </div>
+                    </div>
+
+                    <div className="mt-5 grid gap-3 sm:grid-cols-2">
+                      <div className="rounded-[20px] border border-white/[0.08] bg-black/18 p-4">
+                        <p className="text-[0.68rem] tracking-[0.18em] text-white/42 uppercase">
+                          Match source
+                        </p>
+                        <p className="mt-2 text-sm font-semibold text-white">
+                          {log.matchedRule
+                            ? log.matchedRule.keyword
+                            : log.replySource === "FALLBACK" || log.fallbackUsed
+                              ? "Fallback message"
+                              : "No rule source"}
+                        </p>
+                      </div>
+                      <div className="rounded-[20px] border border-white/[0.08] bg-black/18 p-4">
+                        <p className="text-[0.68rem] tracking-[0.18em] text-white/42 uppercase">
+                          Reply state
+                        </p>
+                        <p className="mt-2 text-sm font-semibold text-white">
+                          {log.direction === "OUTBOUND"
+                            ? (log.sendStatus?.toLowerCase() ?? "prepared")
+                            : (log.processingStatus
+                                ?.replace("_", " ")
+                                .toLowerCase() ?? "received")}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        );
+      })}
     </div>
   );
 }
