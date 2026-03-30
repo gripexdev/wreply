@@ -1,6 +1,7 @@
 "use client";
 
-import { Layers3, ListFilter, Zap } from "lucide-react";
+import type { ComponentType } from "react";
+import { ArrowRight, Layers3, ListFilter, Sparkles, Zap } from "lucide-react";
 import { useDeferredValue, useEffect, useRef, useState } from "react";
 import { usePathname } from "next/navigation";
 
@@ -12,7 +13,6 @@ import {
   RulesErrorState,
   RulesLoadingState,
 } from "@/components/rules/rules-states";
-import { RulesTable } from "@/components/rules/rules-table";
 import { RulesToolbar } from "@/components/rules/rules-toolbar";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
@@ -103,27 +103,35 @@ function SummaryCard({
   value,
   description,
   icon: Icon,
+  accentClassName,
 }: Readonly<{
   title: string;
   value: string | number;
   description: string;
-  icon: React.ComponentType<{ className?: string }>;
+  icon: ComponentType<{ className?: string }>;
+  accentClassName: string;
 }>) {
   return (
-    <Card>
-      <CardContent className="p-5">
-        <div className="flex items-center justify-between">
-          <p className="text-muted-foreground text-xs tracking-[0.22em] uppercase">
-            {title}
-          </p>
-          <span className="text-primary flex h-11 w-11 items-center justify-center rounded-2xl border border-white/10 bg-white/5">
-            <Icon className="h-5 w-5" />
+    <Card className="overflow-hidden bg-[linear-gradient(180deg,rgba(13,20,36,0.94),rgba(8,13,24,0.97))]">
+      <CardContent className="relative p-5">
+        <div
+          className={`absolute inset-x-0 top-0 h-20 bg-gradient-to-b ${accentClassName}`}
+        />
+        <div className="relative flex items-start justify-between gap-4">
+          <div>
+            <p className="text-[0.68rem] tracking-[0.22em] text-white/38 uppercase">
+              {title}
+            </p>
+            <p className="font-display mt-4 text-5xl font-semibold tracking-[-0.06em] text-white">
+              {value}
+            </p>
+          </div>
+          <span className="text-primary flex h-11 w-11 items-center justify-center rounded-[18px] border border-white/[0.08] bg-white/[0.04]">
+            <Icon className="h-4 w-4" />
           </span>
         </div>
-        <p className="font-display mt-4 text-3xl font-semibold text-white">
-          {value}
-        </p>
-        <p className="text-muted-foreground mt-2 text-sm leading-6">
+        <div className="relative mt-5 h-px bg-gradient-to-r from-white/[0.12] via-white/[0.04] to-transparent" />
+        <p className="relative mt-4 text-sm leading-6 text-white/54">
           {description}
         </p>
       </CardContent>
@@ -445,49 +453,95 @@ export function RulesPageClient({
   }
 
   return (
-    <div className="space-y-6">
-      <section className="grid gap-4 xl:grid-cols-[1.2fr_0.8fr]">
-        <Card className="surface-glow overflow-hidden">
-          <CardContent className="p-6 sm:p-7">
-            <div className="flex flex-wrap items-start justify-between gap-4">
-              <div className="max-w-3xl">
-                <Badge className="border-primary/20 bg-primary/10 text-primary">
-                  Rules management
+    <div className="space-y-8">
+      <section className="grid gap-5 xl:grid-cols-[1.16fr_0.84fr]">
+        <Card className="surface-glow overflow-hidden bg-[linear-gradient(180deg,rgba(14,22,38,0.92),rgba(8,13,24,0.95))]">
+          <CardContent className="p-6 sm:p-7 lg:p-8">
+            <div className="space-y-6">
+              <div className="flex flex-wrap items-center gap-3">
+                <Badge className="border-primary/15 bg-primary/10 text-primary">
+                  Automation builder
                 </Badge>
-                <h1 className="font-display mt-4 text-3xl font-semibold text-white sm:text-4xl">
-                  Auto-reply rules
+                <Badge className="border-white/[0.08] bg-white/[0.045] text-white/66">
+                  Workspace-scoped rules
+                </Badge>
+              </div>
+
+              <div className="space-y-4">
+                <h1 className="font-display text-4xl font-semibold tracking-[-0.06em] text-white sm:text-5xl">
+                  Turn repeated questions into
+                  <span className="text-gradient"> smart reply blocks</span>
                 </h1>
-                <p className="text-muted-foreground mt-3 max-w-2xl text-sm leading-7 sm:text-base">
-                  Create clear rule coverage for pricing, store details,
-                  delivery, stock checks, and other frequent WhatsApp questions.
+                <p className="max-w-3xl text-sm leading-8 text-white/58 sm:text-base">
+                  Each rule watches for a trigger, decides how to match it, and
+                  transforms it into a consistent reply block for the workspace.
+                  Build coverage for pricing, delivery, store details, stock,
+                  and opening hours without thinking in raw table rows.
                 </p>
               </div>
 
-              <div className="text-muted-foreground rounded-[24px] border border-white/10 bg-white/[0.03] px-4 py-3 text-sm">
-                {isRefreshing
-                  ? "Refreshing rules..."
-                  : "Workspace-scoped rules only"}
+              <div className="flex flex-wrap gap-3 text-sm text-white/52">
+                <div className="rounded-full border border-white/[0.08] bg-white/[0.03] px-4 py-2">
+                  Trigger keyword
+                </div>
+                <span className="text-primary flex items-center">
+                  <ArrowRight className="h-4 w-4" />
+                </span>
+                <div className="rounded-full border border-white/[0.08] bg-white/[0.03] px-4 py-2">
+                  Match logic
+                </div>
+                <span className="text-primary flex items-center">
+                  <ArrowRight className="h-4 w-4" />
+                </span>
+                <div className="rounded-full border border-white/[0.08] bg-white/[0.03] px-4 py-2">
+                  Reply block
+                </div>
               </div>
             </div>
           </CardContent>
         </Card>
 
-        <Card>
+        <Card className="bg-[linear-gradient(180deg,rgba(13,20,36,0.92),rgba(9,13,23,0.96))]">
           <CardContent className="flex h-full flex-col justify-between p-6">
-            <div>
-              <p className="text-muted-foreground text-xs tracking-[0.22em] uppercase">
-                Priority system
-              </p>
-              <p className="mt-4 text-sm leading-7 text-white/90">
-                Lower priority numbers appear first. Reordering is available on
-                the full list so the workspace keeps a reliable global sequence.
-              </p>
+            <div className="space-y-5">
+              <div>
+                <p className="text-[0.68rem] tracking-[0.22em] text-white/36 uppercase">
+                  Rule anatomy
+                </p>
+                <h2 className="font-display mt-3 text-2xl font-semibold tracking-[-0.04em] text-white">
+                  Small automation pieces, clear logic
+                </h2>
+              </div>
+
+              <div className="space-y-3 rounded-[24px] border border-white/[0.08] bg-white/[0.03] p-4">
+                <div className="border-primary/15 bg-primary/10 rounded-[18px] border px-4 py-3">
+                  <p className="text-[0.68rem] tracking-[0.2em] text-white/38 uppercase">
+                    Trigger
+                  </p>
+                  <p className="mt-2 text-sm font-semibold tracking-[-0.01em] text-white">
+                    customer says &quot;prix&quot;
+                  </p>
+                </div>
+                <div className="text-primary flex justify-center">
+                  <Sparkles className="h-4 w-4" />
+                </div>
+                <div className="rounded-[18px] border border-white/[0.08] bg-white/[0.04] px-4 py-3">
+                  <p className="text-[0.68rem] tracking-[0.2em] text-white/38 uppercase">
+                    Reply
+                  </p>
+                  <p className="mt-2 text-sm leading-6 text-white/70">
+                    Ask for the product name or photo so the business can answer
+                    pricing quickly.
+                  </p>
+                </div>
+              </div>
             </div>
+
             <div className="mt-6 flex flex-wrap gap-2">
-              <Badge className="border-white/10 bg-white/[0.03] text-white">
+              <Badge className="border-white/[0.08] bg-white/[0.045] text-white/66">
                 Exact and contains
               </Badge>
-              <Badge className="border-white/10 bg-white/[0.03] text-white">
+              <Badge className="border-white/[0.08] bg-white/[0.045] text-white/66">
                 Darija and French ready
               </Badge>
             </div>
@@ -497,22 +551,25 @@ export function RulesPageClient({
 
       <section className="grid gap-4 md:grid-cols-3">
         <SummaryCard
-          title="Total rules"
+          title="Logic blocks"
           value={summary.total}
           description="All rules in the current workspace, regardless of filters."
           icon={Layers3}
+          accentClassName="from-primary/28 via-primary/10 to-transparent"
         />
         <SummaryCard
-          title="Active rules"
+          title="Live automation"
           value={summary.active}
-          description="Enabled rules that stay available for future matching."
+          description="Enabled rules that are available to the matcher right now."
           icon={Zap}
+          accentClassName="from-emerald-300/20 via-emerald-200/8 to-transparent"
         />
         <SummaryCard
-          title="Tracked categories"
+          title="Categories"
           value={categories.length}
-          description="Optional labels used for cleaner organization and filtering."
+          description="Optional labels used to organize automation pieces more clearly."
           icon={ListFilter}
+          accentClassName="from-sky-300/20 via-sky-300/8 to-transparent"
         />
       </section>
 
@@ -528,14 +585,14 @@ export function RulesPageClient({
       />
 
       {isReorderLocked ? (
-        <div className="text-muted-foreground rounded-[24px] border border-white/10 bg-white/[0.03] px-4 py-3 text-sm">
-          Clear search and filters to reorder priorities. Priority changes are
-          scoped to the full workspace list.
+        <div className="rounded-[24px] border border-white/[0.08] bg-white/[0.03] px-4 py-3 text-sm leading-6 text-white/56">
+          Clear search and filters to reorder priorities. Priority changes stay
+          scoped to the full workspace logic sequence.
         </div>
       ) : null}
 
       {error && data ? (
-        <div className="rounded-[24px] border border-amber-400/20 bg-amber-500/10 px-4 py-3 text-sm text-amber-50">
+        <div className="rounded-[24px] border border-amber-300/15 bg-amber-300/10 px-4 py-3 text-sm text-amber-50">
           {error}
         </div>
       ) : null}
@@ -551,26 +608,15 @@ export function RulesPageClient({
           onClearFilters={clearFilters}
         />
       ) : (
-        <>
-          <RulesTable
-            rules={currentRules}
-            busyRuleId={busyRuleId}
-            disableMove={isReorderLocked}
-            onToggle={handleToggleRule}
-            onMove={handleMoveRule}
-            onEdit={(rule) => setEditorState({ mode: "edit", rule })}
-            onDelete={(rule) => setDeleteRule(rule)}
-          />
-          <RulesCards
-            rules={currentRules}
-            busyRuleId={busyRuleId}
-            disableMove={isReorderLocked}
-            onToggle={handleToggleRule}
-            onMove={handleMoveRule}
-            onEdit={(rule) => setEditorState({ mode: "edit", rule })}
-            onDelete={(rule) => setDeleteRule(rule)}
-          />
-        </>
+        <RulesCards
+          rules={currentRules}
+          busyRuleId={busyRuleId}
+          disableMove={isReorderLocked}
+          onToggle={handleToggleRule}
+          onMove={handleMoveRule}
+          onEdit={(rule) => setEditorState({ mode: "edit", rule })}
+          onDelete={(rule) => setDeleteRule(rule)}
+        />
       )}
 
       <RuleFormDialog
