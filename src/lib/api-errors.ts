@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { ZodError } from "zod";
 
 import { AssistantKnowledgeServiceError } from "@/services/assistant/assistant-knowledge.service";
+import { BillingServiceError } from "@/services/billing/billing.service";
 import {
   WorkspaceAuthorizationError,
   WorkspacePermissionError,
@@ -66,6 +67,13 @@ export function createApiErrorResponse(error: unknown) {
   }
 
   if (error instanceof AssistantKnowledgeServiceError) {
+    return NextResponse.json(
+      { message: error.message },
+      { status: error.statusCode },
+    );
+  }
+
+  if (error instanceof BillingServiceError) {
     return NextResponse.json(
       { message: error.message },
       { status: error.statusCode },

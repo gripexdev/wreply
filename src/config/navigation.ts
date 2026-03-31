@@ -1,5 +1,6 @@
 import {
   BarChart3,
+  CreditCard,
   LayoutDashboard,
   MessagesSquare,
   MessageSquareQuote,
@@ -29,6 +30,11 @@ export const dashboardNavigation: NavigationItem[] = [
     title: "Analytics",
     href: "/dashboard/analytics",
     icon: BarChart3,
+  },
+  {
+    title: "Billing",
+    href: "/dashboard/billing",
+    icon: CreditCard,
   },
   {
     title: "WhatsApp",

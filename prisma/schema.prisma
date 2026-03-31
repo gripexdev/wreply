@@ -21,6 +21,11 @@ enum SubscriptionStatus {
   EXPIRED
 }
 
+enum BillingInterval {
+  MONTHLY
+  YEARLY
+}
+
 enum AutoReplyRuleMatchType {
   EXACT
   CONTAINS
@@ -94,6 +99,7 @@ model Workspace {
   name                        String
   slug                        String                @unique
   ownerId                     String                @unique
+  billingCustomerId           String?               @unique
   replyDisplayName            String?
   businessPhoneNumber         String?
   address                     String?
@@ -138,11 +144,14 @@ model Subscription {
   workspaceId            String
   planId                 String
   status                 SubscriptionStatus @default(TRIALING)
+  billingInterval        BillingInterval?
   startsAt               DateTime           @default(now())
   currentPeriodStart     DateTime?
   currentPeriodEnd       DateTime?
   cancelAtPeriodEnd      Boolean            @default(false)
-  providerCustomerId     String?            @unique
+  canceledAt             DateTime?
+  providerCustomerId     String?
+  providerPriceId        String?
   providerSubscriptionId String?            @unique
   workspace              Workspace          @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
   plan                   Plan               @relation(fields: [planId], references: [id], onDelete: Restrict)
@@ -150,6 +159,7 @@ model Subscription {
   updatedAt              DateTime           @updatedAt
 
   @@index([workspaceId, status])
+  @@index([providerCustomerId])
 }
 
 model AutoReplyRule {
