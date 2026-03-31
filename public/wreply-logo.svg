@@ -1,0 +1,62 @@
+<svg width="720" height="180" viewBox="0 0 720 180" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bubble-stroke" x1="20" y1="36" x2="124" y2="118" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#3B82F6" />
+      <stop offset="1" stop-color="#22D3EE" />
+    </linearGradient>
+    <linearGradient id="w-fill" x1="34" y1="50" x2="102" y2="92" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#2563EB" />
+      <stop offset="1" stop-color="#22D3EE" />
+    </linearGradient>
+    <linearGradient id="signal-stroke" x1="92" y1="22" x2="138" y2="46" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#A855F7" />
+      <stop offset="1" stop-color="#EC4899" />
+    </linearGradient>
+    <filter id="mark-glow" x="0" y="0" width="160" height="132" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+      <feGaussianBlur stdDeviation="8" result="blur" />
+      <feColorMatrix
+        in="blur"
+        type="matrix"
+        values="1 0 0 0 0  0 1 0 0 0.14  0 0 1 0 0.32  0 0 0 0.15 0"
+        result="soft"
+      />
+      <feBlend in="SourceGraphic" in2="soft" mode="normal" />
+    </filter>
+  </defs>
+
+  <g filter="url(#mark-glow)">
+    <path
+      d="M34 40C34 31.163 41.163 24 50 24H98C106.837 24 114 31.163 114 40V73C114 81.837 106.837 89 98 89H66.423L48 102V89H50C41.163 89 34 81.837 34 73V40Z"
+      stroke="url(#bubble-stroke)"
+      stroke-width="6"
+      stroke-linejoin="round"
+    />
+
+    <path
+      d="M50 47L62 75L75 50L86.5 75L100 41"
+      stroke="url(#w-fill)"
+      stroke-width="10"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+    />
+
+    <path d="M92 28L101.5 20" stroke="url(#signal-stroke)" stroke-width="4" stroke-linecap="round" />
+    <path d="M101 36L112 26.5" stroke="url(#signal-stroke)" stroke-width="4" stroke-linecap="round" />
+    <path d="M88 36.5L77 46" stroke="url(#signal-stroke)" stroke-width="4" stroke-linecap="round" />
+    <circle cx="103.5" cy="18.5" r="6.5" fill="url(#signal-stroke)" />
+    <circle cx="115" cy="25" r="6.5" fill="url(#signal-stroke)" />
+    <circle cx="81" cy="48" r="6.5" fill="url(#signal-stroke)" />
+  </g>
+
+  <text
+    x="156"
+    y="83"
+    fill="white"
+    font-family="'DM Sans', 'Inter', Arial, sans-serif"
+    font-size="76"
+    font-weight="700"
+    letter-spacing="-4"
+  >
+    WReply
+  </text>
+</svg>

@@ -1,0 +1,50 @@
+<svg width="120" height="120" viewBox="20 8 96 96" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bubble-stroke" x1="18" y1="28" x2="118" y2="100" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#3B82F6" />
+      <stop offset="1" stop-color="#22D3EE" />
+    </linearGradient>
+    <linearGradient id="w-fill" x1="33" y1="40" x2="94" y2="90" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#2563EB" />
+      <stop offset="1" stop-color="#22D3EE" />
+    </linearGradient>
+    <linearGradient id="signal-stroke" x1="84" y1="20" x2="126" y2="44" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#A855F7" />
+      <stop offset="1" stop-color="#EC4899" />
+    </linearGradient>
+    <filter id="mark-glow" x="12" y="0" width="112" height="112" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+      <feGaussianBlur stdDeviation="8" result="blur" />
+      <feColorMatrix
+        in="blur"
+        type="matrix"
+        values="1 0 0 0 0  0 1 0 0 0.14  0 0 1 0 0.32  0 0 0 0.14 0"
+        result="soft"
+      />
+      <feBlend in="SourceGraphic" in2="soft" mode="normal" />
+    </filter>
+  </defs>
+
+  <g filter="url(#mark-glow)">
+    <path
+      d="M34 33.5C34 25.768 40.268 19.5 48 19.5H94C101.732 19.5 108 25.768 108 33.5V62.5C108 70.232 101.732 76.5 94 76.5H64.438L46 89.5V76.5H48C40.268 76.5 34 70.232 34 62.5V33.5Z"
+      stroke="url(#bubble-stroke)"
+      stroke-width="6"
+      stroke-linejoin="round"
+    />
+
+    <path
+      d="M49 40L61 68L73 44L84.5 68L97 33"
+      stroke="url(#w-fill)"
+      stroke-width="9"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+    />
+
+    <path d="M89 23L98 15.5" stroke="url(#signal-stroke)" stroke-width="4" stroke-linecap="round" />
+    <path d="M97 31L108 21.5" stroke="url(#signal-stroke)" stroke-width="4" stroke-linecap="round" />
+    <path d="M85.5 31.5L74 41" stroke="url(#signal-stroke)" stroke-width="4" stroke-linecap="round" />
+    <circle cx="100" cy="14.5" r="6.5" fill="url(#signal-stroke)" />
+    <circle cx="111" cy="21" r="6.5" fill="url(#signal-stroke)" />
+    <circle cx="78" cy="43" r="6.5" fill="url(#signal-stroke)" />
+  </g>
+</svg>

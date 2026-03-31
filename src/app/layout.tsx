@@ -23,6 +23,11 @@ export const metadata: Metadata = {
     template: `%s | ${siteConfig.name}`,
   },
   description: siteConfig.description,
+  icons: {
+    icon: "/wreply-mark.svg",
+    shortcut: "/wreply-mark.svg",
+    apple: "/wreply-mark.svg",
+  },
 };
 
 export default function RootLayout({
