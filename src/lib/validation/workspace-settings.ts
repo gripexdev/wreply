@@ -60,7 +60,7 @@ export const updateWorkspaceBusinessSettingsSchema = z
     if (value.fallbackReplyEnabled && !value.fallbackReplyMessage) {
       context.addIssue({
         code: "custom",
-        message: "Add a fallback reply before enabling unmatched auto-replies.",
+        message: "Add a default reply before turning this on.",
         path: ["fallbackReplyMessage"],
       });
     }

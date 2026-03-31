@@ -45,11 +45,10 @@ export function MatchResultCard({
         <CardHeader>
           <CardTitle className="flex items-center gap-3 text-white">
             <ScanSearch className="text-primary h-5 w-5" />
-            Match result
+            Reply result
           </CardTitle>
           <CardDescription>
-            Run a sample message through the real workspace engine to inspect
-            normalization, ranking, and the final match decision.
+            Try a message to see which reply would be used.
           </CardDescription>
         </CardHeader>
         <CardContent className="flex min-h-[24rem] items-center justify-center px-6 pb-6">
@@ -61,8 +60,7 @@ export function MatchResultCard({
               Ready to test a message
             </h3>
             <p className="text-muted-foreground mt-3 text-sm leading-7">
-              Use the simulator to see how the engine normalizes text, evaluates
-              aliases, and selects the winning rule for this workspace.
+              Enter a customer message to preview the result.
             </p>
           </div>
         </CardContent>
@@ -81,7 +79,7 @@ export function MatchResultCard({
               ) : (
                 <CircleDashed className="h-5 w-5 text-amber-200" />
               )}
-              {result.matched ? "Rule matched" : "No rule matched"}
+              {result.matched ? "Reply found" : "No reply found"}
             </CardTitle>
             <CardDescription className="mt-2">{result.reason}</CardDescription>
           </div>
@@ -105,11 +103,11 @@ export function MatchResultCard({
       <CardContent className="space-y-6 px-6 pb-6">
         <div className="grid gap-4 md:grid-cols-2">
           <DetailRow
-            label="Normalized message"
+            label="Cleaned message"
             value={result.normalizedMessage || "(empty after normalization)"}
           />
           <DetailRow
-            label="Rules considered"
+            label="Active rules checked"
             value={`${result.eligibleRulesCount} active / ${result.evaluatedRulesCount} fetched`}
           />
         </div>
@@ -122,23 +120,23 @@ export function MatchResultCard({
                 value={result.matchedRule.keyword}
               />
               <DetailRow
-                label="Match type"
+                label="How it matched"
                 value={`${result.matchTypeUsed ? getRuleMatchTypeLabel(result.matchTypeUsed) : "n/a"} via ${result.matchSource ?? "n/a"}`}
               />
               <DetailRow
-                label="Matched fragment"
+                label="Matched text"
                 value={result.matchedTextFragment ?? "n/a"}
               />
               <DetailRow
-                label="Matched alias"
+                label="Matched word"
                 value={result.matchedAlias ?? result.matchedKeyword ?? "n/a"}
               />
               <DetailRow
-                label="Alias family"
+                label="Word group"
                 value={result.matchedAliasFamily ?? "Direct keyword"}
               />
               <DetailRow
-                label="Score"
+                label="Match score"
                 value={result.score !== null ? `${result.score}/100` : "n/a"}
               />
             </div>
@@ -150,8 +148,7 @@ export function MatchResultCard({
                     Reply preview
                   </p>
                   <p className="mt-2 text-sm leading-6 text-white/90">
-                    This is the saved reply text that would be available to a
-                    future execution layer.
+                    This is the saved reply that would be used.
                   </p>
                 </div>
                 <Badge className="border-primary/20 bg-primary/10 text-primary">
@@ -171,7 +168,7 @@ export function MatchResultCard({
                   {result.matchedRule.category ?? "Uncategorized"}
                 </Badge>
                 <Badge className="border-white/10 bg-white/[0.03] text-white">
-                  Fallback disabled
+                  Default reply not needed
                 </Badge>
               </div>
             </div>
@@ -184,18 +181,17 @@ export function MatchResultCard({
               </span>
               <div>
                 <p className="text-sm font-semibold text-white">
-                  No active rule matched this message
+                  No saved reply matched this message
                 </p>
                 <p className="text-muted-foreground mt-2 text-sm leading-6">
-                  The engine kept the message eligible for a future fallback
-                  path. No reply execution is triggered in this step.
+                  A default reply could be used if it is turned on.
                 </p>
                 <div className="mt-4 flex flex-wrap gap-2">
                   <Badge className="border-white/10 bg-white/[0.03] text-white">
-                    Fallback eligible
+                    Default reply available
                   </Badge>
                   <Badge className="border-white/10 bg-white/[0.03] text-white">
-                    No sending performed
+                    Nothing sent
                   </Badge>
                 </div>
               </div>

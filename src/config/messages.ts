@@ -13,8 +13,8 @@ export const messageTestExamples = [
 ] as const;
 
 export const messageLanguageHintLabels: Record<MessageLanguageHint, string> = {
-  darija: "Darija signal",
-  french: "French signal",
-  mixed: "Mixed signal",
-  neutral: "Neutral signal",
+  darija: "Darija",
+  french: "French",
+  mixed: "Mixed",
+  neutral: "Neutral",
 };

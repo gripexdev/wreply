@@ -6,10 +6,10 @@ export default function SignInPage() {
     <div className="w-full max-w-xl">
       <AuthFormShell
         title="Sign in to WReply"
-        description="Open your workspace."
-        footerText="Need a workspace?"
+        description="Open your dashboard."
+        footerText="New to WReply?"
         footerHref="/sign-up"
-        footerAction="Create an account"
+        footerAction="Create account"
       >
         <SignInForm />
       </AuthFormShell>

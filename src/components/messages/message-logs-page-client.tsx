@@ -206,7 +206,7 @@ export function MessageLogsPageClient({
 
         if (!response.ok || !payload) {
           throw new Error(
-            payload?.message ?? "Unable to load message activity.",
+            payload?.message ?? "Could not load message history.",
           );
         }
 
@@ -219,7 +219,7 @@ export function MessageLogsPageClient({
         setError(
           loadError instanceof Error
             ? loadError.message
-            : "Unable to load message activity.",
+            : "Could not load message history.",
         );
       } finally {
         if (!controller.signal.aborted) {
@@ -281,21 +281,21 @@ export function MessageLogsPageClient({
                 Messages
               </Badge>
               <h1 className="font-display mt-4 max-w-3xl text-3xl font-semibold tracking-[-0.05em] text-white sm:text-4xl">
-                Message activity
+                Message history
               </h1>
               <p className="mt-3 text-sm text-white/48 sm:text-base">
-                Live message flow.
+                See every customer message and reply.
               </p>
 
               <div className="mt-6 flex flex-wrap gap-3">
                 <div className="rounded-full border border-white/[0.08] bg-white/[0.03] px-4 py-2 text-sm text-white/72">
-                  Inbound
+                  Received
                 </div>
                 <div className="rounded-full border border-white/[0.08] bg-white/[0.03] px-4 py-2 text-sm text-white/72">
                   Matches
                 </div>
                 <div className="rounded-full border border-white/[0.08] bg-white/[0.03] px-4 py-2 text-sm text-white/72">
-                  Delivery
+                  Replies
                 </div>
               </div>
             </div>
@@ -307,9 +307,9 @@ export function MessageLogsPageClient({
             <div className="flex items-center justify-between gap-4">
               <div>
                 <p className="text-[0.68rem] tracking-[0.2em] text-white/42 uppercase">
-                  Snapshot
+                  Quick view
                 </p>
-                <p className="mt-2 text-xs text-white/44">Fast read.</p>
+                <p className="mt-2 text-xs text-white/44">Today at a glance.</p>
               </div>
               <span className="text-primary flex h-12 w-12 items-center justify-center rounded-[18px] border border-white/[0.08] bg-white/[0.04]">
                 <Radar className="h-5 w-5" />
@@ -321,10 +321,10 @@ export function MessageLogsPageClient({
                 <div className="flex items-center justify-between gap-3">
                   <div>
                     <p className="text-sm font-semibold text-white">
-                      Rule matches
+                      Matched messages
                     </p>
                     <p className="mt-1 text-xs text-white/44">
-                      Matched inbound.
+                      Covered by a saved reply.
                     </p>
                   </div>
                   <p className="font-display text-2xl font-semibold text-white">
@@ -336,7 +336,7 @@ export function MessageLogsPageClient({
               <div className="grid gap-3 sm:grid-cols-2">
                 <div className="rounded-[24px] border border-white/[0.08] bg-black/18 p-4">
                   <p className="text-[0.68rem] tracking-[0.18em] text-white/42 uppercase">
-                    Unmatched inbound
+                    Unmatched
                   </p>
                   <p className="mt-2 text-2xl font-semibold text-white">
                     {unmatchedInbound}
@@ -344,7 +344,7 @@ export function MessageLogsPageClient({
                 </div>
                 <div className="rounded-[24px] border border-white/[0.08] bg-black/18 p-4">
                   <p className="text-[0.68rem] tracking-[0.18em] text-white/42 uppercase">
-                    Outbound replies
+                    Replies
                   </p>
                   <p className="mt-2 text-2xl font-semibold text-white">
                     {summary.outbound}
@@ -358,25 +358,25 @@ export function MessageLogsPageClient({
 
       <section className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
         <SummaryCard
-          title="Messages tracked"
+          title="Messages"
           value={summary.total}
           hint="In view"
           icon={MessageCircleMore}
         />
         <SummaryCard
-          title="Matched inbound"
+          title="Matched"
           value={summary.matchedInbound}
-          hint="Covered"
+          hint="Handled"
           icon={Sparkles}
         />
         <SummaryCard
-          title="Fallback replies"
+          title="Default replies"
           value={summary.fallbackReplies}
-          hint="Fallback"
+          hint="Used"
           icon={Bot}
         />
         <SummaryCard
-          title="Failed sends"
+          title="Failed"
           value={summary.failedReplies}
           hint="Review"
           icon={ShieldAlert}
@@ -413,15 +413,15 @@ export function MessageLogsPageClient({
             <CardContent className="flex flex-col gap-3 p-5 sm:flex-row sm:items-center sm:justify-between sm:p-6">
               <div>
                 <p className="text-[0.68rem] tracking-[0.2em] text-white/42 uppercase">
-                  Stream
+                  Latest
                 </p>
                 <p className="mt-2 text-xs text-white/44">
-                  Latest inbound and outbound.
+                  Recent customer messages and replies.
                 </p>
               </div>
               <div className="flex items-center gap-3 rounded-full border border-white/[0.08] bg-white/[0.03] px-4 py-2 text-sm text-white/62">
                 <SendHorizontal className="h-4 w-4" />
-                {logs.length} log item{logs.length === 1 ? "" : "s"} in view
+                {logs.length} item{logs.length === 1 ? "" : "s"} in view
               </div>
             </CardContent>
           </Card>

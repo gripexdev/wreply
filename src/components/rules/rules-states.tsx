@@ -60,7 +60,7 @@ export function RulesErrorState({
           <CircleAlert className="h-9 w-9" />
         </span>
         <h3 className="font-display text-3xl font-semibold tracking-[-0.04em] text-white">
-          Rules unavailable
+          Could not load rules
         </h3>
         <p className="mt-3 max-w-lg text-sm text-white/48">{message}</p>
         <Button className="mt-7" onClick={onRetry}>
@@ -106,7 +106,7 @@ export function RulesEmptyState({
             <div className="grid gap-3 sm:grid-cols-[minmax(0,0.8fr)_auto_minmax(0,1.2fr)] sm:items-center">
               <div className="border-primary/15 bg-primary/10 rounded-[20px] border px-4 py-4">
                 <p className="text-[0.68rem] tracking-[0.22em] text-white/38 uppercase">
-                  Trigger
+                  Keyword
                 </p>
                 <p className="mt-2 text-lg font-semibold tracking-[-0.02em] text-white">
                   price
@@ -130,7 +130,7 @@ export function RulesEmptyState({
 
           <div className="mt-8 flex flex-wrap justify-center gap-3">
             {!isFiltered ? (
-              <Button onClick={onCreateRule}>New Rule</Button>
+              <Button onClick={onCreateRule}>Create rule</Button>
             ) : (
               <Button onClick={onClearFilters}>Clear filters</Button>
             )}

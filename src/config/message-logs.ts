@@ -1,7 +1,7 @@
 export const messageLogDirectionOptions = [
-  { value: "all", label: "All directions" },
-  { value: "inbound", label: "Inbound only" },
-  { value: "outbound", label: "Outbound only" },
+  { value: "all", label: "All messages" },
+  { value: "inbound", label: "Received only" },
+  { value: "outbound", label: "Replies only" },
 ] as const;
 
 export const messageLogOutcomeOptions = [
@@ -11,7 +11,7 @@ export const messageLogOutcomeOptions = [
 ] as const;
 
 export const messageLogSendStatusOptions = [
-  { value: "all", label: "All send states" },
+  { value: "all", label: "All reply statuses" },
   { value: "PREPARED", label: "Prepared" },
   { value: "SENT", label: "Sent" },
   { value: "DELIVERED", label: "Delivered" },
@@ -19,9 +19,9 @@ export const messageLogSendStatusOptions = [
 ] as const;
 
 export const messageLogFallbackOptions = [
-  { value: "all", label: "Fallback any" },
-  { value: "used", label: "Fallback used" },
-  { value: "not_used", label: "No fallback" },
+  { value: "all", label: "Any default reply" },
+  { value: "used", label: "Default reply used" },
+  { value: "not_used", label: "No default reply" },
 ] as const;
 
 export const messageLogDateRangeOptions = [

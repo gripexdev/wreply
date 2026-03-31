@@ -51,13 +51,15 @@ export function RulesToolbar({
         <div className="flex flex-col gap-4 xl:flex-row xl:items-center xl:justify-between">
           <div>
             <p className="text-[0.68rem] tracking-[0.24em] text-white/36 uppercase">
-              Filters
+              Search and filter
             </p>
             <div className="mt-2 flex flex-wrap items-center gap-3">
-              <p className="text-sm text-white/58">Rules and search.</p>
+              <p className="text-sm text-white/58">
+                Find the right reply fast.
+              </p>
               <span className="inline-flex items-center gap-2 rounded-full border border-white/[0.08] bg-white/[0.03] px-3 py-1.5 text-xs tracking-[0.2em] text-white/48 uppercase">
                 <Sparkles className="text-primary h-3.5 w-3.5" />
-                {isSyncing ? "Syncing" : "Live"}
+                {isSyncing ? "Updating" : "Ready"}
               </span>
             </div>
           </div>
@@ -68,12 +70,12 @@ export function RulesToolbar({
                 href={testHref}
                 className={buttonStyles({ variant: "secondary" })}
               >
-                Test messages
+                Try a message
               </Link>
             ) : null}
             <Button onClick={onCreateRule}>
               <Plus className="mr-2 h-4 w-4" />
-              New Rule
+              Create rule
             </Button>
           </div>
         </div>
@@ -84,7 +86,7 @@ export function RulesToolbar({
             <Input
               value={searchInput}
               onChange={(event) => onSearchInputChange(event.target.value)}
-              placeholder="Search trigger keywords or reply blocks"
+              placeholder="Search keywords or replies"
               className="pl-11"
             />
           </div>
@@ -154,7 +156,7 @@ export function RulesToolbar({
             value={filters.category}
             onChange={(event) => onFilterChange("category", event.target.value)}
           >
-            <option value="">All categories</option>
+            <option value="">All groups</option>
             {categories.map((category) => (
               <option key={category} value={category}>
                 {category}

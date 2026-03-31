@@ -17,31 +17,31 @@ import { Card, CardContent } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 
 const navigation = [
-  { label: "Product", href: "#product" },
-  { label: "Surfaces", href: "#surfaces" },
-  { label: "Stack", href: "#stack" },
+  { label: "Features", href: "#product" },
+  { label: "Preview", href: "#surfaces" },
+  { label: "Why WReply", href: "#stack" },
 ] as const;
 
-const workflowCards = [
+const overviewCards = [
   {
     title: "Rules",
-    label: "Automation blocks",
+    label: "Saved replies",
     detail: "price, stock, location, delivery, hours",
   },
   {
     title: "Matching",
-    label: "Ranked engine",
-    detail: "exact, contains, aliases, and priority",
+    label: "Smart matching",
+    detail: "exact, contains, common wording, priority",
   },
   {
     title: "Messages",
-    label: "Live visibility",
-    detail: "matched, fallback, prepared, sent, failed",
+    label: "Message history",
+    detail: "matched, default reply, prepared, sent, failed",
   },
   {
     title: "Analytics",
-    label: "Operator view",
-    detail: "coverage, delivery, fallback, and trends",
+    label: "Business view",
+    detail: "coverage, delivery, default replies, trends",
   },
 ] as const;
 
@@ -51,14 +51,14 @@ const productBands = [
     eyebrow: "Rules",
     title: "Automation blocks for real customer questions.",
     description:
-      "Create the logic once. Let the system handle repeated WhatsApp traffic cleanly.",
+      "Create the reply once. Let WReply handle repeated WhatsApp questions.",
     accent: "cyan",
     cta: "Open rules",
     cards: [
-      "Keyword and phrase triggers",
-      "Exact and contains matching",
-      "Priority order and live toggles",
-      "Darija and French coverage",
+      "Keywords and phrases",
+      "Exact or contains",
+      "Priority and on/off",
+      "Darija and French",
     ],
   },
   {
@@ -66,14 +66,14 @@ const productBands = [
     eyebrow: "Message activity",
     title: "A readable view of every conversation decision.",
     description:
-      "Inspect inbound text, matched rules, fallback use, and outbound outcomes without losing the thread.",
+      "See customer messages, matched replies, default replies, and send results in one place.",
     accent: "pink",
     cta: "View messages",
     cards: [
-      "Inbound and outbound logs",
-      "Matched, unmatched, fallback labels",
-      "Prepared, sent, failed status",
-      "Structured detail views",
+      "Messages and replies",
+      "Matched or missed",
+      "Prepared, sent, failed",
+      "Clear details",
     ],
   },
   {
@@ -81,14 +81,14 @@ const productBands = [
     eyebrow: "Analytics",
     title: "Signals that show what your automation is really doing.",
     description:
-      "Track coverage, fallback usage, delivery outcomes, and the rules carrying the most traffic.",
+      "Track coverage, default reply use, send results, and your most-used replies.",
     accent: "blue",
     cta: "Open analytics",
     cards: [
-      "Match rate and no-match trend",
-      "Fallback usage visibility",
-      "Top-performing rules",
-      "Outbound delivery outcomes",
+      "Coverage over time",
+      "Default reply use",
+      "Top replies",
+      "Reply results",
     ],
   },
   {
@@ -96,14 +96,14 @@ const productBands = [
     eyebrow: "WhatsApp",
     title: "Connection setup that stays clear and operational.",
     description:
-      "Store credentials securely, verify webhooks, and keep the line state readable for operators.",
+      "Connect your WhatsApp number, confirm your setup, and keep everything easy to follow.",
     accent: "purple",
     cta: "Manage connection",
     cards: [
-      "Webhook verification ready",
-      "Workspace-scoped credentials",
-      "Prepared vs live sending",
-      "Message flow tied to one line",
+      "Message URL ready",
+      "Owner-only access",
+      "Draft or live sending",
+      "One number, one setup",
     ],
   },
 ] as const;
@@ -160,6 +160,22 @@ function WorkflowCard({
           {title}
         </p>
         <p className="mt-2 text-sm leading-6 text-white/56">{detail}</p>
+      </CardContent>
+    </Card>
+  );
+}
+
+function ProductPointCard({
+  label,
+}: Readonly<{
+  label: string;
+}>) {
+  return (
+    <Card className="marketing-surface rounded-[22px] transition duration-200 hover:-translate-y-0.5">
+      <CardContent className="flex min-h-[56px] items-center justify-center px-4 py-3 text-center">
+        <p className="text-[0.92rem] leading-5 font-semibold text-white">
+          {label}
+        </p>
       </CardContent>
     </Card>
   );
@@ -285,8 +301,8 @@ function ProductBandPreview({
                 detail="Track when no rule took the message"
               />
               <DockCard
-                title="Top rules"
-                detail="Know which automation blocks carry traffic"
+                title="Top replies"
+                detail="See which replies customers use most"
               />
             </div>
           </div>
@@ -300,8 +316,8 @@ function ProductBandPreview({
       <AccentPreview accent={accent}>
         <div className="flex min-h-[21rem] flex-col justify-between gap-6">
           <div className="flex items-center justify-between gap-3">
-            <span className="marketing-chip">Connection state</span>
-            <span className="marketing-chip">Webhook ready</span>
+            <span className="marketing-chip">WhatsApp setup</span>
+            <span className="marketing-chip">Ready to receive</span>
           </div>
           <div className="grid flex-1 gap-4 lg:grid-cols-[1fr_1fr]">
             <div className="rounded-[24px] border border-white/[0.08] bg-[rgba(8,12,21,0.8)] p-5">
@@ -311,24 +327,21 @@ function ProductBandPreview({
               <div className="mt-5 space-y-3">
                 <DockCard title="Phone number ID" detail="Stored securely" />
                 <DockCard
-                  title="Verify token"
-                  detail="Used for Meta challenge"
+                  title="Verification token"
+                  detail="Used to confirm your setup"
                 />
-                <DockCard
-                  title="App secret"
-                  detail="Optional signature checks"
-                />
+                <DockCard title="App secret" detail="Extra security" />
               </div>
             </div>
             <div className="rounded-[24px] border border-white/[0.08] bg-[rgba(8,12,21,0.8)] p-5">
               <p className="text-[0.66rem] tracking-[0.18em] text-white/34 uppercase">
-                Operational state
+                Current status
               </p>
               <div className="mt-5 space-y-3">
-                <DockCard title="Webhook" detail="Verified and receiving" />
+                <DockCard title="Messages" detail="Confirmed and receiving" />
                 <DockCard title="Send mode" detail="Prepared or live" />
                 <DockCard
-                  title="Workspace line"
+                  title="Connected number"
                   detail="Bound to one connection"
                 />
               </div>
@@ -423,7 +436,7 @@ export function MarketingLanding() {
         <main className="flex-1 pb-20">
           <section className="mx-auto flex max-w-5xl flex-col items-center px-2 pt-16 text-center sm:pt-20 lg:pt-24">
             <Badge className="border-primary/15 bg-primary/10 text-primary">
-              WReply platform
+              WReply
             </Badge>
 
             <h1 className="font-display mt-6 text-5xl font-semibold tracking-[-0.08em] text-white sm:text-6xl lg:text-7xl xl:text-[5.4rem]">
@@ -434,9 +447,9 @@ export function MarketingLanding() {
             </h1>
 
             <p className="mt-5 max-w-2xl text-sm leading-7 text-white/54 sm:text-base">
-              A WhatsApp automation system for Moroccan businesses. Rules,
-              matching, fallback, logs, and analytics in one premium control
-              center.
+              Automatic WhatsApp replies for Moroccan businesses. Set your
+              replies, stay on top of messages, and keep everything easy to
+              manage.
             </p>
 
             <div className="mt-7 flex flex-wrap items-center justify-center gap-3">
@@ -462,14 +475,14 @@ export function MarketingLanding() {
               <span className="h-1 w-1 rounded-full bg-white/18" />
               <span>WhatsApp-focused</span>
               <span className="h-1 w-1 rounded-full bg-white/18" />
-              <span>Operator-visible</span>
+              <span>Easy to follow</span>
             </div>
 
             <div className="mt-12 w-full">
               <div className="marketing-stage marketing-glow-cyan rounded-[30px] p-5 sm:p-6 lg:p-7">
                 <div className="flex flex-wrap items-center justify-between gap-3">
-                  <span className="marketing-chip">Live command surface</span>
-                  <span className="marketing-chip">Rules to replies</span>
+                  <span className="marketing-chip">Live overview</span>
+                  <span className="marketing-chip">Message to reply</span>
                 </div>
 
                 <div className="mt-6 rounded-[28px] border border-white/[0.08] bg-[rgba(6,10,18,0.86)] p-6 sm:p-8">
@@ -498,7 +511,7 @@ export function MarketingLanding() {
                 </div>
 
                 <div className="mt-5 grid gap-3 md:grid-cols-2 xl:grid-cols-4">
-                  {workflowCards.map((card) => (
+                  {overviewCards.map((card) => (
                     <WorkflowCard key={card.title} {...card} />
                   ))}
                 </div>
@@ -508,9 +521,9 @@ export function MarketingLanding() {
 
           <section id="product" className="mt-24 space-y-8 sm:mt-28 lg:mt-32">
             <SectionHeader
-              badge="One workflow"
+              badge="One place"
               title="Every surface stays connected."
-              description="The same system handles rule creation, message matching, fallback logic, delivery visibility, and analytics."
+              description="Create replies, see messages, track results."
             />
 
             <div className="grid gap-14">
@@ -547,16 +560,7 @@ export function MarketingLanding() {
 
                     <div className="mx-auto grid max-w-6xl gap-3 md:grid-cols-2 xl:grid-cols-4">
                       {band.cards.map((card) => (
-                        <Card
-                          key={card}
-                          className="marketing-surface rounded-[22px] transition duration-200 hover:-translate-y-0.5"
-                        >
-                          <CardContent className="p-4">
-                            <p className="text-sm font-semibold text-white">
-                              {card}
-                            </p>
-                          </CardContent>
-                        </Card>
+                        <ProductPointCard key={card} label={card} />
                       ))}
                     </div>
 
@@ -579,9 +583,9 @@ export function MarketingLanding() {
 
           <section id="stack" className="mt-24 space-y-8 sm:mt-28 lg:mt-32">
             <SectionHeader
-              badge="The stack"
-              title="One system from trigger to insight."
-              description="WReply keeps every layer aligned so the product feels fast, clear, and trustworthy for operators."
+              badge="Why WReply"
+              title="One place for replies, messages, and results."
+              description="Clear, fast, and easy to run every day."
             />
 
             <div className="marketing-surface rounded-[30px] p-6 sm:p-8">
@@ -606,12 +610,11 @@ export function MarketingLanding() {
                   <p className="font-display text-2xl font-semibold tracking-[-0.05em] text-white sm:text-3xl">
                     Premium by default.
                     <span className="text-gradient block">
-                      Built for launch-ready teams.
+                      Built for growing businesses.
                     </span>
                   </p>
                   <p className="mt-3 text-sm leading-7 text-white/54 sm:text-base">
-                    Connect the line, define the logic, inspect every decision,
-                    and keep the business response loop clean.
+                    Connect WhatsApp, set your replies, and stay in control.
                   </p>
                 </div>
 

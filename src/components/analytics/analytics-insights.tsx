@@ -26,9 +26,9 @@ export function TopRulesInsight({
       <CardHeader>
         <CardTitle className="flex items-center gap-3 text-white">
           <Award className="text-primary h-5 w-5" />
-          Top rules
+          Top replies
         </CardTitle>
-        <CardDescription>Best performers.</CardDescription>
+        <CardDescription>Most used.</CardDescription>
       </CardHeader>
       <CardContent>
         {rules.length === 0 ? (
@@ -66,7 +66,7 @@ export function TopRulesInsight({
                         : "border-amber-400/20 bg-amber-500/10 text-amber-100"
                     }
                   >
-                    {rule.isActive ? "live" : "off"}
+                    {rule.isActive ? "on" : "off"}
                   </Badge>
                 </div>
               </div>
@@ -88,14 +88,14 @@ export function DeliveryIssuesInsight({
       <CardHeader>
         <CardTitle className="flex items-center gap-3 text-white">
           <AlertTriangle className="text-primary h-5 w-5" />
-          Delivery issues
+          Send issues
         </CardTitle>
-        <CardDescription>Recent failures.</CardDescription>
+        <CardDescription>Recent problems.</CardDescription>
       </CardHeader>
       <CardContent>
         {issues.length === 0 ? (
           <div className="rounded-[22px] border border-dashed border-white/[0.08] bg-white/[0.03] px-5 py-8 text-center text-sm text-white/54">
-            No failures
+            No send issues
           </div>
         ) : (
           <div className="space-y-3">
@@ -116,7 +116,7 @@ export function DeliveryIssuesInsight({
                   {issue.replySource ? (
                     <Badge className="border-white/[0.08] bg-white/[0.03] text-white/72">
                       {issue.replySource === "FALLBACK"
-                        ? "fallback"
+                        ? "default"
                         : issue.replySource === "AI_KNOWLEDGE"
                           ? "ai"
                           : "rule"}

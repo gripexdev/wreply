@@ -45,7 +45,7 @@ export function RuleDeleteDialog({
       if (!response.ok) {
         pushToast({
           variant: "error",
-          title: "Unable to delete rule",
+          title: "Could not delete rule",
           description:
             payload?.message ??
             "This rule could not be deleted right now. Please try again.",
@@ -55,15 +55,15 @@ export function RuleDeleteDialog({
 
       pushToast({
         variant: "success",
-        title: "Rule deleted successfully",
-        description: `"${rule.keyword}" was removed from this workspace.`,
+        title: "Rule deleted",
+        description: `"${rule.keyword}" was removed.`,
       });
       onCompleted();
       onClose();
     } catch {
       pushToast({
         variant: "error",
-        title: "Unable to delete rule",
+        title: "Could not delete rule",
         description: "Please try again in a moment.",
       });
     } finally {
@@ -76,7 +76,7 @@ export function RuleDeleteDialog({
       <DialogContent>
         <DialogHeader
           title="Delete rule"
-          description="This action permanently removes the rule from the current workspace."
+          description="This will permanently remove this reply."
           onClose={() => (isDeleting ? undefined : onClose())}
         />
 
@@ -90,8 +90,7 @@ export function RuleDeleteDialog({
                 Delete {rule?.keyword ?? "this rule"}?
               </p>
               <p className="mt-2 text-sm leading-6 text-rose-50/85">
-                The reply text, filters, and priority position will be removed.
-                This cannot be undone from the interface.
+                This reply will be removed and cannot be restored here.
               </p>
             </div>
           </div>

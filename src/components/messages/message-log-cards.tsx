@@ -26,7 +26,7 @@ function MessageBubble({
     >
       <div className="flex items-center gap-2 text-[0.68rem] tracking-[0.18em] text-white/52 uppercase">
         <MessageSquareQuote className="h-3.5 w-3.5" />
-        {log.direction === "INBOUND" ? "Customer message" : "Auto-reply"}
+        {log.direction === "INBOUND" ? "Customer message" : "Reply"}
       </div>
       <p className="mt-3 text-sm leading-7 text-current/95">
         {log.contentPreview}
@@ -100,7 +100,7 @@ export function MessageLogCards({
               <div className="grid gap-3 rounded-[24px] border border-white/[0.08] bg-black/20 p-4">
                 <div className="space-y-1">
                   <p className="text-[0.68rem] tracking-[0.2em] text-white/42 uppercase">
-                    Automation decision
+                    What happened
                   </p>
                   <p className="text-sm font-semibold text-white">
                     {outcome.title}
@@ -113,7 +113,7 @@ export function MessageLogCards({
                 <div className="grid gap-3 rounded-[20px] border border-white/[0.08] bg-white/[0.03] p-4">
                   <div className="space-y-1">
                     <p className="text-[0.68rem] tracking-[0.2em] text-white/42 uppercase">
-                      Status signal
+                      Status
                     </p>
                     <p className="text-sm leading-6 text-white/82">{status}</p>
                   </div>
@@ -121,8 +121,7 @@ export function MessageLogCards({
                   {log.relatedMessage ? (
                     <div className="flex items-center gap-2 text-sm text-white/62">
                       <Link2 className="h-4 w-4" />
-                      Linked {log.relatedMessage.direction.toLowerCase()}{" "}
-                      activity available
+                      Related message available
                     </div>
                   ) : null}
                 </div>

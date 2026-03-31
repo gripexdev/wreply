@@ -20,12 +20,12 @@ const directionBadgeStyles = {
   INBOUND: {
     className: "border-[#3B82F6]/18 bg-[#3B82F6]/10 text-[#DBEAFE]",
     icon: ArrowDownLeft,
-    label: "Inbound",
+    label: "Received",
   },
   OUTBOUND: {
     className: "border-[#A855F7]/18 bg-[#A855F7]/10 text-[#F3E8FF]",
     icon: ArrowUpRight,
-    label: "Outbound",
+    label: "Reply",
   },
 } as const;
 
@@ -106,94 +106,90 @@ export function getMessageLogOutcomeSummary(log: MessageLogListItem) {
   if (log.matchedRule) {
     return {
       title: `Matched "${log.matchedRule.keyword}"`,
-      description: "A saved auto-reply rule handled this message.",
+      description: "A saved reply handled this message.",
     };
   }
 
   if (log.replySource === "AI_KNOWLEDGE") {
     return {
       title: "AI knowledge reply",
-      description:
-        "No rule matched, so the assistant replied from the workspace knowledge base.",
+      description: "The assistant answered using your saved business details.",
     };
   }
 
   if (log.replySource === "FALLBACK" || log.fallbackUsed) {
     return {
-      title: "Fallback reply",
-      description:
-        "No rule matched, so the workspace fallback message took over.",
+      title: "Default reply",
+      description: "Your default reply was used.",
     };
   }
 
   if (log.direction === "OUTBOUND" && log.sendStatus === "FAILED") {
     return {
-      title: "Delivery failed",
-      description:
-        log.failureReason ??
-        "The send attempt reached the provider but did not complete.",
+      title: "Reply failed",
+      description: log.failureReason ?? "WhatsApp could not send this reply.",
     };
   }
 
   if (log.direction === "OUTBOUND") {
     return {
-      title: "Outbound reply",
+      title: "Reply ready",
       description:
         log.sendStatus === "PREPARED"
-          ? "The reply was prepared and stored without a send attempt."
-          : "The reply was recorded as outbound activity.",
+          ? "This reply was saved without sending."
+          : "This reply was saved in your history.",
     };
   }
 
   return {
-    title: "No rule match",
+    title: "No saved reply",
     description: log.fallbackEligible
-      ? "This inbound message was eligible for fallback handling."
-      : "This inbound message did not match any active rule.",
+      ? "A default reply could be used here."
+      : "This message did not match any active rule.",
   };
 }
 
 export function getMessageLogStatusSummary(log: MessageLogListItem) {
   if (log.direction === "INBOUND") {
     if (!log.processingStatus) {
-      return "Received and stored for inspection.";
+      return "Received and saved.";
     }
 
     switch (log.processingStatus) {
       case "MATCHED":
-        return "Resolved by the matching engine.";
+        return "Matched one of your saved replies.";
       case "NO_MATCH":
         return log.replySource === "AI_KNOWLEDGE"
-          ? "No rule matched. The assistant replied from trained knowledge."
+          ? "No rule matched. The assistant replied using your business details."
           : log.fallbackUsed
-            ? "No rule matched. Fallback behavior covered the reply."
+            ? "No rule matched. Your default reply was used."
             : "No rule matched this customer message.";
       case "FAILED":
-        return "Processing failed before the automation flow completed.";
+        return "Something went wrong before the reply was prepared.";
       case "UNSUPPORTED":
-        return "The event was ingested but not handled in this flow.";
+        return "This message type is not supported yet.";
       case "DUPLICATE":
-        return "A duplicate event was detected and safely ignored.";
+        return "This message was already received.";
       default:
-        return "Inbound activity was recorded successfully.";
+        return "Message saved successfully.";
     }
   }
 
   if (!log.sendStatus) {
-    return "Outbound activity is available for review.";
+    return "Reply saved in your history.";
   }
 
   switch (log.sendStatus) {
     case "PREPARED":
-      return "Prepared for reply review without a provider send attempt.";
+      return "Saved without sending.";
     case "SENT":
-      return "Accepted by the provider as a real send attempt.";
+      return "Sent to WhatsApp.";
     case "DELIVERED":
-      return "Confirmed as delivered by the provider.";
+      return "Delivered to the customer.";
     case "FAILED":
-      return log.failureReason ?? "The provider send attempt failed.";
+      return log.failureReason ?? "WhatsApp could not send this reply.";
     default:
-      return "Outbound activity was logged successfully.";
+      return "Reply saved successfully.";
   }
 }
 
@@ -251,7 +247,7 @@ export function MessageLogBadges({
       {log.replySource === "FALLBACK" || log.fallbackUsed ? (
         <LogBadge
           icon={Bot}
-          label="Fallback"
+          label="Default reply"
           className="border-amber-400/18 bg-amber-500/10 text-amber-100"
         />
       ) : null}
@@ -259,7 +255,7 @@ export function MessageLogBadges({
       {log.replySource === "RULE_MATCH" || log.matchedRule ? (
         <LogBadge
           icon={Sparkles}
-          label="Rule reply"
+          label="Saved reply"
           className="border-[#A855F7]/18 bg-[#A855F7]/10 text-[#F3E8FF]"
         />
       ) : null}

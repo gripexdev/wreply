@@ -34,7 +34,7 @@ export async function getRequiredWorkspaceOwnerContext() {
 
   if (context.role !== "OWNER") {
     throw new WorkspacePermissionError(
-      "Only workspace owners can manage WhatsApp connection settings.",
+      "Only the business owner can manage WhatsApp settings.",
     );
   }
 
@@ -46,7 +46,7 @@ export async function getRequiredWorkspaceManagerContext() {
 
   if (context.role !== "OWNER" && context.role !== "ADMIN") {
     throw new WorkspacePermissionError(
-      "Only workspace owners and admins can manage these settings.",
+      "Only the business owner or an admin can manage these settings.",
     );
   }
 

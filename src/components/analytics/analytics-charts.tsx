@@ -57,12 +57,12 @@ export function IncomingVolumeChart({
 
   return (
     <ChartShell
-      title="Incoming volume"
-      description="Daily inbound."
+      title="Messages over time"
+      description="By day."
       icon={BarChart3}
     >
       {maxIncoming === 0 ? (
-        <EmptyChartState message="No inbound volume" />
+        <EmptyChartState message="No messages yet" />
       ) : (
         <div className="overflow-x-auto">
           <div className="flex min-w-max gap-3 rounded-[24px] border border-white/10 bg-white/[0.03] p-5">
@@ -109,13 +109,9 @@ export function MatchOutcomeChart({
   );
 
   return (
-    <ChartShell
-      title="Matched vs unmatched"
-      description="Coverage split."
-      icon={Layers3}
-    >
+    <ChartShell title="Matched vs missed" description="By day." icon={Layers3}>
       {maxTotal === 0 ? (
-        <EmptyChartState message="No match data" />
+        <EmptyChartState message="No matched messages yet" />
       ) : (
         <div className="space-y-4">
           <div className="flex flex-wrap gap-3 text-xs tracking-[0.18em] text-white/60 uppercase">
@@ -125,7 +121,7 @@ export function MatchOutcomeChart({
             </span>
             <span className="inline-flex items-center gap-2">
               <span className="h-2.5 w-2.5 rounded-full bg-amber-300" />
-              unmatched
+              missed
             </span>
           </div>
           <div className="overflow-x-auto">
@@ -211,12 +207,12 @@ export function OutboundStatusChart({
 
   return (
     <ChartShell
-      title="Outbound delivery"
-      description="Reply states."
+      title="Reply status"
+      description="Prepared, sent, delivered, failed."
       icon={Send}
     >
       {total === 0 ? (
-        <EmptyChartState message="No outbound data" />
+        <EmptyChartState message="No replies yet" />
       ) : (
         <div className="space-y-4">
           {distribution.map((item) => {
@@ -251,7 +247,7 @@ export function OutboundStatusChart({
           })}
 
           <div className="rounded-[20px] border border-white/[0.08] bg-white/[0.03] px-4 py-3 text-xs text-white/46">
-            Sent and delivered are tracked separately.
+            Sent and delivered are shown separately.
           </div>
         </div>
       )}
@@ -269,31 +265,31 @@ export function FallbackInsightCard({
       <CardHeader>
         <CardTitle className="flex items-center gap-3 text-white">
           <ArrowUpRight className="text-primary h-5 w-5" />
-          Fallback behavior
+          Default reply
         </CardTitle>
-        <CardDescription>Fallback use.</CardDescription>
+        <CardDescription>Used when no rule matched.</CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
         <div className="rounded-[22px] border border-white/10 bg-white/[0.03] p-5">
           <p className="text-muted-foreground text-xs tracking-[0.18em] uppercase">
-            Fallback used
+            Default reply used
           </p>
           <p className="font-display mt-3 text-3xl font-semibold text-white">
             {kpis.fallbackRepliesUsed}
           </p>
           <p className="text-muted-foreground mt-2 text-xs">
-            {kpis.fallbackUsageRate}% usage
+            {kpis.fallbackUsageRate}% of messages
           </p>
         </div>
 
         <div className="rounded-[22px] border border-white/10 bg-white/[0.03] p-5">
           <p className="text-muted-foreground text-xs tracking-[0.18em] uppercase">
-            Coverage
+            Unmatched messages
           </p>
           <p className="mt-3 text-sm text-white/82">
             {kpis.unmatchedMessages === 0
-              ? "All inbound messages matched."
-              : `${kpis.unmatchedMessages} inbound messages were not covered.`}
+              ? "Every message found a reply."
+              : `${kpis.unmatchedMessages} messages did not match a saved reply.`}
           </p>
         </div>
       </CardContent>

@@ -9,5 +9,7 @@ export function WhatsAppStatusBadge({
 }>) {
   const statusMeta = whatsappStatusMeta[status];
 
-  return <Badge className={statusMeta.badgeClassName}>{statusMeta.label}</Badge>;
+  return (
+    <Badge className={statusMeta.badgeClassName}>{statusMeta.label}</Badge>
+  );
 }

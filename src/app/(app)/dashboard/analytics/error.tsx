@@ -19,16 +19,15 @@ export default function DashboardAnalyticsError({
         </span>
         <div className="space-y-2">
           <p className="text-lg font-semibold text-rose-100">
-            Unable to load workspace analytics
+            Could not load analytics
           </p>
           <p className="text-sm leading-6 text-rose-50/80">
-            The analytics data could not be loaded right now. Try the request
-            again to refresh the workspace metrics.
+            Try again in a moment.
           </p>
         </div>
         <Button variant="secondary" onClick={reset}>
           <RefreshCcw className="mr-2 h-4 w-4" />
-          Retry analytics
+          Try again
         </Button>
       </CardContent>
     </Card>

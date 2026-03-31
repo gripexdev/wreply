@@ -80,7 +80,9 @@ export function RulesTable({
                             </span>
                           ) : null}
                         </div>
-                        <p className="text-xs text-white/38">Trigger phrase</p>
+                        <p className="text-xs text-white/38">
+                          Keyword or phrase
+                        </p>
                       </button>
                     </td>
                     <td className="border-b border-white/[0.06] px-6 py-4 align-top">
@@ -116,7 +118,7 @@ export function RulesTable({
                             : "border-white/[0.08] bg-white/[0.03] text-white/48",
                         )}
                       >
-                        Inspect
+                        Open
                         <ChevronRight className="h-3.5 w-3.5" />
                       </button>
                     </td>

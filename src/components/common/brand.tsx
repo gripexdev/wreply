@@ -22,7 +22,7 @@ export function Brand({
         </span>
         {!compact ? (
           <span className="block text-[0.66rem] tracking-[0.24em] text-white/36 uppercase">
-            Reply system
+            WhatsApp replies
           </span>
         ) : null}
       </span>

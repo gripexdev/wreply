@@ -5,8 +5,7 @@ import { rulesQuerySchema } from "@/lib/validation/rules";
 
 export const metadata: Metadata = {
   title: "Rules",
-  description:
-    "Manage workspace auto-reply rules for common WhatsApp questions.",
+  description: "Create and manage automatic replies for common questions.",
 };
 
 function getSingleValue(value: string | string[] | undefined) {

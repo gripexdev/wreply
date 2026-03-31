@@ -19,7 +19,7 @@ export function DashboardShell({
   children: React.ReactNode;
 }>) {
   const mobileNav = useMobileNav();
-  const workspaceName = workspace?.name ?? "Workspace";
+  const workspaceName = workspace?.name ?? "Business";
 
   return (
     <div className="bg-background relative min-h-screen overflow-hidden">

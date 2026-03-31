@@ -7,6 +7,17 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import type { AppSessionUser } from "@/types/auth";
 
+function getRoleLabel(role: AppSessionUser["role"]) {
+  switch (role) {
+    case "OWNER":
+      return "Owner";
+    case "ADMIN":
+      return "Admin";
+    default:
+      return "Member";
+  }
+}
+
 export function AppHeader({
   user,
   workspaceName,
@@ -31,14 +42,14 @@ export function AppHeader({
           </Button>
           <div>
             <p className="text-[0.64rem] tracking-[0.22em] text-white/34 uppercase">
-              Control
+              Business
             </p>
             <div className="mt-1 flex flex-wrap items-center gap-3">
               <h1 className="font-display text-[1.45rem] font-semibold tracking-[-0.04em] text-white">
                 {workspaceName}
               </h1>
               <Badge className="border-white/[0.08] bg-white/[0.035] text-white/62">
-                {user.role.toLowerCase()}
+                {getRoleLabel(user.role)}
               </Badge>
             </div>
           </div>

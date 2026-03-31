@@ -33,7 +33,7 @@ export function AppSidebar({
 
       <div className="mt-6 rounded-[28px] border border-white/[0.08] bg-[linear-gradient(180deg,rgba(13,19,32,0.88),rgba(8,12,22,0.96))] p-4">
         <p className="text-[0.64rem] tracking-[0.24em] text-white/36 uppercase">
-          Workspace
+          Business
         </p>
         <p className="font-display mt-3 text-[1.2rem] font-semibold tracking-[-0.03em] text-white">
           {workspaceName}

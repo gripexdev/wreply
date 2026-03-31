@@ -181,7 +181,7 @@ export function BusinessSettingsClient({
 
       if (!response.ok || !payload) {
         setFieldErrors(normalizeFieldErrors(payload?.fieldErrors));
-        setFormError(payload?.message ?? "Unable to save business settings.");
+        setFormError(payload?.message ?? "Could not save your settings.");
         return;
       }
 
@@ -189,15 +189,12 @@ export function BusinessSettingsClient({
       setFormState(buildInitialFormState(payload.settings));
       pushToast({
         variant: "success",
-        title: "Business settings saved",
-        description:
-          "Workspace identity and fallback reply settings were updated successfully.",
+        title: "Settings saved",
+        description: "Your business details were updated.",
       });
       router.refresh();
     } catch {
-      setFormError(
-        "Unable to save business settings right now. Please try again.",
-      );
+      setFormError("Could not save your settings right now. Please try again.");
     } finally {
       setIsSaving(false);
     }
@@ -228,7 +225,7 @@ export function BusinessSettingsClient({
                   Business settings
                 </h1>
                 <p className="text-muted-foreground mt-3 text-sm sm:text-base">
-                  Profile and fallback.
+                  Business details and your default reply.
                 </p>
               </div>
 
@@ -243,10 +240,10 @@ export function BusinessSettingsClient({
           <CardContent className="flex h-full flex-col justify-between p-6">
             <div>
               <p className="text-muted-foreground text-xs tracking-[0.22em] uppercase">
-                Fallback
+                Default reply
               </p>
               <p className="mt-4 text-sm text-white/74">
-                Set the default reply.
+                Choose what happens when no rule matches.
               </p>
             </div>
             <div className="mt-6 flex flex-wrap gap-2">
@@ -255,8 +252,8 @@ export function BusinessSettingsClient({
               </Badge>
               <Badge className="border-white/10 bg-white/[0.03] text-white">
                 {settings.fallbackReplyEnabled
-                  ? "fallback enabled"
-                  : "fallback disabled"}
+                  ? "default reply on"
+                  : "default reply off"}
               </Badge>
             </div>
           </CardContent>
@@ -271,9 +268,9 @@ export function BusinessSettingsClient({
           icon={Building2}
         />
         <StatusCard
-          title="Fallback mode"
+          title="Default reply"
           value={settings.fallbackReplyEnabled ? "Enabled" : "Disabled"}
-          hint="Unmatched reply"
+          hint="No rule match"
           icon={Sparkles}
         />
         <StatusCard
@@ -289,7 +286,7 @@ export function BusinessSettingsClient({
           <Card>
             <CardHeader>
               <CardTitle className="text-white">Business identity</CardTitle>
-              <CardDescription>Name and tone.</CardDescription>
+              <CardDescription>Name and voice.</CardDescription>
             </CardHeader>
             <CardContent className="grid gap-5 md:grid-cols-2">
               <div className="space-y-2 md:col-span-2">
@@ -304,7 +301,7 @@ export function BusinessSettingsClient({
                   disabled={isSaving}
                 />
                 <p className="text-muted-foreground text-sm">
-                  This is the primary workspace name shown across the dashboard.
+                  Shown across your account.
                 </p>
                 {fieldErrors.businessName ? (
                   <p className="text-sm text-rose-300">
@@ -314,7 +311,7 @@ export function BusinessSettingsClient({
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="reply-display-name">Reply display name</Label>
+                <Label htmlFor="reply-display-name">Name used in replies</Label>
                 <Input
                   id="reply-display-name"
                   value={formState.replyDisplayName}
@@ -325,8 +322,7 @@ export function BusinessSettingsClient({
                   disabled={isSaving}
                 />
                 <p className="text-muted-foreground text-sm">
-                  A friendly name you want operators to use in customer-facing
-                  replies.
+                  This appears in customer-facing replies.
                 </p>
                 {fieldErrors.replyDisplayName ? (
                   <p className="text-sm text-rose-300">
@@ -336,9 +332,7 @@ export function BusinessSettingsClient({
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="business-language">
-                  Default language preference
-                </Label>
+                <Label htmlFor="business-language">Preferred language</Label>
                 <Select
                   id="business-language"
                   value={formState.languagePreference}
@@ -356,8 +350,7 @@ export function BusinessSettingsClient({
                   <option value="FRENCH">French</option>
                 </Select>
                 <p className="text-muted-foreground text-sm">
-                  A workspace default for future reply experiences and operator
-                  context.
+                  Used when WReply answers for you.
                 </p>
                 {fieldErrors.languagePreference ? (
                   <p className="text-sm text-rose-300">
@@ -370,7 +363,7 @@ export function BusinessSettingsClient({
 
           <Card>
             <CardHeader>
-              <CardTitle className="text-white">Contact references</CardTitle>
+              <CardTitle className="text-white">Contact details</CardTitle>
               <CardDescription>Phone, address, maps.</CardDescription>
             </CardHeader>
             <CardContent className="grid gap-5 md:grid-cols-2">
@@ -425,8 +418,7 @@ export function BusinessSettingsClient({
                   className="min-h-24"
                 />
                 <p className="text-muted-foreground text-sm">
-                  Useful for future rule replies about location, delivery zones,
-                  or in-store pickup.
+                  Shared when customers ask where you are.
                 </p>
                 {fieldErrors.address ? (
                   <p className="text-sm text-rose-300">{fieldErrors.address}</p>
@@ -445,7 +437,7 @@ export function BusinessSettingsClient({
                   disabled={isSaving}
                 />
                 <p className="text-muted-foreground text-sm">
-                  Paste the exact map URL customers should receive.
+                  Shared when customers ask for directions.
                 </p>
                 {fieldErrors.googleMapsLink ? (
                   <p className="text-sm text-rose-300">
@@ -458,17 +450,17 @@ export function BusinessSettingsClient({
 
           <Card>
             <CardHeader>
-              <CardTitle className="text-white">Fallback reply</CardTitle>
-              <CardDescription>Default unmatched reply.</CardDescription>
+              <CardTitle className="text-white">Default reply</CardTitle>
+              <CardDescription>Used when no rule matches.</CardDescription>
             </CardHeader>
             <CardContent className="space-y-5">
               <div className="flex items-start justify-between gap-4 rounded-[22px] border border-white/10 bg-white/[0.03] px-4 py-4">
                 <div>
                   <p className="text-sm font-semibold text-white">
-                    Enable unmatched fallback reply
+                    Send a default reply when no rule matches
                   </p>
                   <p className="text-muted-foreground mt-1 text-xs">
-                    Use the fallback message.
+                    Use the message below.
                   </p>
                 </div>
                 <Switch
@@ -483,7 +475,7 @@ export function BusinessSettingsClient({
 
               <div className="space-y-2">
                 <Label htmlFor="fallback-reply-message">
-                  Fallback reply message
+                  Default reply message
                 </Label>
                 <Textarea
                   id="fallback-reply-message"
@@ -495,8 +487,7 @@ export function BusinessSettingsClient({
                   disabled={isSaving}
                 />
                 <p className="text-muted-foreground text-sm">
-                  Keep this short, reassuring, and honest. It should confirm
-                  receipt without pretending a full answer already exists.
+                  Keep it short, friendly, and clear.
                 </p>
                 {fieldErrors.fallbackReplyMessage ? (
                   <p className="text-sm text-rose-300">
@@ -519,7 +510,7 @@ export function BusinessSettingsClient({
                       Saving
                     </>
                   ) : (
-                    "Save business settings"
+                    "Save changes"
                   )}
                 </Button>
               </div>
@@ -532,8 +523,8 @@ export function BusinessSettingsClient({
 
           <Card>
             <CardHeader>
-              <CardTitle className="text-white">Snapshot</CardTitle>
-              <CardDescription>Current profile.</CardDescription>
+              <CardTitle className="text-white">Quick view</CardTitle>
+              <CardDescription>Your saved business details.</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="flex items-start gap-4 rounded-[22px] border border-white/10 bg-white/[0.03] p-4">
@@ -545,7 +536,7 @@ export function BusinessSettingsClient({
                     {settings.businessName}
                   </p>
                   <p className="text-muted-foreground mt-1 text-sm leading-6">
-                    {settings.replyDisplayName || "No reply display name yet"}
+                    {settings.replyDisplayName || "No reply name yet"}
                   </p>
                 </div>
               </div>
@@ -556,12 +547,12 @@ export function BusinessSettingsClient({
                 </span>
                 <div>
                   <p className="text-sm font-semibold text-white">
-                    {settings.address || "Address not set"}
+                    {settings.address || "No address yet"}
                   </p>
                   <p className="text-muted-foreground mt-1 text-sm leading-6">
                     {settings.googleMapsLink
-                      ? "Google Maps link is ready to reuse."
-                      : "Google Maps link has not been added yet."}
+                      ? "Maps link saved."
+                      : "No maps link yet."}
                   </p>
                 </div>
               </div>
@@ -570,8 +561,8 @@ export function BusinessSettingsClient({
 
           <Card>
             <CardHeader>
-              <CardTitle className="text-white">Fallback preview</CardTitle>
-              <CardDescription>Current message.</CardDescription>
+              <CardTitle className="text-white">Default reply</CardTitle>
+              <CardDescription>Your current message.</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="rounded-[22px] border border-white/10 bg-white/[0.03] p-4">
@@ -580,8 +571,8 @@ export function BusinessSettingsClient({
                 </p>
                 <p className="mt-3 text-sm font-semibold text-white">
                   {settings.fallbackReplyEnabled
-                    ? "Fallback replies are active for unmatched messages."
-                    : "Fallback replies are disabled for unmatched messages."}
+                    ? "Your default reply is on."
+                    : "Your default reply is off."}
                 </p>
               </div>
               <div className="rounded-[22px] border border-white/10 bg-white/[0.03] p-4">
@@ -589,8 +580,7 @@ export function BusinessSettingsClient({
                   Current message
                 </p>
                 <p className="mt-3 text-sm leading-7 text-white/90">
-                  {settings.fallbackReplyMessage ||
-                    "No fallback reply has been configured yet."}
+                  {settings.fallbackReplyMessage || "No default reply yet."}
                 </p>
               </div>
             </CardContent>

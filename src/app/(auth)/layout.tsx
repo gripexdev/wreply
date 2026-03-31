@@ -4,9 +4,9 @@ import { Brand } from "@/components/common/brand";
 import { Badge } from "@/components/ui/badge";
 
 const authHighlights = [
-  "Sign in fast.",
-  "Open your workspace.",
-  "Manage replies in one place.",
+  "See everything in one place.",
+  "Reply faster on WhatsApp.",
+  "Keep customer messages organized.",
 ];
 
 export default function AuthLayout({
@@ -25,10 +25,10 @@ export default function AuthLayout({
                 WReply
               </Badge>
               <h1 className="font-display text-4xl font-semibold tracking-tight text-white">
-                WhatsApp replies, under control.
+                Run WhatsApp replies with clarity.
               </h1>
               <p className="text-muted-foreground max-w-lg text-sm leading-7">
-                Simple access. Clear control.
+                Simple, calm, and ready for customers.
               </p>
             </div>
           </div>
@@ -46,7 +46,7 @@ export default function AuthLayout({
             ))}
             <div className="border-primary/20 bg-primary/10 text-primary flex items-center gap-3 rounded-[24px] border p-4">
               <ShieldCheck className="h-5 w-5" />
-              <p className="text-sm font-medium">Secure by default.</p>
+              <p className="text-sm font-medium">Private and secure.</p>
             </div>
           </div>
         </section>

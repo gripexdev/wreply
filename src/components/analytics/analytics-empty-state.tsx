@@ -13,7 +13,7 @@ export function AnalyticsEmptyState() {
         </span>
         <div className="space-y-2">
           <h2 className="font-display text-2xl font-semibold text-white">
-            No analytics yet
+            No activity yet
           </h2>
           <p className="text-sm text-white/46">Connect WhatsApp to start.</p>
         </div>

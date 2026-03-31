@@ -31,7 +31,7 @@ import { getWorkspaceAnalytics } from "@/services/analytics/analytics.service";
 
 export const metadata: Metadata = {
   title: "Analytics",
-  description: "Track message volume, coverage, fallback use, and delivery.",
+  description: "See message volume, reply coverage, and reply results.",
 };
 
 function getSingleValue(value: string | string[] | undefined) {
@@ -71,11 +71,11 @@ export default async function DashboardAnalyticsPage({
                   Analytics
                 </Badge>
                 <h1 className="font-display mt-4 text-4xl font-semibold tracking-[-0.05em] text-white sm:text-5xl">
-                  Volume, coverage,
-                  <span className="text-gradient"> delivery</span>
+                  Messages,
+                  <span className="text-gradient"> replies, results</span>
                 </h1>
                 <p className="mt-3 text-sm leading-7 text-white/52 sm:text-base">
-                  Real workspace signals only.
+                  Real customer activity only.
                 </p>
               </div>
 
@@ -115,9 +115,9 @@ export default async function DashboardAnalyticsPage({
           <CardHeader>
             <CardTitle className="flex items-center gap-3 text-white">
               <BarChart3 className="text-primary h-5 w-5" />
-              Snapshot
+              Quick view
             </CardTitle>
-            <CardDescription>Fast read.</CardDescription>
+            <CardDescription>What to check first.</CardDescription>
           </CardHeader>
           <CardContent className="grid gap-4 sm:grid-cols-2">
             <div className="rounded-[22px] border border-white/[0.08] bg-white/[0.03] p-4">
@@ -130,7 +130,7 @@ export default async function DashboardAnalyticsPage({
             </div>
             <div className="rounded-[22px] border border-white/[0.08] bg-white/[0.03] p-4">
               <p className="text-[0.64rem] tracking-[0.18em] text-white/34 uppercase">
-                Coverage
+                Matched
               </p>
               <p className="mt-2 text-sm font-semibold text-white">
                 {analytics.kpis.matchedMessages}/
@@ -139,7 +139,7 @@ export default async function DashboardAnalyticsPage({
             </div>
             <div className="rounded-[22px] border border-white/[0.08] bg-white/[0.03] p-4">
               <p className="text-[0.64rem] tracking-[0.18em] text-white/34 uppercase">
-                Fallback
+                Default reply
               </p>
               <p className="mt-2 text-sm font-semibold text-white">
                 {analytics.kpis.fallbackRepliesUsed}
@@ -187,10 +187,10 @@ export default async function DashboardAnalyticsPage({
         <CardContent className="flex flex-col gap-4 p-6 lg:flex-row lg:items-center lg:justify-between">
           <div>
             <p className="text-sm font-semibold text-white">
-              Need more signal?
+              Need more messages?
             </p>
             <p className="mt-1 text-xs text-white/44">
-              Connect WhatsApp or test rules.
+              Connect WhatsApp or try a message.
             </p>
           </div>
           <Link

@@ -52,7 +52,7 @@ export function SignUpForm() {
       });
 
       if (!signInResult || signInResult.error) {
-        setError("Account created, but automatic sign in failed.");
+        setError("Your account was created, but we could not sign you in.");
         return;
       }
 
@@ -75,7 +75,7 @@ export function SignUpForm() {
         />
       </div>
       <div className="space-y-2">
-        <Label htmlFor="workspaceName">Workspace name</Label>
+        <Label htmlFor="workspaceName">Business name</Label>
         <Input
           id="workspaceName"
           placeholder="Atlas Motors"
@@ -84,7 +84,7 @@ export function SignUpForm() {
         />
       </div>
       <div className="space-y-2">
-        <Label htmlFor="email">Work email</Label>
+        <Label htmlFor="email">Email address</Label>
         <Input
           id="email"
           type="email"

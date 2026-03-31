@@ -243,7 +243,7 @@ export function RulesPageClient({
         >(response);
 
         if (!response.ok || !payload) {
-          throw new Error(payload?.message ?? "Unable to load your rules.");
+          throw new Error(payload?.message ?? "Could not load your rules.");
         }
 
         setData(payload);
@@ -255,7 +255,7 @@ export function RulesPageClient({
         setError(
           loadError instanceof Error
             ? loadError.message
-            : "Unable to load your rules.",
+            : "Could not load your rules.",
         );
       } finally {
         if (!controller.signal.aborted) {
@@ -428,7 +428,7 @@ export function RulesPageClient({
 
       pushToast({
         variant: "success",
-        title: nextValue ? "Rule enabled" : "Rule disabled",
+        title: nextValue ? "Rule turned on" : "Rule turned off",
         description: `"${rule.keyword}" was updated successfully.`,
       });
 
@@ -437,7 +437,7 @@ export function RulesPageClient({
       setData(previousData);
       pushToast({
         variant: "error",
-        title: "Unable to update rule",
+        title: "Could not update rule",
         description:
           toggleError instanceof Error
             ? toggleError.message
@@ -501,7 +501,7 @@ export function RulesPageClient({
 
       pushToast({
         variant: "success",
-        title: "Priority updated",
+        title: "Order updated",
         description: `"${rule.keyword}" was moved ${direction}.`,
       });
       refreshRules();
@@ -509,7 +509,7 @@ export function RulesPageClient({
       setData(previousData);
       pushToast({
         variant: "error",
-        title: "Unable to reorder rule",
+        title: "Could not change the order",
         description:
           moveError instanceof Error ? moveError.message : "Please try again.",
       });
@@ -563,35 +563,35 @@ export function RulesPageClient({
                   Rules
                 </Badge>
                 <Badge className="border-white/[0.08] bg-white/[0.045] text-white/66">
-                  Live
+                  Ready
                 </Badge>
               </div>
 
               <div className="space-y-4">
                 <h1 className="font-display text-4xl font-semibold tracking-[-0.06em] text-white sm:text-5xl">
-                  Automation
-                  <span className="text-gradient"> blocks</span>
+                  Automatic
+                  <span className="text-gradient"> replies</span>
                 </h1>
                 <p className="max-w-2xl text-sm text-white/48 sm:text-base">
-                  Scan, edit, and tune every reply flow.
+                  Build the replies your customers need most.
                 </p>
               </div>
 
               <div className="flex flex-wrap gap-3 text-sm text-white/52">
                 <div className="rounded-full border border-white/[0.08] bg-white/[0.03] px-4 py-2">
-                  Trigger keyword
+                  Keyword
                 </div>
                 <span className="text-primary flex items-center">
                   <ArrowRight className="h-4 w-4" />
                 </span>
                 <div className="rounded-full border border-white/[0.08] bg-white/[0.03] px-4 py-2">
-                  Match logic
+                  Match
                 </div>
                 <span className="text-primary flex items-center">
                   <ArrowRight className="h-4 w-4" />
                 </span>
                 <div className="rounded-full border border-white/[0.08] bg-white/[0.03] px-4 py-2">
-                  Reply block
+                  Reply
                 </div>
               </div>
             </div>
@@ -603,17 +603,17 @@ export function RulesPageClient({
             <div className="space-y-5">
               <div>
                 <p className="text-[0.68rem] tracking-[0.22em] text-white/36 uppercase">
-                  Flow
+                  Example
                 </p>
                 <h2 className="font-display mt-3 text-2xl font-semibold tracking-[-0.04em] text-white">
-                  Scale without losing clarity.
+                  Easy to scan.
                 </h2>
               </div>
 
               <div className="space-y-3 rounded-[24px] border border-white/[0.08] bg-white/[0.03] p-4">
                 <div className="border-primary/15 bg-primary/10 rounded-[18px] border px-4 py-3">
                   <p className="text-[0.68rem] tracking-[0.2em] text-white/38 uppercase">
-                    Trigger
+                    Keyword
                   </p>
                   <p className="mt-2 text-sm font-semibold tracking-[-0.01em] text-white">
                     prix
@@ -635,10 +635,10 @@ export function RulesPageClient({
 
             <div className="mt-6 flex flex-wrap gap-2">
               <Badge className="border-white/[0.08] bg-white/[0.045] text-white/66">
-                Compact table
+                Table
               </Badge>
               <Badge className="border-white/[0.08] bg-white/[0.045] text-white/66">
-                Inspector
+                Details
               </Badge>
             </div>
           </CardContent>
@@ -647,23 +647,23 @@ export function RulesPageClient({
 
       <section className="grid gap-4 md:grid-cols-3">
         <SummaryCard
-          title="Logic blocks"
+          title="Rules"
           value={summary.total}
-          hint="All rules"
+          hint="Total"
           icon={Layers3}
           accentClassName="from-primary/28 via-primary/10 to-transparent"
         />
         <SummaryCard
-          title="Live automation"
+          title="Active"
           value={summary.active}
-          hint="Enabled"
+          hint="Turned on"
           icon={Zap}
           accentClassName="from-emerald-300/20 via-emerald-200/8 to-transparent"
         />
         <SummaryCard
           title="Categories"
           value={categories.length}
-          hint="Labels"
+          hint="Groups"
           icon={ListFilter}
           accentClassName="from-[#A855F7]/20 via-[#A855F7]/8 to-transparent"
         />
@@ -684,7 +684,7 @@ export function RulesPageClient({
 
       {isReorderLocked && currentRules.length > 0 ? (
         <div className="rounded-[24px] border border-white/[0.08] bg-white/[0.03] px-4 py-3 text-sm text-white/48">
-          Priority mode is available only on the full unfiltered list.
+          To change the order, open the full list with no filters.
         </div>
       ) : null}
 

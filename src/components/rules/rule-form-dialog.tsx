@@ -160,25 +160,22 @@ export function RuleFormDialog({
 
       if (!response.ok) {
         setFieldErrors(normalizeFieldErrors(payload?.fieldErrors));
-        setFormError(payload?.message ?? "Unable to save this rule.");
+        setFormError(payload?.message ?? "Could not save this rule.");
         return;
       }
 
       pushToast({
         variant: "success",
-        title:
-          mode === "create"
-            ? "Rule created successfully"
-            : "Rule updated successfully",
+        title: mode === "create" ? "Rule created" : "Rule updated",
         description:
           mode === "create"
-            ? "Your new auto-reply rule is now available in this workspace."
-            : "Your changes were saved for this workspace rule.",
+            ? "Your new reply is ready to use."
+            : "Your changes were saved.",
       });
       onCompleted();
       onClose();
     } catch {
-      setFormError("Unable to save this rule right now. Please try again.");
+      setFormError("Could not save this rule right now. Please try again.");
     } finally {
       setIsSubmitting(false);
     }
@@ -205,8 +202,8 @@ export function RuleFormDialog({
           title={mode === "create" ? "Create a new rule" : "Edit rule"}
           description={
             mode === "create"
-              ? "Add a workspace-scoped auto-reply rule for common customer questions."
-              : "Update the wording, targeting, or ordering of this auto-reply rule."
+              ? "Create a reply for a common customer question."
+              : "Update this reply."
           }
           onClose={() => (isSubmitting ? undefined : onClose())}
         />
@@ -246,7 +243,7 @@ export function RuleFormDialog({
                 <p className="text-sm text-rose-300">{fieldErrors.category}</p>
               ) : (
                 <p className="text-muted-foreground text-sm">
-                  Optional label for filtering and internal organization.
+                  Optional label for easier filtering.
                 </p>
               )}
             </div>
@@ -341,7 +338,7 @@ export function RuleFormDialog({
                 <p className="text-sm text-rose-300">{fieldErrors.priority}</p>
               ) : (
                 <p className="text-muted-foreground text-sm">
-                  Lower numbers are evaluated first.
+                  Lower numbers are checked first.
                 </p>
               )}
             </div>
@@ -352,8 +349,7 @@ export function RuleFormDialog({
               <div>
                 <Label className="text-base">Rule status</Label>
                 <p className="text-muted-foreground mt-1 text-sm">
-                  Inactive rules stay saved but are excluded from future
-                  matching.
+                  Turn this off to keep it saved without using it.
                 </p>
               </div>
               <Switch

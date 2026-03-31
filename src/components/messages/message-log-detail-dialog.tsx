@@ -84,11 +84,9 @@ export function MessageLogDetailDialog({
       <DialogContent className="space-y-6">
         <DialogHeader
           title={
-            log.direction === "INBOUND"
-              ? "Inbound message inspection"
-              : "Outbound reply inspection"
+            log.direction === "INBOUND" ? "Customer message" : "Reply details"
           }
-          description="Review the message content, the automation decision, and the linked delivery context from one structured workspace view."
+          description="View the message and what happened."
           onClose={onClose}
         />
 
@@ -108,7 +106,7 @@ export function MessageLogDetailDialog({
           <div className="grid gap-3 sm:min-w-[15rem]">
             <div className="rounded-[22px] border border-white/[0.08] bg-white/[0.03] px-4 py-3">
               <p className="text-[0.68rem] tracking-[0.18em] text-white/42 uppercase">
-                Logged at
+                Time
               </p>
               <p className="mt-1 text-sm font-medium text-white/84">
                 {formatDateTime(log.timestamp)}
@@ -116,7 +114,7 @@ export function MessageLogDetailDialog({
             </div>
             <div className="rounded-[22px] border border-white/[0.08] bg-white/[0.03] px-4 py-3">
               <p className="text-[0.68rem] tracking-[0.18em] text-white/42 uppercase">
-                Outcome
+                Result
               </p>
               <p className="mt-1 text-sm font-medium text-white/84">
                 {outcome.title}
@@ -130,7 +128,7 @@ export function MessageLogDetailDialog({
             <CardHeader>
               <CardTitle className="flex items-center gap-3 text-white">
                 <MessageSquareText className="text-primary h-5 w-5" />
-                Message snapshot
+                Message
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-5">
@@ -142,7 +140,7 @@ export function MessageLogDetailDialog({
               <div className="grid gap-4 md:grid-cols-2">
                 <SectionField label="Contact" value={log.contactPhone} />
                 <SectionField
-                  label="Provider message ID"
+                  label="WhatsApp ID"
                   value={log.providerMessageId || "Not recorded"}
                 />
               </div>
@@ -150,7 +148,7 @@ export function MessageLogDetailDialog({
               {log.normalizedContent ? (
                 <div className="rounded-[24px] border border-white/[0.08] bg-white/[0.03] p-4">
                   <p className="text-[0.68rem] tracking-[0.18em] text-white/42 uppercase">
-                    Normalized content
+                    Cleaned text
                   </p>
                   <p className="mt-3 text-sm leading-7 text-white/82">
                     {log.normalizedContent}
@@ -165,7 +163,7 @@ export function MessageLogDetailDialog({
               <CardHeader>
                 <CardTitle className="flex items-center gap-3 text-white">
                   <Sparkles className="text-primary h-5 w-5" />
-                  Automation decision
+                  What happened
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-5">
@@ -181,32 +179,32 @@ export function MessageLogDetailDialog({
                 <div className="grid gap-4 sm:grid-cols-2">
                   <SectionField
                     label="Matched rule"
-                    value={log.matchedRule?.keyword || "No matched rule"}
+                    value={log.matchedRule?.keyword || "No saved reply"}
                   />
                   <SectionField
-                    label="Reply origin"
+                    label="Reply source"
                     value={
                       log.replySource === "FALLBACK"
-                        ? "Fallback reply"
+                        ? "Default reply"
                         : log.replySource === "AI_KNOWLEDGE"
                           ? "AI knowledge"
                           : log.replySource === "RULE_MATCH"
-                            ? "Matched rule"
-                            : "No outbound origin"
+                            ? "Saved reply"
+                            : "No reply"
                     }
                   />
                   <SectionField
-                    label="Fallback state"
+                    label="Default reply"
                     value={
                       log.replySource === "FALLBACK" || log.fallbackUsed
-                        ? "Fallback used"
+                        ? "Used"
                         : log.fallbackEligible
-                          ? "Eligible but not used"
-                          : "Not involved"
+                          ? "Available"
+                          : "Not used"
                     }
                   />
                   <SectionField
-                    label="Current status"
+                    label="Status"
                     value={
                       log.direction === "OUTBOUND"
                         ? (log.sendStatus?.toLowerCase() ?? "prepared")
@@ -220,7 +218,7 @@ export function MessageLogDetailDialog({
                 {log.processingReason || log.failureReason ? (
                   <div className="rounded-[24px] border border-white/[0.08] bg-black/18 p-4">
                     <p className="text-[0.68rem] tracking-[0.18em] text-white/42 uppercase">
-                      Operator note
+                      Notes
                     </p>
                     <p className="mt-3 text-sm leading-7 text-white/80">
                       {log.processingReason || log.failureReason}
@@ -234,7 +232,7 @@ export function MessageLogDetailDialog({
               <CardHeader>
                 <CardTitle className="flex items-center gap-3 text-white">
                   <Radar className="text-primary h-5 w-5" />
-                  Delivery and processing signal
+                  Status details
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-5">
@@ -246,7 +244,7 @@ export function MessageLogDetailDialog({
                   <div className="rounded-[22px] border border-white/[0.08] bg-black/18 p-4">
                     <div className="flex items-center gap-2 text-[0.68rem] tracking-[0.18em] text-white/42 uppercase">
                       <Clock3 className="h-3.5 w-3.5" />
-                      Timeline
+                      Time
                     </div>
                     <p className="mt-3 text-sm leading-6 text-white/82">
                       Logged at {formatDateTime(log.timestamp)}
@@ -260,7 +258,7 @@ export function MessageLogDetailDialog({
                       ) : (
                         <Send className="h-3.5 w-3.5" />
                       )}
-                      Channel state
+                      Current status
                     </div>
                     <p className="mt-3 text-sm leading-6 text-white/82">
                       {log.direction === "OUTBOUND"
@@ -284,7 +282,7 @@ export function MessageLogDetailDialog({
               ) : (
                 <CircleAlert className="text-primary h-5 w-5" />
               )}
-              Related activity
+              Related message
             </CardTitle>
           </CardHeader>
           <CardContent>
@@ -301,15 +299,15 @@ export function MessageLogDetailDialog({
                     }
                   />
                   <SectionField
-                    label="Linked origin"
+                    label="Reply source"
                     value={
                       log.relatedMessage.replySource === "FALLBACK"
-                        ? "Fallback"
+                        ? "Default reply"
                         : log.relatedMessage.replySource === "AI_KNOWLEDGE"
                           ? "AI knowledge"
                           : log.relatedMessage.replySource === "RULE_MATCH"
-                            ? "Matched rule"
-                            : "No reply origin"
+                            ? "Saved reply"
+                            : "No reply"
                     }
                   />
                   <SectionField
@@ -321,7 +319,7 @@ export function MessageLogDetailDialog({
                 <div className="rounded-[24px] border border-white/[0.08] bg-black/18 p-5">
                   <div className="mb-4 flex items-center gap-2 text-[0.68rem] tracking-[0.18em] text-white/42 uppercase">
                     <Link2 className="h-3.5 w-3.5" />
-                    Linked content
+                    Related text
                   </div>
                   <p className="text-sm leading-7 text-white/84">
                     {log.relatedMessage.content || "No related content stored."}
@@ -333,11 +331,10 @@ export function MessageLogDetailDialog({
                 <CircleAlert className="mt-0.5 h-5 w-5 text-white/62" />
                 <div className="space-y-2">
                   <p className="text-sm font-semibold text-white">
-                    No linked partner message yet
+                    No related message yet
                   </p>
                   <p className="text-sm leading-6 text-white/72">
-                    This log item does not have a stored inbound or outbound
-                    partner message attached to it yet.
+                    There is no related message saved yet.
                   </p>
                 </div>
               </div>

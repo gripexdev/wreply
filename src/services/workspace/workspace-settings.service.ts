@@ -40,7 +40,7 @@ function toWorkspaceBusinessSettingsView(
   workspace: WorkspaceBusinessSettingsRecord | null,
 ): WorkspaceBusinessSettingsView {
   if (!workspace) {
-    throw new WorkspaceSettingsServiceError("Workspace not found.", 404);
+    throw new WorkspaceSettingsServiceError("Business not found.", 404);
   }
 
   return {
@@ -117,7 +117,7 @@ export async function updateWorkspaceBusinessSettings(
   });
 
   return {
-    message: "Business settings saved successfully.",
+    message: "Settings saved.",
     settings: toWorkspaceBusinessSettingsView(workspace),
   };
 }
@@ -138,7 +138,7 @@ export async function getWorkspaceFallbackSettings(workspaceId: string) {
   });
 
   if (!workspace) {
-    throw new WorkspaceSettingsServiceError("Workspace not found.", 404);
+    throw new WorkspaceSettingsServiceError("Business not found.", 404);
   }
 
   return {

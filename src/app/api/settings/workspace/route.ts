@@ -24,7 +24,10 @@ export async function PATCH(request: NextRequest) {
   try {
     const { workspaceId } = await getRequiredWorkspaceManagerContext();
     const payload = await request.json().catch(() => null);
-    const response = await updateWorkspaceBusinessSettings(workspaceId, payload);
+    const response = await updateWorkspaceBusinessSettings(
+      workspaceId,
+      payload,
+    );
 
     return NextResponse.json(response);
   } catch (error) {

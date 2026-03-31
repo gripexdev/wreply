@@ -55,14 +55,14 @@ function toAssistantStatus(workspace: WorkspaceAssistantRecord) {
   if (!hasKnowledge) {
     return {
       status: "MISSING_KNOWLEDGE" as const,
-      statusLabel: "No knowledge",
+      statusLabel: "Not ready",
     };
   }
 
   if (!env.OPENAI_API_KEY) {
     return {
       status: "MISSING_API_KEY" as const,
-      statusLabel: "OpenAI key missing",
+      statusLabel: "Unavailable",
     };
   }
 
@@ -76,7 +76,7 @@ function toWorkspaceAssistantSettingsView(
   workspace: WorkspaceAssistantRecord | null,
 ): WorkspaceAssistantSettingsView {
   if (!workspace) {
-    throw new AssistantKnowledgeServiceError("Workspace not found.", 404);
+    throw new AssistantKnowledgeServiceError("Business not found.", 404);
   }
 
   const status = toAssistantStatus(workspace);
@@ -130,8 +130,8 @@ export async function updateWorkspaceAssistantSettings(
     } catch (error) {
       throw new AssistantKnowledgeServiceError(
         error instanceof Error
-          ? `Unable to train from the website URL. ${error.message}`
-          : "Unable to train from the website URL.",
+          ? `Could not read this website. ${error.message}`
+          : "Could not read this website.",
         502,
       );
     }
@@ -165,7 +165,7 @@ export async function updateWorkspaceAssistantSettings(
   });
 
   return {
-    message: "Assistant knowledge saved successfully.",
+    message: "Assistant details saved.",
     settings: toWorkspaceAssistantSettingsView(workspace),
   };
 }
@@ -193,7 +193,7 @@ export async function getWorkspaceAssistantContext(
   });
 
   if (!workspace) {
-    throw new AssistantKnowledgeServiceError("Workspace not found.", 404);
+    throw new AssistantKnowledgeServiceError("Business not found.", 404);
   }
 
   return {

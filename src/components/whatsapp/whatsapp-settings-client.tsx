@@ -85,19 +85,19 @@ function buildSetupChecklist(connection: WhatsAppConnectionSettingsView) {
       complete: Boolean(connection.phoneNumberId),
     },
     {
-      label: "Verify token stored",
+      label: "Verification token saved",
       complete: connection.verifyTokenConfigured,
     },
     {
-      label: "Webhook callback URL ready",
+      label: "Message URL ready",
       complete: Boolean(connection.webhookUrl),
     },
     {
-      label: "App secret available for signature checks",
+      label: "Extra security added",
       complete: connection.signatureVerificationEnabled,
     },
     {
-      label: "Live replies can be attempted",
+      label: "Live replies ready",
       complete: connection.canAttemptLiveReplies,
     },
   ];
@@ -130,7 +130,7 @@ function SecretHint({
   if (replacementPending) {
     return (
       <p className="text-primary text-sm">
-        A new {label.toLowerCase()} will replace the stored value on save.
+        A new {label.toLowerCase()} will be saved when you save changes.
       </p>
     );
   }
@@ -138,15 +138,14 @@ function SecretHint({
   if (!configured) {
     return (
       <p className="text-muted-foreground text-sm">
-        No stored {label.toLowerCase()} yet.
+        No saved {label.toLowerCase()} yet.
       </p>
     );
   }
 
   return (
     <p className="text-muted-foreground text-sm">
-      Stored securely as {preview}. Leave this field blank to keep the current
-      value.
+      Saved securely as {preview}. Leave this blank to keep it.
     </p>
   );
 }
@@ -189,7 +188,7 @@ export function WhatsAppSettingsClient({
     pushToast({
       variant: "success",
       title: `${label} copied`,
-      description: `${label} is now in your clipboard.`,
+      description: `${label} is ready to paste.`,
     });
   }
 
@@ -225,7 +224,9 @@ export function WhatsAppSettingsClient({
 
       if (!response.ok || !payload) {
         setFieldErrors(normalizeFieldErrors(payload?.fieldErrors));
-        setFormError(payload?.message ?? "Unable to save this connection.");
+        setFormError(
+          payload?.message ?? "Could not save your WhatsApp details.",
+        );
         return;
       }
 
@@ -240,13 +241,10 @@ export function WhatsAppSettingsClient({
       pushToast({
         variant: "success",
         title: "WhatsApp settings saved",
-        description:
-          "Connection settings were updated for this workspace successfully.",
+        description: "Your WhatsApp details were updated.",
       });
     } catch {
-      setFormError(
-        "Unable to save this connection right now. Please try again.",
-      );
+      setFormError("Could not save your WhatsApp details right now.");
     } finally {
       setIsSaving(false);
     }
@@ -265,10 +263,10 @@ export function WhatsAppSettingsClient({
                   WhatsApp
                 </Badge>
                 <h1 className="font-display mt-4 text-3xl font-semibold text-white sm:text-4xl">
-                  WhatsApp connection
+                  WhatsApp setup
                 </h1>
                 <p className="text-muted-foreground mt-3 text-sm sm:text-base">
-                  Connection and delivery.
+                  Connect your number and turn on replies.
                 </p>
               </div>
 
@@ -286,22 +284,22 @@ export function WhatsAppSettingsClient({
           <CardContent className="flex h-full flex-col justify-between p-6">
             <div>
               <p className="text-muted-foreground text-xs tracking-[0.22em] uppercase">
-                Snapshot
+                Quick view
               </p>
               <div className="mt-5 grid gap-4 sm:grid-cols-2">
                 <div className="rounded-[22px] border border-white/10 bg-white/[0.03] p-4">
                   <p className="text-muted-foreground text-xs uppercase">
-                    Last webhook
+                    Last message
                   </p>
                   <p className="mt-2 text-sm font-semibold text-white">
                     {connection.lastWebhookAt
                       ? formatShortDate(connection.lastWebhookAt)
-                      : "No events yet"}
+                      : "No messages yet"}
                   </p>
                 </div>
                 <div className="rounded-[22px] border border-white/10 bg-white/[0.03] p-4">
                   <p className="text-muted-foreground text-xs uppercase">
-                    Last verified
+                    Last check
                   </p>
                   <p className="mt-2 text-sm font-semibold text-white">
                     {connection.lastVerifiedAt
@@ -315,7 +313,7 @@ export function WhatsAppSettingsClient({
             <div className="mt-6 grid gap-4 sm:grid-cols-3">
               <div className="rounded-[22px] border border-white/10 bg-white/[0.03] p-4">
                 <p className="text-muted-foreground text-xs uppercase">
-                  Incoming logs
+                  Messages
                 </p>
                 <p className="font-display mt-2 text-2xl font-semibold text-white">
                   {connection.recentIncomingCount}
@@ -323,7 +321,7 @@ export function WhatsAppSettingsClient({
               </div>
               <div className="rounded-[22px] border border-white/10 bg-white/[0.03] p-4">
                 <p className="text-muted-foreground text-xs uppercase">
-                  Prepared replies
+                  Prepared
                 </p>
                 <p className="font-display mt-2 text-2xl font-semibold text-white">
                   {connection.preparedOutgoingCount}
@@ -348,11 +346,11 @@ export function WhatsAppSettingsClient({
           <Card>
             <CardHeader>
               <CardTitle className="text-white">Connection details</CardTitle>
-              <CardDescription>Line details.</CardDescription>
+              <CardDescription>Number and account details.</CardDescription>
             </CardHeader>
             <CardContent className="grid gap-5 md:grid-cols-2">
               <div className="space-y-2 md:col-span-2">
-                <Label htmlFor="whatsapp-label">Connection label</Label>
+                <Label htmlFor="whatsapp-label">Line name</Label>
                 <Input
                   id="whatsapp-label"
                   value={formState.label}
@@ -395,7 +393,7 @@ export function WhatsAppSettingsClient({
                   onChange={(event) =>
                     updateField("phoneNumberId", event.target.value)
                   }
-                  placeholder="Enter the Meta phone number ID"
+                  placeholder="Paste the phone number ID"
                   disabled={isSaving}
                 />
                 {fieldErrors.phoneNumberId ? (
@@ -404,7 +402,7 @@ export function WhatsAppSettingsClient({
                   </p>
                 ) : (
                   <p className="text-muted-foreground text-sm">
-                    Inbound webhook events are resolved by this value.
+                    This links incoming messages to this number.
                   </p>
                 )}
               </div>
@@ -419,7 +417,7 @@ export function WhatsAppSettingsClient({
                   onChange={(event) =>
                     updateField("businessAccountId", event.target.value)
                   }
-                  placeholder="Optional but useful for setup tracking"
+                  placeholder="Optional"
                   disabled={isSaving}
                 />
                 {fieldErrors.businessAccountId ? (
@@ -433,13 +431,15 @@ export function WhatsAppSettingsClient({
 
           <Card>
             <CardHeader>
-              <CardTitle className="text-white">Webhook credentials</CardTitle>
+              <CardTitle className="text-white">Private details</CardTitle>
               <CardDescription>Stored securely.</CardDescription>
             </CardHeader>
             <CardContent className="space-y-5">
               <div className="space-y-2">
                 <div className="flex flex-wrap items-center justify-between gap-3">
-                  <Label htmlFor="whatsapp-verify-token">Verify token</Label>
+                  <Label htmlFor="whatsapp-verify-token">
+                    Verification token
+                  </Label>
                   <div className="flex gap-2">
                     <Button
                       type="button"
@@ -458,7 +458,7 @@ export function WhatsAppSettingsClient({
                       onClick={() =>
                         handleCopy(
                           formState.verifyToken || null,
-                          "Verify token",
+                          "Verification token",
                         )
                       }
                       disabled={isSaving || !formState.verifyToken}
@@ -474,7 +474,7 @@ export function WhatsAppSettingsClient({
                   onChange={(event) =>
                     updateField("verifyToken", event.target.value)
                   }
-                  placeholder="Create a strong verification token"
+                  placeholder="Create a verification token"
                   disabled={isSaving}
                 />
                 {fieldErrors.verifyToken ? (
@@ -486,7 +486,7 @@ export function WhatsAppSettingsClient({
                     configured={connection.verifyTokenConfigured}
                     preview={connection.verifyTokenPreview}
                     replacementPending={Boolean(formState.verifyToken)}
-                    label="Verify token"
+                    label="Verification token"
                   />
                 )}
               </div>
@@ -521,9 +521,7 @@ export function WhatsAppSettingsClient({
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="whatsapp-app-secret">
-                  App secret for signature verification
-                </Label>
+                <Label htmlFor="whatsapp-app-secret">App secret</Label>
                 <Input
                   id="whatsapp-app-secret"
                   type="password"
@@ -532,7 +530,7 @@ export function WhatsAppSettingsClient({
                   onChange={(event) =>
                     updateField("appSecret", event.target.value)
                   }
-                  placeholder="Optional but recommended for X-Hub-Signature-256 validation"
+                  placeholder="Optional"
                   disabled={isSaving}
                 />
                 {fieldErrors.appSecret ? (
@@ -553,17 +551,17 @@ export function WhatsAppSettingsClient({
 
           <Card>
             <CardHeader>
-              <CardTitle className="text-white">Reply behavior</CardTitle>
-              <CardDescription>Logging and send mode.</CardDescription>
+              <CardTitle className="text-white">Reply mode</CardTitle>
+              <CardDescription>Choose how replies are handled.</CardDescription>
             </CardHeader>
             <CardContent className="space-y-5">
               <div className="flex items-start justify-between gap-4 rounded-[22px] border border-white/10 bg-white/[0.03] px-4 py-4">
                 <div>
                   <p className="text-sm font-semibold text-white">
-                    Mark webhook subscription complete
+                    Mark Meta setup as complete
                   </p>
                   <p className="text-muted-foreground mt-1 text-xs">
-                    Turn on after verification.
+                    Turn this on after Meta accepts your URL.
                   </p>
                 </div>
                 <Switch
@@ -579,10 +577,10 @@ export function WhatsAppSettingsClient({
               <div className="flex items-start justify-between gap-4 rounded-[22px] border border-white/10 bg-white/[0.03] px-4 py-4">
                 <div>
                   <p className="text-sm font-semibold text-white">
-                    Enable live auto-reply sending
+                    Send replies automatically
                   </p>
                   <p className="text-muted-foreground mt-1 text-xs">
-                    Off means prepared only.
+                    When off, replies are saved only.
                   </p>
                 </div>
                 <Switch
@@ -609,7 +607,7 @@ export function WhatsAppSettingsClient({
                       Saving
                     </>
                   ) : (
-                    "Save WhatsApp settings"
+                    "Save changes"
                   )}
                 </Button>
               </div>
@@ -620,26 +618,26 @@ export function WhatsAppSettingsClient({
         <div className="space-y-6">
           <Card>
             <CardHeader>
-              <CardTitle className="text-white">Webhook endpoint</CardTitle>
+              <CardTitle className="text-white">Message URL</CardTitle>
               <CardDescription>Use this in Meta.</CardDescription>
             </CardHeader>
             <CardContent className="space-y-5">
               <div className="space-y-2">
-                <Label htmlFor="webhook-url-preview">Callback URL</Label>
+                <Label htmlFor="webhook-url-preview">Message URL</Label>
                 <div className="flex gap-2">
                   <Input
                     id="webhook-url-preview"
                     readOnly
                     value={
                       connection.webhookUrl ??
-                      "Save the connection to generate the webhook URL"
+                      "Save your details to create the message URL"
                     }
                   />
                   <Button
                     type="button"
                     variant="secondary"
                     onClick={() =>
-                      handleCopy(connection.webhookUrl, "Webhook URL")
+                      handleCopy(connection.webhookUrl, "Message URL")
                     }
                     disabled={!connection.webhookUrl}
                   >
@@ -650,23 +648,23 @@ export function WhatsAppSettingsClient({
 
               <div className="rounded-[22px] border border-white/10 bg-white/[0.03] p-4">
                 <p className="text-muted-foreground text-xs tracking-[0.18em] uppercase">
-                  Verify
+                  In Meta
                 </p>
                 <ul className="mt-3 space-y-3 text-sm leading-6 text-white/90">
-                  <li>Use this exact callback URL.</li>
-                  <li>Use the saved verify token.</li>
-                  <li>Phone number ID resolves the workspace.</li>
+                  <li>Paste this exact message URL.</li>
+                  <li>Use the saved verification token.</li>
+                  <li>Use the phone number ID from this page.</li>
                 </ul>
               </div>
 
               <div className="rounded-[22px] border border-white/10 bg-white/[0.03] p-4">
                 <p className="text-muted-foreground text-xs tracking-[0.18em] uppercase">
-                  Signature checks
+                  Extra security
                 </p>
                 <p className="mt-3 text-sm leading-6 text-white/90">
                   {connection.signatureVerificationEnabled
-                    ? "X-Hub-Signature-256 validation is active because an app secret is stored."
-                    : "Signature verification is currently skipped because no app secret is stored yet."}
+                    ? "Extra security is on because an app secret is saved."
+                    : "Add an app secret to turn on extra security."}
                 </p>
               </div>
             </CardContent>
@@ -675,7 +673,7 @@ export function WhatsAppSettingsClient({
           <Card>
             <CardHeader>
               <CardTitle className="text-white">Setup checklist</CardTitle>
-              <CardDescription>Readiness.</CardDescription>
+              <CardDescription>What is left to finish.</CardDescription>
             </CardHeader>
             <CardContent className="space-y-3">
               {checklist.map((item) => (
@@ -696,8 +694,8 @@ export function WhatsAppSettingsClient({
 
           <Card>
             <CardHeader>
-              <CardTitle className="text-white">Operational posture</CardTitle>
-              <CardDescription>Current state.</CardDescription>
+              <CardTitle className="text-white">Status</CardTitle>
+              <CardDescription>Current setup.</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="flex items-start gap-4 rounded-[22px] border border-white/10 bg-white/[0.03] p-4">
@@ -706,12 +704,12 @@ export function WhatsAppSettingsClient({
                 </span>
                 <div>
                   <p className="text-sm font-semibold text-white">
-                    Webhook ingestion
+                    Receiving messages
                   </p>
                   <p className="text-muted-foreground mt-1 text-xs leading-5">
                     {connection.canReceiveWebhooks
-                      ? "Ready for inbound messages."
-                      : "Missing phone number ID or token."}
+                      ? "Ready to receive messages."
+                      : "Add the phone number ID and verification token."}
                   </p>
                 </div>
               </div>
@@ -722,12 +720,12 @@ export function WhatsAppSettingsClient({
                 </span>
                 <div>
                   <p className="text-sm font-semibold text-white">
-                    Reply delivery mode
+                    Sending replies
                   </p>
                   <p className="text-muted-foreground mt-1 text-xs leading-5">
                     {connection.canAttemptLiveReplies
-                      ? "Live sends are on."
-                      : "Prepared mode only."}
+                      ? "Automatic sending is on."
+                      : "Replies are saved only."}
                   </p>
                 </div>
               </div>

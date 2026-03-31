@@ -10,7 +10,8 @@ import {
 export async function GET() {
   try {
     const { workspaceId } = await getRequiredWorkspaceOwnerContext();
-    const connection = await getWorkspaceWhatsAppConnectionSettings(workspaceId);
+    const connection =
+      await getWorkspaceWhatsAppConnectionSettings(workspaceId);
 
     return NextResponse.json({
       connection,
@@ -24,7 +25,10 @@ export async function PATCH(request: NextRequest) {
   try {
     const { workspaceId } = await getRequiredWorkspaceOwnerContext();
     const payload = await request.json().catch(() => null);
-    const response = await upsertWorkspaceWhatsAppConnection(workspaceId, payload);
+    const response = await upsertWorkspaceWhatsAppConnection(
+      workspaceId,
+      payload,
+    );
 
     return NextResponse.json(response);
   } catch (error) {

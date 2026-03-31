@@ -7,8 +7,7 @@ import { getWorkspaceWhatsAppConnectionSettings } from "@/services/whatsapp/what
 
 export const metadata: Metadata = {
   title: "WhatsApp",
-  description:
-    "Manage WhatsApp Cloud API webhook settings and inbound reply processing for the current workspace.",
+  description: "Connect your WhatsApp number and manage automatic replies.",
 };
 
 export default async function DashboardWhatsAppPage() {
@@ -36,9 +35,8 @@ export default async function DashboardWhatsAppPage() {
           webhookSubscribed: false,
           sendRepliesEnabled: false,
           status: "not_configured",
-          statusLabel: "Not configured",
-          statusDescription:
-            "Save your phone number identifiers and verification token to activate webhook setup.",
+          statusLabel: "Not ready",
+          statusDescription: "Add your WhatsApp details to get started.",
           accessTokenConfigured: false,
           verifyTokenConfigured: false,
           appSecretConfigured: false,

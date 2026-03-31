@@ -68,7 +68,7 @@ export function RuleInspector({
               <div>
                 <p className="text-sm font-semibold text-white">Pick a rule</p>
                 <p className="mt-1 text-sm text-white/44">
-                  Select any row to inspect the logic.
+                  Select any row to view the details.
                 </p>
               </div>
             </div>
@@ -97,7 +97,7 @@ export function RuleInspector({
 
             <div>
               <p className="text-[0.68rem] tracking-[0.2em] text-white/36 uppercase">
-                Selected rule
+                Selected
               </p>
               <h2 className="font-display mt-3 text-3xl font-semibold tracking-[-0.05em] text-white">
                 {rule.keyword}
@@ -114,7 +114,7 @@ export function RuleInspector({
                   </span>
                   <div>
                     <p className="text-[0.68rem] tracking-[0.18em] text-white/34 uppercase">
-                      Trigger
+                      Keyword
                     </p>
                     <p className="mt-1 text-lg font-semibold tracking-[-0.02em] text-white">
                       {rule.keyword}
@@ -172,7 +172,7 @@ export function RuleInspector({
               <div>
                 <p className="text-sm font-semibold text-white">Actions</p>
                 <p className="text-xs text-white/42">
-                  Update, pause, or reorder.
+                  Edit, pause, or reorder.
                 </p>
               </div>
             </div>

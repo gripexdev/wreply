@@ -70,22 +70,20 @@ export function MessageMatchSimulator() {
       if (!response.ok || !payload) {
         const nextFieldError = payload?.fieldErrors?.message?.[0] ?? null;
         setFieldError(nextFieldError);
-        setFormError(payload?.message ?? "Unable to test this message.");
+        setFormError(payload?.message ?? "Could not test this message.");
         return;
       }
 
       setResult(payload.result);
       pushToast({
         variant: payload.result.matched ? "success" : "info",
-        title: payload.result.matched
-          ? "Matching rule found"
-          : "No matching rule found",
+        title: payload.result.matched ? "Reply found" : "No reply found",
         description: payload.result.matched
-          ? `Matched "${payload.result.matchedRule?.keyword ?? "rule"}" for this workspace.`
-          : "The message remains eligible for a later fallback path.",
+          ? `Matched "${payload.result.matchedRule?.keyword ?? "rule"}".`
+          : "No saved reply matched this message.",
       });
     } catch {
-      setFormError("Unable to test this message right now. Please try again.");
+      setFormError("Could not test this message right now. Please try again.");
     } finally {
       setIsSubmitting(false);
     }
@@ -97,23 +95,20 @@ export function MessageMatchSimulator() {
         <CardHeader>
           <div className="flex flex-wrap items-center justify-between gap-3">
             <div>
-              <CardTitle className="text-white">
-                Test message simulator
-              </CardTitle>
+              <CardTitle className="text-white">Try a message</CardTitle>
               <CardDescription>
-                Send sample customer text through the real workspace engine
-                without invoking any external messaging provider.
+                Preview how WReply will respond.
               </CardDescription>
             </div>
             <Badge className="border-primary/20 bg-primary/10 text-primary">
-              Internal tool
+              Preview
             </Badge>
           </div>
         </CardHeader>
         <CardContent className="space-y-6">
           <form className="space-y-5" onSubmit={handleSubmit}>
             <div className="space-y-2">
-              <Label htmlFor="message-test-input">Incoming message</Label>
+              <Label htmlFor="message-test-input">Customer message</Label>
               <Textarea
                 id="message-test-input"
                 value={message}
@@ -130,15 +125,15 @@ export function MessageMatchSimulator() {
                 <p className="text-sm text-rose-300">{fieldError}</p>
               ) : (
                 <p className="text-muted-foreground text-sm leading-6">
-                  The engine normalizes casing, punctuation, accents, and common
-                  Darija Latin-script variants before matching.
+                  We clean the message first so short and messy text still
+                  matches well.
                 </p>
               )}
             </div>
 
             <div className="space-y-3">
               <p className="text-muted-foreground text-xs tracking-[0.2em] uppercase">
-                Quick examples
+                Try one
               </p>
               <div className="flex flex-wrap gap-2">
                 {messageTestExamples.map((example) => (
@@ -166,18 +161,18 @@ export function MessageMatchSimulator() {
 
             <div className="flex flex-wrap items-center justify-between gap-3">
               <div className="text-muted-foreground text-sm">
-                Deterministic matching only. No external send is performed.
+                This preview does not send anything.
               </div>
               <Button type="submit" disabled={isSubmitting}>
                 {isSubmitting ? (
                   <>
                     <LoaderCircle className="mr-2 h-4 w-4 animate-spin" />
-                    Testing match
+                    Checking
                   </>
                 ) : (
                   <>
                     <Sparkles className="mr-2 h-4 w-4" />
-                    Test Match
+                    Check reply
                   </>
                 )}
               </Button>

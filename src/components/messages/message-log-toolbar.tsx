@@ -73,21 +73,21 @@ export function MessageLogToolbar({
                 <p className="text-[0.68rem] tracking-[0.22em] text-white/40 uppercase">
                   Filters
                 </p>
-                <p className="text-sm text-white/58">Message activity.</p>
+                <p className="text-sm text-white/58">Message history.</p>
               </div>
             </div>
           </div>
 
           <div className="flex flex-wrap items-center gap-3">
             <div className="rounded-full border border-white/[0.08] bg-white/[0.03] px-3 py-2 text-sm text-white/62">
-              {isSyncing ? "Refreshing" : "Synced"}
+              {isSyncing ? "Updating" : "Ready"}
             </div>
             {settingsHref ? (
               <Link
                 href={settingsHref}
                 className={buttonStyles({ variant: "secondary" })}
               >
-                Business settings
+                Settings
               </Link>
             ) : null}
           </div>
@@ -110,7 +110,7 @@ export function MessageLogToolbar({
           </div>
 
           <FilterSelect
-            label="Direction"
+            label="Type"
             value={filters.direction}
             onChange={(value) => onFilterChange("direction", value)}
           >
@@ -134,7 +134,7 @@ export function MessageLogToolbar({
           </FilterSelect>
 
           <FilterSelect
-            label="Send status"
+            label="Reply status"
             value={filters.sendStatus}
             onChange={(value) => onFilterChange("sendStatus", value)}
           >
@@ -146,7 +146,7 @@ export function MessageLogToolbar({
           </FilterSelect>
 
           <FilterSelect
-            label="Fallback"
+            label="Default reply"
             value={filters.fallback}
             onChange={(value) => onFilterChange("fallback", value)}
           >

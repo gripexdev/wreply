@@ -8,8 +8,7 @@ import { getWorkspaceBusinessSettings } from "@/services/workspace/workspace-set
 
 export const metadata: Metadata = {
   title: "Settings",
-  description:
-    "Manage business profile details and fallback reply behavior for the current workspace.",
+  description: "Manage your business details and default reply.",
 };
 
 export default async function DashboardSettingsPage() {

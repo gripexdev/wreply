@@ -25,7 +25,7 @@ function ConversationBubble({
       )}
     >
       <p className="text-[0.68rem] tracking-[0.2em] text-white/48 uppercase">
-        {log.direction === "INBOUND" ? "Customer message" : "Outbound reply"}
+        {log.direction === "INBOUND" ? "Customer message" : "Reply"}
       </p>
       <p className="mt-3 text-sm leading-7 text-current/95">
         {log.contentPreview}
@@ -100,8 +100,7 @@ export function MessageLogTable({
                   {log.relatedMessage ? (
                     <div className="mt-5 flex items-center gap-2 text-sm text-white/56">
                       <Link2 className="h-4 w-4" />
-                      Linked {log.relatedMessage.direction.toLowerCase()}{" "}
-                      message available in detail view
+                      Related message available
                     </div>
                   ) : null}
                 </div>
@@ -114,7 +113,7 @@ export function MessageLogTable({
                       </span>
                       <div>
                         <p className="text-[0.68rem] tracking-[0.2em] text-white/42 uppercase">
-                          Automation decision
+                          What happened
                         </p>
                         <p className="mt-1 text-base font-semibold text-white">
                           {outcome.title}
@@ -138,7 +137,7 @@ export function MessageLogTable({
                       </span>
                       <div>
                         <p className="text-[0.68rem] tracking-[0.2em] text-white/42 uppercase">
-                          Status signal
+                          Status
                         </p>
                         <p className="mt-1 text-sm leading-6 text-white/80">
                           {status}
@@ -149,7 +148,7 @@ export function MessageLogTable({
                     <div className="mt-5 grid gap-3 sm:grid-cols-2">
                       <div className="rounded-[20px] border border-white/[0.08] bg-black/18 p-4">
                         <p className="text-[0.68rem] tracking-[0.18em] text-white/42 uppercase">
-                          Match source
+                          Reply source
                         </p>
                         <p className="mt-2 text-sm font-semibold text-white">
                           {log.matchedRule
@@ -158,13 +157,13 @@ export function MessageLogTable({
                               ? "AI knowledge"
                               : log.replySource === "FALLBACK" ||
                                   log.fallbackUsed
-                                ? "Fallback message"
-                                : "No rule source"}
+                                ? "Default reply"
+                                : "No saved reply"}
                         </p>
                       </div>
                       <div className="rounded-[20px] border border-white/[0.08] bg-black/18 p-4">
                         <p className="text-[0.68rem] tracking-[0.18em] text-white/42 uppercase">
-                          Reply state
+                          Status
                         </p>
                         <p className="mt-2 text-sm font-semibold text-white">
                           {log.direction === "OUTBOUND"

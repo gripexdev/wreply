@@ -131,7 +131,9 @@ export function AssistantTrainingCard({
 
       if (!response.ok || !payload) {
         setFieldErrors(normalizeFieldErrors(payload?.fieldErrors));
-        setFormError(payload?.message ?? "Unable to train the assistant.");
+        setFormError(
+          payload?.message ?? "Could not save the assistant details.",
+        );
         return;
       }
 
@@ -140,11 +142,11 @@ export function AssistantTrainingCard({
       pushToast({
         variant: "success",
         title: "Assistant updated",
-        description: "Knowledge is ready for unmatched messages.",
+        description: "Your business details are ready to use.",
       });
       router.refresh();
     } catch {
-      setFormError("Unable to train the assistant right now.");
+      setFormError("Could not save the assistant details right now.");
     } finally {
       setIsSaving(false);
     }
@@ -156,7 +158,7 @@ export function AssistantTrainingCard({
         <div className="flex flex-wrap items-start justify-between gap-3">
           <div>
             <CardTitle className="text-white">Train your assistant</CardTitle>
-            <CardDescription>Website or text.</CardDescription>
+            <CardDescription>Website or business details.</CardDescription>
           </div>
           <Badge className={getStatusBadgeClassName(settings.status)}>
             {settings.statusLabel}
@@ -188,10 +190,10 @@ export function AssistantTrainingCard({
               </span>
               <div>
                 <p className="text-muted-foreground text-[0.68rem] tracking-[0.18em] uppercase">
-                  Knowledge
+                  Saved details
                 </p>
                 <p className="mt-1 text-sm font-semibold text-white">
-                  {settings.knowledgeCharacterCount} chars
+                  {settings.knowledgeCharacterCount} saved
                 </p>
               </div>
             </div>
@@ -204,12 +206,12 @@ export function AssistantTrainingCard({
               </span>
               <div>
                 <p className="text-muted-foreground text-[0.68rem] tracking-[0.18em] uppercase">
-                  Last trained
+                  Last update
                 </p>
                 <p className="mt-1 text-sm font-semibold text-white">
                   {settings.updatedAt
                     ? formatShortDate(settings.updatedAt)
-                    : "Not trained"}
+                    : "Not saved"}
                 </p>
               </div>
             </div>
@@ -260,16 +262,16 @@ export function AssistantTrainingCard({
 
           <div className="flex items-center justify-between gap-4">
             <p className="text-muted-foreground text-sm">
-              Website content is stored as plain text.
+              Add your website or paste your business details.
             </p>
             <Button type="submit" disabled={isSaving}>
               {isSaving ? (
                 <>
                   <LoaderCircle className="mr-2 h-4 w-4 animate-spin" />
-                  Training
+                  Saving
                 </>
               ) : (
-                "Train assistant"
+                "Save assistant"
               )}
             </Button>
           </div>

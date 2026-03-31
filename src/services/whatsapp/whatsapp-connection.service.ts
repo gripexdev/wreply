@@ -4,7 +4,11 @@ import { randomBytes } from "node:crypto";
 import { env } from "@/config/env";
 import { whatsappStatusMeta } from "@/config/whatsapp";
 import { prisma } from "@/database/client";
-import { maskSecretValue, decryptSecretValue, encryptSecretValue } from "@/lib/whatsapp/secrets";
+import {
+  maskSecretValue,
+  decryptSecretValue,
+  encryptSecretValue,
+} from "@/lib/whatsapp/secrets";
 import {
   updateWhatsAppConnectionSchema,
   type UpdateWhatsAppConnectionInput,
@@ -180,7 +184,9 @@ function resolveSecretUpdate(
   return encryptSecretValue(submittedValue);
 }
 
-export async function getWorkspaceWhatsAppConnectionSettings(workspaceId: string) {
+export async function getWorkspaceWhatsAppConnectionSettings(
+  workspaceId: string,
+) {
   const connection = await prisma.whatsAppConnection.findUnique({
     where: {
       workspaceId,
@@ -217,16 +223,20 @@ export async function upsertWorkspaceWhatsAppConnection(
     existingConnection?.appSecretEncrypted,
   );
 
-  if (input.sendRepliesEnabled && !input.phoneNumberId && !existingConnection?.phoneNumberId) {
+  if (
+    input.sendRepliesEnabled &&
+    !input.phoneNumberId &&
+    !existingConnection?.phoneNumberId
+  ) {
     throw new WhatsAppConnectionServiceError(
-      "Phone number ID is required before enabling live replies.",
+      "Add the phone number ID before turning on live replies.",
       400,
     );
   }
 
   if (input.sendRepliesEnabled && !nextAccessTokenEncrypted) {
     throw new WhatsAppConnectionServiceError(
-      "A permanent access token is required before enabling live replies.",
+      "Add the access token before turning on live replies.",
       400,
     );
   }
@@ -265,12 +275,15 @@ export async function upsertWorkspaceWhatsAppConnection(
         webhookKey: generateWebhookKey(),
         webhookSubscribed: input.webhookSubscribed,
         sendRepliesEnabled: input.sendRepliesEnabled,
-        status: input.phoneNumberId && nextVerifyTokenEncrypted ? "CONNECTED" : "PENDING",
+        status:
+          input.phoneNumberId && nextVerifyTokenEncrypted
+            ? "CONNECTED"
+            : "PENDING",
       },
     });
 
     return {
-      message: "WhatsApp connection settings saved successfully.",
+      message: "WhatsApp details saved.",
       connection: await buildConnectionView(connection),
     };
   } catch (error) {
@@ -279,7 +292,7 @@ export async function upsertWorkspaceWhatsAppConnection(
       error.code === "P2002"
     ) {
       throw new WhatsAppConnectionServiceError(
-        "This phone number ID is already linked to another workspace connection.",
+        "This phone number ID is already linked to another business.",
         409,
       );
     }
@@ -297,7 +310,7 @@ export async function getWhatsAppConnectionByWebhookKey(webhookKey: string) {
 
   if (!connection) {
     throw new WhatsAppConnectionServiceError(
-      "WhatsApp connection not found for this webhook URL.",
+      "WhatsApp setup not found for this message URL.",
       404,
     );
   }
@@ -310,7 +323,9 @@ export async function getWhatsAppConnectionByWebhookKey(webhookKey: string) {
   };
 }
 
-export async function getWhatsAppConnectionByPhoneNumberId(phoneNumberId: string) {
+export async function getWhatsAppConnectionByPhoneNumberId(
+  phoneNumberId: string,
+) {
   const connection = await prisma.whatsAppConnection.findUnique({
     where: {
       phoneNumberId,
@@ -319,7 +334,7 @@ export async function getWhatsAppConnectionByPhoneNumberId(phoneNumberId: string
 
   if (!connection) {
     throw new WhatsAppConnectionServiceError(
-      "No workspace connection matches this WhatsApp phone number ID.",
+      "No business matches this phone number ID.",
       404,
     );
   }

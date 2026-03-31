@@ -28,24 +28,24 @@ const metricDefinitions = [
   {
     key: "messageLogCount",
     label: "Activity",
-    helper: "All logs",
+    helper: "All history",
     icon: Activity,
   },
   {
     key: "messagesProcessedToday",
     label: "Today",
-    helper: "Inbound",
+    helper: "Messages",
     icon: MessageSquareText,
   },
   {
     key: "activeRulesCount",
     label: "Rules",
-    helper: "Live",
+    helper: "Active",
     icon: Bot,
   },
   {
     key: "connectionsCount",
-    label: "Lines",
+    label: "WhatsApp",
     helper: "Connected",
     icon: RadioTower,
   },
@@ -66,25 +66,27 @@ function buildAutomationStatus(
 
   if (!foundationData.connection?.webhookSubscribed) {
     return {
-      label: "Webhook off",
-      hint: "Verify the line.",
+      label: "Needs attention",
+      hint: "Finish WhatsApp setup.",
       badgeClassName: "border-amber-300/15 bg-amber-300/10 text-amber-100",
     };
   }
 
   if (foundationData.activeRulesCount === 0) {
     return {
-      label: "No live rules",
-      hint: "Add coverage.",
+      label: "Add replies",
+      hint: "Create your first rule.",
       badgeClassName: "border-[#3B82F6]/15 bg-[#3B82F6]/10 text-[#DBEAFE]",
     };
   }
 
   return {
-    label: foundationData.connection?.sendRepliesEnabled ? "Live" : "Prepared",
+    label: foundationData.connection?.sendRepliesEnabled
+      ? "Ready"
+      : "Draft mode",
     hint: foundationData.connection?.sendRepliesEnabled
-      ? "Watching and replying."
-      : "Watching and logging.",
+      ? "Reading and replying."
+      : "Saving replies for review.",
     badgeClassName: "border-primary/20 bg-primary/10 text-primary",
   };
 }
@@ -97,7 +99,7 @@ function buildGuidance(
   if (foundationData.connectionsCount === 0) {
     return {
       title: "Connect WhatsApp",
-      hint: "Go live.",
+      hint: "Start receiving messages.",
       primaryHref: "/dashboard/whatsapp",
       primaryLabel: "Open WhatsApp",
       secondaryHref: "/dashboard/settings",
@@ -107,29 +109,29 @@ function buildGuidance(
 
   if (foundationData.activeRulesCount === 0) {
     return {
-      title: "Add rules",
-      hint: "Cover the common questions.",
+      title: "Create your first rule",
+      hint: "Answer common questions faster.",
       primaryHref: "/dashboard/rules",
-      primaryLabel: "Open Rules",
+      primaryLabel: "Open rules",
       secondaryHref: "/dashboard/rules/test",
-      secondaryLabel: "Test",
+      secondaryLabel: "Try a message",
     };
   }
 
   if (foundationData.incomingCount === 0) {
     return {
-      title: "Waiting for traffic",
-      hint: "Everything is ready.",
+      title: "Waiting for messages",
+      hint: "You're ready to go.",
       primaryHref: "/dashboard/rules/test",
-      primaryLabel: "Test Rules",
+      primaryLabel: "Try a message",
       secondaryHref: "/dashboard/whatsapp",
-      secondaryLabel: "Connection",
+      secondaryLabel: "WhatsApp",
     };
   }
 
   return {
-    title: "System active",
-    hint: "Review messages and analytics.",
+    title: "Everything looks good",
+    hint: "See messages and results.",
     primaryHref: "/dashboard/messages",
     primaryLabel: "Messages",
     secondaryHref: "/dashboard/analytics",
@@ -172,10 +174,10 @@ export default async function DashboardPage() {
   const guidance = buildGuidance(foundationData);
   const lastActivityLabel = foundationData.lastActivityAt
     ? formatDateTime(foundationData.lastActivityAt)
-    : "No activity";
+    : "No recent activity";
   const lastWebhookLabel = foundationData.connection?.lastWebhookAt
     ? formatDateTime(foundationData.connection.lastWebhookAt)
-    : "No webhook";
+    : "No messages yet";
 
   return (
     <div className="space-y-6">
@@ -194,11 +196,11 @@ export default async function DashboardPage() {
 
               <div className="space-y-3">
                 <h2 className="font-display text-4xl font-semibold tracking-[-0.06em] text-white sm:text-5xl xl:text-[3.7rem]">
-                  Control the
-                  <span className="text-gradient"> live system</span>
+                  Run your
+                  <span className="text-gradient"> WhatsApp replies</span>
                 </h2>
                 <p className="text-sm leading-7 text-white/54 sm:text-base">
-                  Messages, rules, and delivery. One view.
+                  Messages, replies, and results in one view.
                 </p>
               </div>
 
@@ -213,7 +215,7 @@ export default async function DashboardPage() {
                   <p className="mt-1 text-xs text-white/42">
                     {currentPlan
                       ? `${formatCurrencyMad(currentPlan.monthlyPriceMad)} / month`
-                      : "No billing yet."}
+                      : "Plan not active."}
                   </p>
                 </div>
 
@@ -224,7 +226,9 @@ export default async function DashboardPage() {
                   <p className="mt-3 text-sm font-semibold text-white">
                     {lastActivityLabel}
                   </p>
-                  <p className="mt-1 text-xs text-white/42">Latest event.</p>
+                  <p className="mt-1 text-xs text-white/42">
+                    Most recent update.
+                  </p>
                 </div>
 
                 <div className="rounded-[24px] border border-white/[0.08] bg-black/18 p-4">
@@ -234,7 +238,9 @@ export default async function DashboardPage() {
                   <p className="font-display mt-3 text-3xl font-semibold text-white">
                     {foundationData.messagesProcessedToday}
                   </p>
-                  <p className="mt-1 text-xs text-white/42">Inbound volume.</p>
+                  <p className="mt-1 text-xs text-white/42">
+                    Messages received.
+                  </p>
                 </div>
               </div>
 
@@ -258,32 +264,32 @@ export default async function DashboardPage() {
           <CardHeader>
             <CardTitle className="flex items-center gap-3 text-white">
               <ShieldCheck className="text-primary h-5 w-5" />
-              Status
+              Quick status
             </CardTitle>
-            <CardDescription>Live signals.</CardDescription>
+            <CardDescription>What needs attention.</CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
             <StatusRow
-              label="Automation"
+              label="Automatic replies"
               value={automationStatus.label}
               hint={automationStatus.hint}
             />
             <StatusRow
-              label="Webhook"
+              label="Last message"
               value={lastWebhookLabel}
-              hint="Latest event."
+              hint="Most recent WhatsApp update."
             />
             <StatusRow
-              label="Delivery"
+              label="Reply mode"
               value={
                 foundationData.connection?.sendRepliesEnabled
-                  ? "Live"
-                  : "Prepared"
+                  ? "Sending replies"
+                  : "Saving drafts"
               }
               hint={
                 foundationData.connection?.sendRepliesEnabled
-                  ? "Real send attempts."
-                  : "Logs only."
+                  ? "Replies go out automatically."
+                  : "Replies are saved only."
               }
             />
           </CardContent>
@@ -323,40 +329,40 @@ export default async function DashboardPage() {
           <CardHeader>
             <CardTitle className="flex items-center gap-3 text-white">
               <Workflow className="text-primary h-5 w-5" />
-              Signals
+              At a glance
             </CardTitle>
-            <CardDescription>Core checks.</CardDescription>
+            <CardDescription>Key business checks.</CardDescription>
           </CardHeader>
           <CardContent className="grid gap-4 sm:grid-cols-2">
             <StatusRow
-              label="Ingress"
+              label="WhatsApp"
               value={
                 foundationData.connectionsCount > 0 ? "Connected" : "Offline"
               }
               hint={
                 foundationData.connectionsCount > 0
-                  ? "Line saved."
+                  ? "Your line is connected."
                   : "Connect WhatsApp."
               }
             />
             <StatusRow
-              label="Coverage"
+              label="Rule coverage"
               value={`${foundationData.activeRulesCount} active`}
               hint={
                 foundationData.activeRulesCount > 0
-                  ? "Rules are live."
+                  ? "Saved replies are on."
                   : "No rules yet."
               }
             />
             <StatusRow
-              label="Inbound"
-              value={`${foundationData.incomingCount} logged`}
-              hint="All customer messages."
+              label="Messages"
+              value={`${foundationData.incomingCount} received`}
+              hint="Customer messages."
             />
             <StatusRow
-              label="Outbound"
-              value={`${foundationData.outgoingCount} logged`}
-              hint="Replies and fallbacks."
+              label="Replies"
+              value={`${foundationData.outgoingCount} saved`}
+              hint="Sent or prepared."
             />
           </CardContent>
         </Card>

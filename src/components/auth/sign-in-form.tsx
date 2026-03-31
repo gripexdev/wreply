@@ -28,7 +28,7 @@ export function SignInForm() {
       });
 
       if (!result || result.error) {
-        setError("Invalid email or password.");
+        setError("Check your email and password.");
         return;
       }
 
@@ -40,7 +40,7 @@ export function SignInForm() {
   return (
     <form className="space-y-5" onSubmit={handleSubmit}>
       <div className="space-y-2">
-        <Label htmlFor="email">Work email</Label>
+        <Label htmlFor="email">Email address</Label>
         <Input
           id="email"
           type="email"

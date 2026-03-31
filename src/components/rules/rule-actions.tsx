@@ -73,12 +73,12 @@ export function RuleActions({
         />
         <div className="min-w-0">
           <p className="text-sm font-semibold tracking-[-0.01em] text-white">
-            {isActive ? "Rule is live" : "Rule is paused"}
+            {isActive ? "Reply is on" : "Reply is off"}
           </p>
           <p className="text-xs leading-5 text-white/46">
             {isActive
-              ? "The matcher can use this logic block."
-              : "The matcher ignores this rule until you enable it again."}
+              ? "Customers can receive this reply automatically."
+              : "This reply will stay off until you turn it back on."}
           </p>
         </div>
         {isBusy ? (
@@ -92,7 +92,7 @@ export function RuleActions({
         <div className="flex items-center gap-2 rounded-[18px] border border-white/[0.08] bg-white/[0.03] p-1">
           <ActionIconButton
             label={
-              disableMove ? "Clear filters to reorder rules" : "Move rule up"
+              disableMove ? "Clear filters to change the order" : "Move rule up"
             }
             disabled={isBusy || isFirst || disableMove}
             onClick={onMoveUp}
@@ -101,7 +101,9 @@ export function RuleActions({
           </ActionIconButton>
           <ActionIconButton
             label={
-              disableMove ? "Clear filters to reorder rules" : "Move rule down"
+              disableMove
+                ? "Clear filters to change the order"
+                : "Move rule down"
             }
             disabled={isBusy || isLast || disableMove}
             onClick={onMoveDown}

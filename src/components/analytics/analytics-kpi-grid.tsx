@@ -26,8 +26,8 @@ interface AnalyticsKpiCardDefinition {
 const kpiCards: AnalyticsKpiCardDefinition[] = [
   {
     key: "totalIncomingMessages",
-    label: "Incoming",
-    hint: "All",
+    label: "Messages",
+    hint: "Total",
     icon: MessageSquareText,
   },
   {
@@ -38,8 +38,8 @@ const kpiCards: AnalyticsKpiCardDefinition[] = [
   },
   {
     key: "unmatchedMessages",
-    label: "Open",
-    hint: "Need rules",
+    label: "Unmatched",
+    hint: "Needs review",
     icon: ShieldOff,
   },
   {
@@ -51,11 +51,11 @@ const kpiCards: AnalyticsKpiCardDefinition[] = [
   },
   {
     key: "fallbackRepliesUsed",
-    label: "Fallback",
+    label: "Default reply",
     hint: "Used",
     icon: LifeBuoy,
   },
-  { key: "outboundPrepared", label: "Prepared", hint: "Queued", icon: Clock3 },
+  { key: "outboundPrepared", label: "Prepared", hint: "Saved", icon: Clock3 },
   { key: "outboundSent", label: "Sent", hint: "Accepted", icon: Send },
   {
     key: "outboundDelivered",
@@ -69,7 +69,7 @@ const kpiCards: AnalyticsKpiCardDefinition[] = [
     hint: "Review",
     icon: AlertTriangle,
   },
-  { key: "activeRules", label: "Active rules", hint: "Live", icon: Layers3 },
+  { key: "activeRules", label: "Active rules", hint: "On", icon: Layers3 },
 ];
 
 function formatValue(value: number, suffix?: string) {

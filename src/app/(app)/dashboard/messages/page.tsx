@@ -5,8 +5,7 @@ import { messageLogsQuerySchema } from "@/lib/validation/message-logs";
 
 export const metadata: Metadata = {
   title: "Messages",
-  description:
-    "Inspect inbound customer messages, outbound replies, fallback usage, and send outcomes for the current workspace.",
+  description: "View customer messages, replies, and results.",
 };
 
 function getSingleValue(value: string | string[] | undefined) {

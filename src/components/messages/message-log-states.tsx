@@ -54,7 +54,7 @@ export function MessageLogsErrorState({
         </span>
         <div className="space-y-2">
           <p className="text-sm font-semibold text-rose-100">
-            Unable to load conversation activity
+            Could not load messages
           </p>
           <p className="text-sm leading-6 text-rose-50/78">{message}</p>
         </div>
@@ -85,7 +85,7 @@ export function MessageLogsEmptyState({
             ) : (
               <Inbox className="h-4 w-4" />
             )}
-            Conversation visibility
+            Message history
           </div>
 
           <div className="space-y-3">
